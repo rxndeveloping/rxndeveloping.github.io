@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ryzexfn750.github.io/sitemap-index.xml
+Sitemap: https://rxndeveloping.github.io/sitemap-index.xml
