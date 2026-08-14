@@ -25,5 +25,5 @@
       "description": "Audio bots, voice tools, sound effects, browser extensions, and experimental digital utilities."
     }
   ],
-  "languages": ["C#", "JavaScript", "Python", "C++", "HTML", "CSS", "PowerShell", "Lua"]
+  "languages": ["C#", "JavaScript", "TypeScript", "Python", "C++", "HTML", "CSS", "Astro", "PowerShell", "Lua"]
 }

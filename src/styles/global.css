@@ -681,4 +681,25 @@ em { color: inherit; }
   .contact-row small { display: none; }
   .contact-row strong { grid-column: 2; }
   .contact-row span { overflow-wrap: anywhere; }
+
+  /* Keep both team avatars fully visible and centered on narrow screens. */
+  .team-card__visual,
+  .team-grid--full .team-card__visual {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+    padding: clamp(14px, 5vw, 24px);
+  }
+
+  .team-card__visual img {
+    width: 84%;
+    height: 84%;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .team-card:hover .team-card__visual img {
+    transform: none;
+  }
 }
