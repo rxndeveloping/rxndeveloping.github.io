@@ -2,6 +2,7 @@
 import socials from '../../data/social.json';
 import { sitePath } from '../../utils/paths';
 const year = new Date().getFullYear();
+const isDev = import.meta.env.DEV;
 ---
 
 <footer class="site-footer">
@@ -14,7 +15,7 @@ const year = new Date().getFullYear();
       <a href={sitePath('projects/')}>Projects</a>
       <a href={sitePath('about/')}>About</a>
       <a href={sitePath('contact/')}>Contact</a>
-      <a href={sitePath('studio/')}>Project Studio</a>
+      {isDev && <a href={sitePath('studio/')}>Project Studio</a>}
     </div>
     <div class="footer-contact">
       <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(socials.email)}`} target="_blank" rel="noreferrer">{socials.email}</a>

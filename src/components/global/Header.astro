@@ -9,6 +9,7 @@ const links = [
   { href: 'contact/', label: 'Contact' }
 ];
 const currentPath = Astro.url.pathname;
+const isDev = import.meta.env.DEV;
 ---
 
 <header class="site-header" data-header>
@@ -34,7 +35,7 @@ const currentPath = Astro.url.pathname;
   <nav class="mobile-nav" id="mobile-menu" data-mobile-menu aria-label="Mobile navigation">
     <div class="container">
       {links.map((link) => <a href={sitePath(link.href)}>{link.label}</a>)}
-      <a href={sitePath('studio/')}>Project Studio</a>
+      {isDev && <a href={sitePath('studio/')}>Project Studio</a>}
     </div>
   </nav>
 </header>

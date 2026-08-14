@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import skills from '../data/skills.json';
 import { sitePath } from '../utils/paths';
+
+if (!import.meta.env.DEV) {
+  return Astro.redirect('/404/');
+}
 ---
 
 <BaseLayout title="Project Studio" description="Create and save RxN Developing project entries locally." noindex>
