@@ -1,0 +1,29 @@
+{
+  "areas": [
+    {
+      "title": "Software & Custom Tools",
+      "description": "Purpose-built applications, utilities, and systems shaped around practical requirements."
+    },
+    {
+      "title": "Automation & Bots",
+      "description": "Discord and Telegram bots, notifications, messaging, and request-management workflows."
+    },
+    {
+      "title": "Windows & PC Utilities",
+      "description": "Windows applications, installation tools, optimization utilities, and desktop workflows."
+    },
+    {
+      "title": "Gaming & Unity",
+      "description": "Game systems, HUDs, save editors, interfaces, and tailored gaming solutions."
+    },
+    {
+      "title": "Community Systems",
+      "description": "Tools that help online communities organize, communicate, and operate more effectively."
+    },
+    {
+      "title": "Audio & Digital Systems",
+      "description": "Audio bots, voice tools, sound effects, browser extensions, and experimental digital utilities."
+    }
+  ],
+  "languages": ["C#", "JavaScript", "Python", "C++", "HTML", "CSS", "PowerShell", "Lua"]
+}

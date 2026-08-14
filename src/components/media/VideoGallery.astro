@@ -1,0 +1,58 @@
+---
+import { assetPath } from '../../utils/paths';
+import { getVideoEmbed } from '../../utils/video';
+interface VideoItem {
+  type: 'youtube' | 'vimeo' | 'local';
+  url?: string;
+  title: string;
+  poster?: string;
+  mp4?: string;
+  webm?: string;
+  caption?: string;
+}
+interface Props { videos: VideoItem[]; }
+const { videos } = Astro.props;
+const validVideos = videos.filter((video) => video.type === 'local' ? video.mp4 || video.webm : getVideoEmbed(video.type, video.url));
+---
+
+{validVideos.length > 0 && (
+  <div class="video-grid">
+    {validVideos.map((video) => {
+      const embed = getVideoEmbed(video.type, video.url);
+      return (
+        <figure class="video-card">
+          {video.type === 'local' ? (
+            <video controls preload="metadata" poster={video.poster ? assetPath(video.poster) : undefined}>
+              {video.webm && <source src={assetPath(video.webm)} type="video/webm" />}
+              {video.mp4 && <source src={assetPath(video.mp4)} type="video/mp4" />}
+              Your browser does not support embedded video.
+            </video>
+          ) : (
+            <div class="video-facade" data-video-facade data-src={embed}>
+              {video.poster && <img src={assetPath(video.poster)} alt="" loading="lazy" />}
+              <button type="button" aria-label={`Play ${video.title}`}>
+                <span aria-hidden="true">▶</span> Play video
+              </button>
+            </div>
+          )}
+          <figcaption><strong>{video.title}</strong>{video.caption && <span>{video.caption}</span>}</figcaption>
+        </figure>
+      );
+    })}
+  </div>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-video-facade]').forEach((facade) => {
+    facade.querySelector('button')?.addEventListener('click', () => {
+      const src = facade.dataset.src;
+      if (!src) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = `${src}${src.includes('?') ? '&' : '?'}autoplay=1`;
+      iframe.title = facade.querySelector('button')?.getAttribute('aria-label') || 'Video player';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      facade.replaceWith(iframe);
+    });
+  });
+</script>

@@ -1,0 +1,19 @@
+---
+import { assetPath } from '../../utils/paths';
+interface Member { id: string; name: string; role: string; avatar: string; bio: string[]; }
+interface Props { member: Member; compact?: boolean; }
+const { member, compact = false } = Astro.props;
+---
+
+<article class:list={['team-card', compact && 'team-card--compact', 'reveal']}>
+  <div class="team-card__visual">
+    <span class="team-card__index" aria-hidden="true">{member.id === 'ryze' ? '01' : '02'}</span>
+    <img src={assetPath(member.avatar)} alt={`${member.name} avatar`} width="512" height="512" loading="lazy" />
+  </div>
+  <div class="team-card__body">
+    <p class="mono-label">{member.role}</p>
+    <h3>{member.name}</h3>
+    <p>{member.bio[0]}</p>
+    {!compact && member.bio.slice(1).map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+</article>

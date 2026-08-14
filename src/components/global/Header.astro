@@ -1,0 +1,50 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { assetPath, sitePath } from '../../utils/paths';
+
+const links = [
+  { href: '', label: 'Home' },
+  { href: 'projects/', label: 'Projects' },
+  { href: 'about/', label: 'About' },
+  { href: 'contact/', label: 'Contact' }
+];
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header" data-header>
+  <div class="container header-inner">
+    <a class="brand" href={sitePath()} aria-label="RxN Developing home">
+      <img src={assetPath('assets/brand/logo.png')} alt="RxN Developing" width="210" height="80" />
+    </a>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      {links.map((link) => {
+        const href = sitePath(link.href);
+        const isActive = link.href === '' ? currentPath === href : currentPath.startsWith(href);
+        return <a href={href} aria-current={isActive ? 'page' : undefined}>{link.label}</a>;
+      })}
+    </nav>
+    <div class="header-actions">
+      <ThemeToggle />
+      <button class="menu-toggle" type="button" data-menu-toggle aria-controls="mobile-menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+        <span class="sr-only">Toggle navigation</span>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobile-menu" data-mobile-menu aria-label="Mobile navigation">
+    <div class="container">
+      {links.map((link) => <a href={sitePath(link.href)}>{link.label}</a>)}
+      <a href={sitePath('studio/')}>Project Studio</a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    menu?.classList.toggle('is-open', !open);
+  });
+</script>

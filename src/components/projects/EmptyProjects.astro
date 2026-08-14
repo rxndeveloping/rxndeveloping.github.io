@@ -1,0 +1,13 @@
+---
+import { sitePath } from '../../utils/paths';
+interface Props { compact?: boolean; }
+const { compact = false } = Astro.props;
+---
+
+<div class:list={['empty-projects', compact && 'empty-projects--compact']}>
+  <div class="empty-projects__signal" aria-hidden="true"><span></span><span></span><span></span></div>
+  <p class="eyebrow"><span></span>Work in progress</p>
+  <h3>We’re preparing our first projects for publication.</h3>
+  <p>Each project will be documented here with its development story, systems, media, and team contributions.</p>
+  {!compact && <div class="empty-projects__actions"><a class="text-link" href={sitePath('about/')}>Discover the team <span aria-hidden="true">→</span></a><a class="text-link" href={sitePath('studio/')}>Open Project Studio <span aria-hidden="true">→</span></a></div>}
+</div>

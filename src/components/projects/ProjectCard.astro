@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { assetPath, sitePath } from '../../utils/paths';
+interface Props { project: CollectionEntry<'projects'>; index?: number; }
+const { project, index = 0 } = Astro.props;
+const data = project.data;
+---
+
+<article class="project-card reveal" style={`--delay:${Math.min(index * 70, 280)}ms`}>
+  <a class="project-card__link" href={sitePath(`projects/${data.slug}/`)} aria-label={`View ${data.title}`}>
+    <div class:list={['project-card__media', !data.cover && 'project-card__media--empty']}>
+      {data.cover
+        ? <img src={assetPath(data.cover.src)} alt={data.cover.alt} loading="lazy" style={`object-position:${data.cover.position || 'center'}`} />
+        : <span aria-hidden="true">{String(index + 1).padStart(2, '0')} / RxN</span>}
+    </div>
+    <div class="project-card__body">
+      <div class="project-card__meta">
+        {data.category && <span>{data.category}</span>}
+        {data.status && <span class="status-dot">{data.status}</span>}
+      </div>
+      <h3>{data.title}</h3>
+      <p>{data.shortDescription}</p>
+      {data.technologies.length > 0 && (
+        <ul class="tag-list" aria-label="Technologies">
+          {data.technologies.slice(0, 4).map((item) => <li>{item}</li>)}
+          {data.technologies.length > 4 && <li>+{data.technologies.length - 4}</li>}
+        </ul>
+      )}
+      <span class="project-card__cta">View project <span aria-hidden="true">↗</span></span>
+    </div>
+  </a>
+</article>

@@ -1,0 +1,58 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import MediaGallery from '../../components/media/MediaGallery.astro';
+import VideoGallery from '../../components/media/VideoGallery.astro';
+import { assetPath, sitePath } from '../../utils/paths';
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  return projects.map((project) => ({ params: { slug: project.data.slug }, props: { project } }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const data = project.data;
+const hasBody = Boolean(project.body?.trim().length);
+---
+
+<BaseLayout title={data.seo?.title || data.title} description={data.seo?.description || data.shortDescription} image={data.seo?.image || data.cover?.src}>
+  <article class="project-detail">
+    <header class="project-hero">
+      <div class="container">
+        <a class="back-link" href={sitePath('projects/')}><span aria-hidden="true">←</span> All projects</a>
+        <div class="project-hero__grid">
+          <div>
+            <div class="project-hero__meta">
+              {data.category && <span>{data.category}</span>}
+              {data.status && <span class="status-dot">{data.status}</span>}
+            </div>
+            <h1>{data.title}</h1>
+            <p>{data.shortDescription}</p>
+          </div>
+          <div class="project-hero__aside">
+            {data.developmentPeriod && <div><span>Development</span><strong>{data.developmentPeriod}</strong></div>}
+            {data.contributors.length > 0 && <div><span>Team</span><strong>{data.contributors.map((item) => item.member === 'ryze' ? 'Ryze' : 'Ninja').join(' · ')}</strong></div>}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {data.cover && <div class="container project-cover"><img src={assetPath(data.cover.src)} alt={data.cover.alt} style={`object-position:${data.cover.position || 'center'}`} /></div>}
+
+    <div class="container project-content-grid">
+      <div class="project-main">
+        {hasBody && <section class="prose"><Content /></section>}
+        {data.systems.length > 0 && <section class="detail-section"><p class="mono-label">Systems developed</p><ul class="system-list">{data.systems.map((system) => <li>{system}</li>)}</ul></section>}
+        {data.gallery.length > 0 && <section class="detail-section"><p class="mono-label">Gallery</p><MediaGallery images={data.gallery} /></section>}
+        {data.videos.length > 0 && <section class="detail-section"><p class="mono-label">Video</p><VideoGallery videos={data.videos} /></section>}
+      </div>
+      <aside class="project-sidebar">
+        {data.technologies.length > 0 && <section><p class="mono-label">Technologies</p><ul class="tag-list tag-list--large">{data.technologies.map((technology) => <li>{technology}</li>)}</ul></section>}
+        {data.contributors.length > 0 && <section><p class="mono-label">Contributions</p>{data.contributors.map((item) => <div class="contribution"><strong>{item.member === 'ryze' ? 'Ryze' : 'Ninja'}</strong><span>{item.role}</span></div>)}</section>}
+        {Object.values(data.links).some(Boolean) && <section><p class="mono-label">Links</p><div class="project-links">{data.links.github && <a href={data.links.github} target="_blank" rel="noreferrer">GitHub <span>↗</span></a>}{data.links.demo && <a href={data.links.demo} target="_blank" rel="noreferrer">Live demo <span>↗</span></a>}{data.links.download && <a href={data.links.download} target="_blank" rel="noreferrer">Download <span>↗</span></a>}</div></section>}
+      </aside>
+    </div>
+  </article>
+</BaseLayout>

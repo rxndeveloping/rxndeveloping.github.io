@@ -1,0 +1,27 @@
+<div class="theme-control" role="group" aria-label="Color theme">
+  <button type="button" data-theme-value="system" aria-label="Use system theme"><span class="theme-long">System</span><span class="theme-short" aria-hidden="true">S</span></button>
+  <button type="button" data-theme-value="light" aria-label="Use light theme"><span class="theme-long">Light</span><span class="theme-short" aria-hidden="true">L</span></button>
+  <button type="button" data-theme-value="dark" aria-label="Use dark theme"><span class="theme-long">Dark</span><span class="theme-short" aria-hidden="true">D</span></button>
+</div>
+
+<script>
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-theme-value]')];
+  type ThemePreference = 'system' | 'light' | 'dark';
+
+  function applyTheme(preference: ThemePreference) {
+    const resolved = preference === 'system'
+      ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+      : preference;
+    document.documentElement.dataset.theme = resolved;
+    document.documentElement.dataset.themePreference = preference;
+    localStorage.setItem('rxn-theme', preference);
+    buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.themeValue === preference)));
+  }
+
+  const current = (document.documentElement.dataset.themePreference || 'system') as ThemePreference;
+  applyTheme(current);
+  buttons.forEach((button) => button.addEventListener('click', () => applyTheme(button.dataset.themeValue as ThemePreference)));
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+    if (document.documentElement.dataset.themePreference === 'system') applyTheme('system');
+  });
+</script>

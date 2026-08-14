@@ -1,0 +1,88 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import ProjectCard from '../components/projects/ProjectCard.astro';
+import EmptyProjects from '../components/projects/EmptyProjects.astro';
+import TeamCard from '../components/team/TeamCard.astro';
+import site from '../data/site.json';
+import team from '../data/team.json';
+import skills from '../data/skills.json';
+import { assetPath, sitePath } from '../utils/paths';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft));
+const featured = projects
+  .filter(({ data }) => data.featured)
+  .sort((a, b) => (a.data.featuredOrder ?? 999) - (b.data.featuredOrder ?? 999))
+  .slice(0, 3);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="hero-grid container">
+      <div class="hero-copy reveal">
+        <p class="eyebrow"><span></span>{site.eyebrow}</p>
+        <h1>Software and tools built for <em>real use.</em></h1>
+        <p class="hero-lead">RxN Developing is the independent team of Ryze and Ninja. We build custom software, automation, community tools, and gaming systems.</p>
+        <div class="hero-actions">
+          <a class="button button--primary" href={sitePath('projects/')}>Explore projects <span aria-hidden="true">↗</span></a>
+          <a class="button button--ghost" href={sitePath('about/')}>Meet the team</a>
+        </div>
+      </div>
+      <div class="hero-visual reveal" aria-label="RxN Developing identity">
+        <div class="hero-logo-simple">
+          <img src={assetPath('assets/brand/logo.png')} alt="RxN Developing" width="1536" height="1024" />
+        </div>
+        <p class="hero-visual__caption"><span>Ryze + Ninja</span><span>Independent development team</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section projects-preview">
+    <div class="container">
+      <div class="section-topline">
+      <SectionHeading eyebrow="Selected work" title="Projects built with intent." description="A growing archive of tools, systems, and experiments created by RxN Developing." />
+        <a class="text-link" href={sitePath('projects/')}>View all projects <span aria-hidden="true">→</span></a>
+      </div>
+      {featured.length > 0
+        ? <div class="project-grid">{featured.map((project, index) => <ProjectCard project={project} index={index} />)}</div>
+        : <EmptyProjects />}
+    </div>
+  </section>
+
+  <section class="section skills-section">
+    <div class="container split-heading">
+      <SectionHeading eyebrow="Capabilities" title="Built across software, communities, and games." />
+      <p>We combine practical development with experimentation, designing solutions that stay useful, adaptable, and clear.</p>
+    </div>
+    <div class="container capability-grid">
+      {skills.areas.map((skill, index) => (
+        <article class="capability-card reveal" style={`--delay:${index * 40}ms`}>
+          <h3>{skill.title}</h3>
+          <p>{skill.description}</p>
+        </article>
+      ))}
+    </div>
+    <div class="container language-strip" aria-label="Primary languages">
+      <span class="mono-label">Primary stack</span>
+      <ul>{skills.languages.map((language) => <li>{language}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="section team-preview">
+    <div class="container">
+      <SectionHeading eyebrow="The team" title="Two perspectives. One shared direction." description="RxN Developing brings development, testing, design, and technical problem-solving into one focused team." />
+      <div class="team-grid">
+        {team.map((member) => <TeamCard member={member} compact />)}
+      </div>
+      <div class="section-cta"><a class="button button--ghost" href={sitePath('about/')}>More about RxN Developing <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <section class="contact-band">
+    <div class="container contact-band__inner">
+      <div><p class="eyebrow"><span></span>Start a conversation</p><h2>Have an idea worth building?</h2></div>
+      <a class="button button--light" href={sitePath('contact/')}>Get in touch <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+</BaseLayout>

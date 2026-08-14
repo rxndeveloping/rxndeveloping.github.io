@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/projects/ProjectCard.astro';
+import EmptyProjects from '../../components/projects/EmptyProjects.astro';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => (a.data.featuredOrder ?? 999) - (b.data.featuredOrder ?? 999));
+---
+
+<BaseLayout title="Projects" description="Explore the software, automation systems, gaming tools, and digital solutions created by RxN Developing.">
+  <section class="page-hero">
+    <div class="container page-hero__grid">
+      <div><p class="eyebrow"><span></span>Project archive</p><h1>Work made to be <em>used.</em></h1></div>
+      <p>Every published project is documented from its purpose to the systems, technologies, and team contributions behind it.</p>
+    </div>
+  </section>
+  <section class="section project-index">
+    <div class="container project-index__header">
+      <p class="mono-label">{String(projects.length).padStart(2, '0')} published {projects.length === 1 ? 'project' : 'projects'}</p>
+      <span>More work will be added as it becomes ready.</span>
+    </div>
+    <div class="container">
+      {projects.length > 0
+        ? <div class="project-grid">{projects.map((project, index) => <ProjectCard project={project} index={index} />)}</div>
+        : <EmptyProjects />}
+    </div>
+  </section>
+</BaseLayout>

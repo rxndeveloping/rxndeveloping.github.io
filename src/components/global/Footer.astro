@@ -1,0 +1,28 @@
+---
+import socials from '../../data/social.json';
+import { sitePath } from '../../utils/paths';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <a class="footer-mark" href={sitePath()}>RxN<span>Developing</span></a>
+      <p>Custom software, automation, gaming tools, and digital systems.</p>
+    </div>
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href={sitePath('projects/')}>Projects</a>
+      <a href={sitePath('about/')}>About</a>
+      <a href={sitePath('contact/')}>Contact</a>
+      <a href={sitePath('studio/')}>Project Studio</a>
+    </div>
+    <div class="footer-contact">
+      <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(socials.email)}`} target="_blank" rel="noreferrer">{socials.email}</a>
+      {socials.x.map((profile) => <a href={profile.url} target="_blank" rel="noreferrer">X / {profile.label}</a>)}
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© {year} RxN Developing</span>
+    <span>Built to evolve.</span>
+  </div>
+</footer>

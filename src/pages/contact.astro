@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import socials from '../data/social.json';
+---
+
+<BaseLayout title="Contact" description="Contact RxN Developing by email, Discord, or X.">
+  <section class="contact-page contact-page--refined">
+    <div class="container contact-heading">
+      <p class="eyebrow">Contact</p>
+      <h1>Get in touch with RxN Developing.</h1>
+      <p>Choose the channel that fits your message. Email is best for project details and longer enquiries.</p>
+    </div>
+    <div class="container contact-groups">
+      <section class="contact-group contact-group--email">
+        <div class="contact-group__heading"><span>01</span><div><h2>Email</h2><p>Projects, collaborations, and general enquiries.</p></div></div>
+        <a class="contact-row contact-row--primary" href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(socials.email)}`} target="_blank" rel="noreferrer">
+          <span>{socials.email}</span><small>Open in Gmail</small><strong aria-hidden="true">→</strong>
+        </a>
+      </section>
+      <section class="contact-group">
+        <div class="contact-group__heading"><span>02</span><div><h2>Discord</h2><p>Copy a username and add us directly on Discord.</p></div></div>
+        <div class="contact-row-list">
+          {socials.discord.map((username) => (
+            <button class="contact-row" type="button" data-copy={username}>
+              <span>{username}</span><small>Copy username</small><strong aria-hidden="true">＋</strong>
+            </button>
+          ))}
+        </div>
+      </section>
+      <section class="contact-group">
+        <div class="contact-group__heading"><span>03</span><div><h2>Social</h2><p>Follow Ryze and Ninja on X.</p></div></div>
+        <div class="contact-row-list">
+          {socials.x.map((profile) => (
+            <a class="contact-row" href={profile.url} target="_blank" rel="noreferrer">
+              <span>{profile.label}</span><small>View on X</small><strong aria-hidden="true">→</strong>
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
+  </section>
+  <div class="copy-toast" role="status" aria-live="polite" data-copy-toast></div>
+</BaseLayout>
+
+<script>
+  const toast = document.querySelector<HTMLElement>('[data-copy-toast]');
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const value = button.dataset.copy;
+      if (!value) return;
+      await navigator.clipboard.writeText(value);
+      if (toast) {
+        toast.textContent = `${value} copied to clipboard`;
+        toast.classList.add('is-visible');
+        setTimeout(() => toast.classList.remove('is-visible'), 2200);
+      }
+    });
+  });
+</script>
