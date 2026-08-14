@@ -25,5 +25,5 @@
       "description": "Audio bots, voice tools, sound effects, browser extensions, and experimental digital utilities."
     }
   ],
-  "languages": ["C#", "JavaScript", "TypeScript", "Python", "C++", "HTML", "CSS", "Astro", "PowerShell", "Lua"]
+  "languages": ["C#", ".NET 10", "WinUI 3", "XAML", "JavaScript", "TypeScript", "Python", "C++", "HTML", "CSS", "Astro", "PowerShell", "Lua", "JSON", "WiX Toolset", "xUnit", "NVIDIA NVML", "Windows APIs"]
 }
