@@ -709,6 +709,15 @@ em { color: inherit; }
 .studio-editing strong { font-size: 1.05rem; }
 .studio-form input[readonly] { opacity: .72; cursor: not-allowed; }
 
+.studio-existing-media { margin-bottom: 24px; padding: 18px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+.studio-existing-media[hidden] { display: none; }
+.studio-existing-media p { margin: 6px 0 16px; color: var(--text-soft); }
+.studio-existing-media__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+.studio-existing-media__grid figure { margin: 0; }
+.studio-existing-media__grid img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; border: 1px solid var(--border); border-radius: 8px; background: #090909; }
+.studio-existing-media__grid figcaption { margin-top: 6px; color: var(--text-soft); font-size: .75rem; }
+.field > span small { color: var(--text-soft); font: inherit; font-weight: 400; }
+
 @media (max-width: 700px) {
   .studio-editing { align-items: stretch; flex-direction: column; }
 }

@@ -56,10 +56,18 @@ if (!import.meta.env.DEV) {
 
       <section class="studio-section">
         <div class="studio-section__heading"><span>03</span><div><h2>Images and video</h2><p>Files are copied and renamed automatically when you save the project.</p></div></div>
+        <div class="studio-existing-media" data-existing-media hidden>
+          <div>
+            <span class="mono-label">Media already saved</span>
+            <p>These files will be kept automatically. Select a file below only when you want to add or replace something.</p>
+          </div>
+          <div class="studio-existing-media__grid" data-existing-media-grid></div>
+        </div>
         <div class="form-grid">
-          <label class="field"><span>Cover image</span><input type="file" name="cover" accept="image/*" /></label>
+          <label class="field"><span>Cover image <small data-cover-help></small></span><input type="file" name="cover" accept="image/*" /></label>
           <label class="field"><span>Cover alt text</span><input name="coverAlt" placeholder="Describe the cover image" /></label>
-          <label class="field field--wide"><span>Gallery images</span><input type="file" name="gallery" accept="image/*" multiple /></label>
+          <label class="field field--wide"><span>New gallery images <small data-gallery-help></small></span><input type="file" name="gallery" accept="image/*" multiple /></label>
+          <label class="choice field--wide" data-replace-gallery-option hidden><input type="checkbox" name="replaceGallery" /><span>Replace the complete existing gallery with the newly selected images</span></label>
           <label class="field"><span>Video type</span><select name="videoType"><option value="">No video</option><option value="youtube">YouTube</option><option value="vimeo">Vimeo</option><option value="local">Local MP4 / WebM</option></select></label>
           <label class="field"><span>Video title</span><input name="videoTitle" placeholder="Project demonstration" /></label>
           <label class="field field--wide" data-external-video><span>YouTube/Vimeo URL or ID</span><input name="videoUrl" placeholder="https://…" /></label>
@@ -136,6 +144,11 @@ if (!import.meta.env.DEV) {
   const editingTitle = document.querySelector<HTMLElement>('[data-editing-title]');
   const cancelEditButton = document.querySelector<HTMLButtonElement>('[data-cancel-edit]');
   const saveProjectButton = document.querySelector<HTMLButtonElement>('[data-save-project]');
+  const existingMediaPanel = document.querySelector<HTMLElement>('[data-existing-media]');
+  const existingMediaGrid = document.querySelector<HTMLElement>('[data-existing-media-grid]');
+  const replaceGalleryOption = document.querySelector<HTMLElement>('[data-replace-gallery-option]');
+  const coverHelp = document.querySelector<HTMLElement>('[data-cover-help]');
+  const galleryHelp = document.querySelector<HTMLElement>('[data-gallery-help]');
   let managerRoot: any = null;
   type ProjectImage = { src: string; alt: string; caption?: string; position?: string };
   type ProjectVideo = { type: string; title: string; url?: string; poster?: string; mp4?: string; webm?: string; caption?: string };
@@ -312,7 +325,8 @@ if (!import.meta.env.DEV) {
       if (existing.cover.caption) output.push(`  caption: ${quote(existing.cover.caption)}`);
       if (existing.cover.position) output.push(`  position: ${quote(existing.cover.position)}`);
     }
-    if (gallery.length) {
+    const replaceGallery = Boolean(data.get('replaceGallery'));
+    if (gallery.length && (!existing?.gallery.length || replaceGallery)) {
       output.push('gallery:');
       gallery.forEach((file, index) => {
         const name = `image-${String(index + 1).padStart(2, '0')}${extension(file)}`;
@@ -327,6 +341,13 @@ if (!import.meta.env.DEV) {
         output.push(`    alt: ${quote(image.alt)}`);
         if (image.caption) output.push(`    caption: ${quote(image.caption)}`);
         if (image.position) output.push(`    position: ${quote(image.position)}`);
+      });
+      gallery.forEach((file, index) => {
+        const number = existing.gallery.length + index + 1;
+        const name = `image-${String(number).padStart(2, '0')}${extension(file)}`;
+        files.push({ file, name });
+        output.push(`  - src: ${quote(`assets/projects/${slug}/${name}`)}`);
+        output.push(`    alt: ${quote(`${data.get('title')} screenshot ${number}`)}`);
       });
     }
     const type = String(data.get('videoType') || '');
@@ -431,6 +452,28 @@ if (!import.meta.env.DEV) {
     setFormValue('download', data.links.download);
     setFormValue('featured', data.featured);
     setFormValue('draft', data.draft);
+    if (existingMediaPanel) existingMediaPanel.hidden = false;
+    if (replaceGalleryOption) replaceGalleryOption.hidden = !data.gallery.length;
+    if (coverHelp) coverHelp.textContent = data.cover ? '— leave empty to keep the current cover' : '';
+    if (galleryHelp) galleryHelp.textContent = data.gallery.length ? '— existing images are kept and new ones are added' : '';
+    if (existingMediaGrid) {
+      existingMediaGrid.replaceChildren();
+      const media = [
+        ...(data.cover ? [{ ...data.cover, label: 'Current cover' }] : []),
+        ...data.gallery.map((image, index) => ({ ...image, label: `Gallery ${index + 1}` }))
+      ];
+      media.forEach((item) => {
+        const figure = document.createElement('figure');
+        const image = document.createElement('img');
+        const caption = document.createElement('figcaption');
+        image.src = `/${item.src.replace(/^\//, '')}`;
+        image.alt = item.alt || item.label;
+        image.loading = 'lazy';
+        caption.textContent = item.label;
+        figure.append(image, caption);
+        existingMediaGrid.append(figure);
+      });
+    }
     if (slugInput) {
       slugInput.readOnly = true;
       slugInput.dataset.edited = 'true';
@@ -453,6 +496,11 @@ if (!import.meta.env.DEV) {
     if (editingBanner) editingBanner.hidden = true;
     if (editingTitle) editingTitle.textContent = '';
     if (saveProjectButton) saveProjectButton.textContent = 'Choose website folder & save';
+    if (existingMediaPanel) existingMediaPanel.hidden = true;
+    if (existingMediaGrid) existingMediaGrid.replaceChildren();
+    if (replaceGalleryOption) replaceGalleryOption.hidden = true;
+    if (coverHelp) coverHelp.textContent = '';
+    if (galleryHelp) galleryHelp.textContent = '';
     updateVideoFields();
     setStatus('Ready to create a new project.');
   }
