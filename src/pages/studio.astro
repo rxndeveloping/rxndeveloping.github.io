@@ -38,7 +38,7 @@ if (!import.meta.env.DEV) {
       </section>
 
       <section class="studio-section">
-        <div class="studio-section__heading"><span>02</span><div><h2>Technologies and team</h2><p>Select the primary languages and describe who worked on the project.</p></div></div>
+        <div class="studio-section__heading"><span>02</span><div><h2>Technologies and team</h2><p>Select the primary languages and describe who worked on the project. Entering a role automatically includes that member.</p></div></div>
         <fieldset class="choice-fieldset">
           <legend>Technologies</legend>
           <div class="choice-grid">
@@ -149,6 +149,10 @@ if (!import.meta.env.DEV) {
   const replaceGalleryOption = document.querySelector<HTMLElement>('[data-replace-gallery-option]');
   const coverHelp = document.querySelector<HTMLElement>('[data-cover-help]');
   const galleryHelp = document.querySelector<HTMLElement>('[data-gallery-help]');
+  const ryzeRoleInput = form?.elements.namedItem('roleRyze') as HTMLInputElement | null;
+  const ninjaRoleInput = form?.elements.namedItem('roleNinja') as HTMLInputElement | null;
+  const ryzeMemberInput = form?.elements.namedItem('memberRyze') as HTMLInputElement | null;
+  const ninjaMemberInput = form?.elements.namedItem('memberNinja') as HTMLInputElement | null;
   let managerRoot: any = null;
   type ProjectImage = { src: string; alt: string; caption?: string; position?: string };
   type ProjectVideo = { type: string; title: string; url?: string; poster?: string; mp4?: string; webm?: string; caption?: string };
@@ -272,6 +276,12 @@ if (!import.meta.env.DEV) {
     slugInput.dataset.edited = slugInput.value ? 'true' : '';
     slugInput.value = slugify(slugInput.value);
   });
+  ryzeRoleInput?.addEventListener('input', () => {
+    if (ryzeMemberInput && ryzeRoleInput.value.trim()) ryzeMemberInput.checked = true;
+  });
+  ninjaRoleInput?.addEventListener('input', () => {
+    if (ninjaMemberInput && ninjaRoleInput.value.trim()) ninjaMemberInput.checked = true;
+  });
 
   function projectData() {
     if (!form) throw new Error('Project form is unavailable.');
@@ -303,8 +313,10 @@ if (!import.meta.env.DEV) {
       systems.forEach((item) => output.push(`  - ${quote(item)}`));
     }
     const contributors: Array<{ member: string; role: string }> = [];
-    if (data.get('memberRyze')) contributors.push({ member: 'ryze', role: String(data.get('roleRyze') || 'Development') });
-    if (data.get('memberNinja')) contributors.push({ member: 'ninja', role: String(data.get('roleNinja') || 'Development') });
+    const roleRyze = String(data.get('roleRyze') || '').trim();
+    const roleNinja = String(data.get('roleNinja') || '').trim();
+    if (data.get('memberRyze') || roleRyze) contributors.push({ member: 'ryze', role: roleRyze || 'Development' });
+    if (data.get('memberNinja') || roleNinja) contributors.push({ member: 'ninja', role: roleNinja || 'Development' });
     if (contributors.length) {
       output.push('contributors:');
       contributors.forEach((item) => { output.push(`  - member: ${quote(item.member)}`); output.push(`    role: ${quote(item.role)}`); });

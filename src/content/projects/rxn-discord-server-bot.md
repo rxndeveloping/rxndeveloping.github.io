@@ -15,6 +15,11 @@ systems:
   - "Server Info Panels"
   - "Role Assignment"
   - "Slash Command Registration"
+contributors:
+  - member: "ryze"
+    role: "Lead Developer (core architecture, discord.js handlers, slash commands), Ticket System (channel creation, permissions, HTML transcripts), Giveaway Engine (timers, winner selection, state management), Event System (/newevent modal, embeds, validation)"
+  - member: "ninja"
+    role: "UI/UX Designer (embed layouts, buttons, branding), Welcome & Onboarding (welcome embed, banner, member flow), Server Panels (rules, support, servers, invite CTAs), Testing & QA (bug testing, permissions, API compliance)"
 cover:
   src: "assets/projects/rxn-discord-server-bot/cover.png"
   alt: "RxN Discord Server Bot project cover"

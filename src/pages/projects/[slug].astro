@@ -50,7 +50,7 @@ const hasBody = Boolean(project.body?.trim().length);
       </div>
       <aside class="project-sidebar">
         {data.technologies.length > 0 && <section><p class="mono-label">Technologies</p><ul class="tag-list tag-list--large">{data.technologies.map((technology) => <li>{technology}</li>)}</ul></section>}
-        {data.contributors.length > 0 && <section><p class="mono-label">Contributions</p>{data.contributors.map((item) => <div class="contribution"><strong>{item.member === 'ryze' ? 'Ryze' : 'Ninja'}</strong><span>{item.role}</span></div>)}</section>}
+        {data.contributors.length > 0 && <section><p class="mono-label">Team roles</p>{data.contributors.map((item) => <div class="contribution"><strong>{item.member === 'ryze' ? 'Ryze' : 'Ninja'}</strong><span>{item.role}</span></div>)}</section>}
         {Object.values(data.links).some(Boolean) && <section><p class="mono-label">Links</p><div class="project-links">{data.links.github && <a href={data.links.github} target="_blank" rel="noreferrer">GitHub <span>↗</span></a>}{data.links.demo && <a href={data.links.demo} target="_blank" rel="noreferrer">Live demo <span>↗</span></a>}{data.links.download && <a href={data.links.download} target="_blank" rel="noreferrer">Download <span>↗</span></a>}</div></section>}
       </aside>
     </div>

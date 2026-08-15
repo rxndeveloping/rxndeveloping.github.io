@@ -34,6 +34,11 @@ systems:
   - "Self-contained portable packaging"
   - "SHA-256 integrity manifests"
   - "Automated unit and integration test suite"
+contributors:
+  - member: "ryze"
+    role: "Project direction, requirements definition, PowerShell scripting, UI/UX design, hardware testing, performance validation and quality assurance."
+  - member: "ninja"
+    role: "Software architecture, C# and WinUI development, Windows and NVML integration, security and rollback systems, automated testing and release packaging."
 cover:
   src: "assets/projects/pc-optimizer-windows-performance-hardware-control-center/cover.png"
   alt: "PC Optimizer — Windows Performance & Hardware Control Center project cover"
