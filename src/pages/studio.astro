@@ -19,6 +19,10 @@ if (!import.meta.env.DEV) {
     </div>
 
     <form class="container studio-form" data-project-form>
+      <div class="studio-editing" data-editing-banner hidden>
+        <div><span class="mono-label">Editing project</span><strong data-editing-title></strong></div>
+        <button class="button button--ghost" type="button" data-cancel-edit>Start a new project</button>
+      </div>
       <section class="studio-section">
         <div class="studio-section__heading"><span>01</span><div><h2>Project basics</h2><p>Only the title and short description are required.</p></div></div>
         <div class="form-grid">
@@ -78,7 +82,7 @@ if (!import.meta.env.DEV) {
       </section>
 
       <div class="studio-actions">
-        <button class="button button--primary" type="submit">Choose website folder & save</button>
+        <button class="button button--primary" type="submit" data-save-project>Choose website folder & save</button>
         <button class="button button--ghost" type="button" data-download-markdown>Download Markdown only</button>
         <a class="text-link" href={sitePath('projects/')}>Back to projects <span aria-hidden="true">→</span></a>
       </div>
@@ -88,12 +92,13 @@ if (!import.meta.env.DEV) {
     <section class="container studio-manager" data-project-manager>
       <div class="studio-manager__intro">
         <p class="eyebrow">Manage projects</p>
-        <h2>Remove an existing project</h2>
-        <p>Select the website folder to read its project files. Deletion happens only after a confirmation and can include the project’s media folder.</p>
+        <h2>Edit or remove an existing project</h2>
+        <p>Select the website folder once, then load a project into the form or remove it. Existing media is preserved unless you select replacement files.</p>
       </div>
       <div class="studio-manager__controls">
         <button class="button button--ghost" type="button" data-load-projects>Choose website folder</button>
-        <label class="field"><span>Project to remove</span><select data-project-select disabled><option value="">Choose the website folder first</option></select></label>
+        <label class="field"><span>Project</span><select data-project-select disabled><option value="">Choose the website folder first</option></select></label>
+        <button class="button button--primary" type="button" data-edit-project disabled>Load selected project for editing</button>
         <label class="choice"><input type="checkbox" data-delete-media checked /><span>Also remove project images and videos</span></label>
         <button class="button studio-delete" type="button" data-delete-project disabled>Delete selected project</button>
         <div class="studio-status" role="status" aria-live="polite" data-manager-status></div>
@@ -123,16 +128,115 @@ if (!import.meta.env.DEV) {
   const localVideo = document.querySelector<HTMLElement>('[data-local-video]');
   const loadProjectsButton = document.querySelector<HTMLButtonElement>('[data-load-projects]');
   const projectSelect = document.querySelector<HTMLSelectElement>('[data-project-select]');
+  const editProjectButton = document.querySelector<HTMLButtonElement>('[data-edit-project]');
   const deleteProjectButton = document.querySelector<HTMLButtonElement>('[data-delete-project]');
   const deleteMediaInput = document.querySelector<HTMLInputElement>('[data-delete-media]');
   const managerStatus = document.querySelector<HTMLElement>('[data-manager-status]');
+  const editingBanner = document.querySelector<HTMLElement>('[data-editing-banner]');
+  const editingTitle = document.querySelector<HTMLElement>('[data-editing-title]');
+  const cancelEditButton = document.querySelector<HTMLButtonElement>('[data-cancel-edit]');
+  const saveProjectButton = document.querySelector<HTMLButtonElement>('[data-save-project]');
   let managerRoot: any = null;
-  let managedProjects: Array<{ file: string; slug: string; title: string }> = [];
+  type ProjectImage = { src: string; alt: string; caption?: string; position?: string };
+  type ProjectVideo = { type: string; title: string; url?: string; poster?: string; mp4?: string; webm?: string; caption?: string };
+  type ParsedProject = {
+    title: string; slug: string; shortDescription: string; description: string;
+    category?: string; status?: string; developmentPeriod?: string;
+    technologies: string[]; systems: string[];
+    contributors: Array<{ member: string; role: string }>;
+    cover?: ProjectImage; gallery: ProjectImage[]; videos: ProjectVideo[];
+    links: Record<string, string>; featured: boolean; draft: boolean;
+  };
+  type ManagedProject = { file: string; slug: string; title: string; text: string; data: ParsedProject };
+  let managedProjects: ManagedProject[] = [];
+  let editingProject: ManagedProject | null = null;
 
   const slugify = (value: string) => value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const quote = (value: string) => JSON.stringify(value);
   const extension = (file: File) => file.name.toLowerCase().match(/\.[a-z0-9]+$/)?.[0] || '';
   const lines = (value: FormDataEntryValue | null) => String(value || '').split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
+
+  const parseValue = (value = '') => {
+    const trimmed = value.trim();
+    if (!trimmed) return '';
+    if (trimmed === 'true') return true;
+    if (trimmed === 'false') return false;
+    if (trimmed.startsWith('"')) {
+      try { return JSON.parse(trimmed); } catch { return trimmed.slice(1, -1); }
+    }
+    return trimmed.replace(/^['"]|['"]$/g, '');
+  };
+
+  function parseProjectFile(text: string, file: string): ManagedProject {
+    const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+    if (!match) throw new Error(`${file} does not contain valid project frontmatter.`);
+    const header = match[1].split(/\r?\n/);
+    const scalar = (key: string) => {
+      const line = header.find((item) => item.startsWith(`${key}:`));
+      return line ? parseValue(line.slice(key.length + 1)) : '';
+    };
+    const simpleList = (key: string) => {
+      const start = header.findIndex((item) => item === `${key}:`);
+      const values: string[] = [];
+      if (start < 0) return values;
+      for (let index = start + 1; index < header.length; index += 1) {
+        const line = header[index];
+        if (!line.startsWith('  ')) break;
+        const item = line.match(/^  -\s+(.+)$/);
+        if (item) values.push(String(parseValue(item[1])));
+      }
+      return values;
+    };
+    const objectSection = (key: string) => {
+      const start = header.findIndex((item) => item === `${key}:`);
+      const value: Record<string, string> = {};
+      if (start < 0) return value;
+      for (let index = start + 1; index < header.length; index += 1) {
+        const line = header[index];
+        if (!line.startsWith('  ') || line.startsWith('  -')) break;
+        const entry = line.match(/^  ([A-Za-z][A-Za-z0-9]*):\s*(.*)$/);
+        if (entry) value[entry[1]] = String(parseValue(entry[2]));
+      }
+      return value;
+    };
+    const objectList = (key: string) => {
+      const start = header.findIndex((item) => item === `${key}:`);
+      const values: Array<Record<string, string>> = [];
+      let current: Record<string, string> | null = null;
+      if (start < 0) return values;
+      for (let index = start + 1; index < header.length; index += 1) {
+        const line = header[index];
+        if (!line.startsWith('  ')) break;
+        const first = line.match(/^  -\s+([A-Za-z][A-Za-z0-9]*):\s*(.*)$/);
+        const next = line.match(/^    ([A-Za-z][A-Za-z0-9]*):\s*(.*)$/);
+        if (first) {
+          current = { [first[1]]: String(parseValue(first[2])) };
+          values.push(current);
+        } else if (next && current) current[next[1]] = String(parseValue(next[2]));
+      }
+      return values;
+    };
+    const cover = objectSection('cover');
+    const data: ParsedProject = {
+      title: String(scalar('title') || file.replace(/\.md$/, '')),
+      slug: String(scalar('slug') || file.replace(/\.md$/, '')),
+      shortDescription: String(scalar('shortDescription')),
+      description: match[2].trim(),
+      category: String(scalar('category') || ''),
+      status: String(scalar('status') || ''),
+      developmentPeriod: String(scalar('developmentPeriod') || ''),
+      technologies: simpleList('technologies'),
+      systems: simpleList('systems'),
+      contributors: objectList('contributors') as Array<{ member: string; role: string }>,
+      cover: cover.src ? cover as ProjectImage : undefined,
+      gallery: objectList('gallery') as ProjectImage[],
+      videos: objectList('videos') as ProjectVideo[],
+      links: objectSection('links'),
+      featured: scalar('featured') === true,
+      draft: scalar('draft') === true
+    };
+    return { file, slug: data.slug, title: data.title, text, data };
+  }
 
   function setStatus(message: string, type: 'success' | 'error' | 'info' = 'info') {
     if (!status) return;
@@ -193,12 +297,20 @@ if (!import.meta.env.DEV) {
       contributors.forEach((item) => { output.push(`  - member: ${quote(item.member)}`); output.push(`    role: ${quote(item.role)}`); });
     }
     const files: Array<{ file: File; name: string }> = [];
+    const existing = editingProject?.data;
+    const coverAlt = String(data.get('coverAlt') || existing?.cover?.alt || `${data.get('title')} project cover`);
     if (cover?.size) {
       const name = `cover${extension(cover)}`;
       files.push({ file: cover, name });
       output.push('cover:');
       output.push(`  src: ${quote(`assets/projects/${slug}/${name}`)}`);
-      output.push(`  alt: ${quote(String(data.get('coverAlt') || `${data.get('title')} project cover`))}`);
+      output.push(`  alt: ${quote(coverAlt)}`);
+    } else if (existing?.cover) {
+      output.push('cover:');
+      output.push(`  src: ${quote(existing.cover.src)}`);
+      output.push(`  alt: ${quote(coverAlt)}`);
+      if (existing.cover.caption) output.push(`  caption: ${quote(existing.cover.caption)}`);
+      if (existing.cover.position) output.push(`  position: ${quote(existing.cover.position)}`);
     }
     if (gallery.length) {
       output.push('gallery:');
@@ -208,10 +320,19 @@ if (!import.meta.env.DEV) {
         output.push(`  - src: ${quote(`assets/projects/${slug}/${name}`)}`);
         output.push(`    alt: ${quote(`${data.get('title')} screenshot ${index + 1}`)}`);
       });
+    } else if (existing?.gallery.length) {
+      output.push('gallery:');
+      existing.gallery.forEach((image) => {
+        output.push(`  - src: ${quote(image.src)}`);
+        output.push(`    alt: ${quote(image.alt)}`);
+        if (image.caption) output.push(`    caption: ${quote(image.caption)}`);
+        if (image.position) output.push(`    position: ${quote(image.position)}`);
+      });
     }
     const type = String(data.get('videoType') || '');
     const videoTitle = String(data.get('videoTitle') || 'Project demonstration');
     const videoUrl = String(data.get('videoUrl') || '').trim();
+    const existingVideo = existing?.videos[0];
     if ((type === 'youtube' || type === 'vimeo') && videoUrl) {
       output.push('videos:');
       output.push(`  - type: ${quote(type)}`);
@@ -221,23 +342,30 @@ if (!import.meta.env.DEV) {
         const name = `video-poster${extension(poster)}`;
         files.push({ file: poster, name });
         output.push(`    poster: ${quote(`assets/projects/${slug}/${name}`)}`);
-      }
-    } else if (type === 'local' && localVideos.length) {
+      } else if (existingVideo?.poster) output.push(`    poster: ${quote(existingVideo.poster)}`);
+      if (existingVideo?.caption) output.push(`    caption: ${quote(existingVideo.caption)}`);
+    } else if (type === 'local' && (localVideos.length || existingVideo?.type === 'local')) {
       output.push('videos:');
       output.push('  - type: "local"');
       output.push(`    title: ${quote(videoTitle)}`);
-      localVideos.forEach((file) => {
-        const ext = extension(file);
-        const format = ext === '.webm' ? 'webm' : 'mp4';
-        const name = `video${ext}`;
-        files.push({ file, name });
-        output.push(`    ${format}: ${quote(`assets/projects/${slug}/${name}`)}`);
-      });
+      if (localVideos.length) {
+        localVideos.forEach((file) => {
+          const ext = extension(file);
+          const format = ext === '.webm' ? 'webm' : 'mp4';
+          const name = `video${ext}`;
+          files.push({ file, name });
+          output.push(`    ${format}: ${quote(`assets/projects/${slug}/${name}`)}`);
+        });
+      } else {
+        if (existingVideo?.mp4) output.push(`    mp4: ${quote(existingVideo.mp4)}`);
+        if (existingVideo?.webm) output.push(`    webm: ${quote(existingVideo.webm)}`);
+      }
       if (poster?.size) {
         const name = `video-poster${extension(poster)}`;
         files.push({ file: poster, name });
         output.push(`    poster: ${quote(`assets/projects/${slug}/${name}`)}`);
-      }
+      } else if (existingVideo?.poster) output.push(`    poster: ${quote(existingVideo.poster)}`);
+      if (existingVideo?.caption) output.push(`    caption: ${quote(existingVideo.caption)}`);
     }
     const links = ['github', 'demo', 'download'].map((key) => [key, String(data.get(key) || '').trim()] as const).filter(([, value]) => value);
     if (links.length) {
@@ -268,6 +396,67 @@ if (!import.meta.env.DEV) {
     if (!packageText.includes('rxn-developing-website')) throw new Error('That is not the rxn-developing-website root folder.');
   }
 
+  function setFormValue(name: string, value: string | boolean | undefined) {
+    if (!form) return;
+    const control = form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+    if (!control) return;
+    if (control instanceof HTMLInputElement && control.type === 'checkbox') control.checked = Boolean(value);
+    else control.value = String(value ?? '');
+  }
+
+  function loadProjectIntoForm(project: ManagedProject) {
+    if (!form) return;
+    editingProject = project;
+    form.reset();
+    const data = project.data;
+    for (const key of ['title', 'slug', 'shortDescription', 'description', 'category', 'status', 'developmentPeriod'] as const) setFormValue(key, data[key]);
+    setFormValue('systems', data.systems.join('\n'));
+    const technologyInputs = [...form.querySelectorAll<HTMLInputElement>('input[name="technologies"]')];
+    const knownTechnologies = new Set(technologyInputs.map((input) => input.value));
+    technologyInputs.forEach((input) => { input.checked = data.technologies.includes(input.value); });
+    setFormValue('otherTechnologies', data.technologies.filter((item) => !knownTechnologies.has(item)).join(', '));
+    const ryze = data.contributors.find((item) => item.member === 'ryze');
+    const ninja = data.contributors.find((item) => item.member === 'ninja');
+    setFormValue('memberRyze', Boolean(ryze));
+    setFormValue('roleRyze', ryze?.role);
+    setFormValue('memberNinja', Boolean(ninja));
+    setFormValue('roleNinja', ninja?.role);
+    setFormValue('coverAlt', data.cover?.alt);
+    const video = data.videos[0];
+    setFormValue('videoType', video?.type);
+    setFormValue('videoTitle', video?.title);
+    setFormValue('videoUrl', video?.url);
+    setFormValue('github', data.links.github);
+    setFormValue('demo', data.links.demo);
+    setFormValue('download', data.links.download);
+    setFormValue('featured', data.featured);
+    setFormValue('draft', data.draft);
+    if (slugInput) {
+      slugInput.readOnly = true;
+      slugInput.dataset.edited = 'true';
+    }
+    if (editingBanner) editingBanner.hidden = false;
+    if (editingTitle) editingTitle.textContent = data.title;
+    if (saveProjectButton) saveProjectButton.textContent = 'Save project changes';
+    updateVideoFields();
+    setStatus(`Editing ${data.title}. Existing media will stay in place unless replacement files are selected.`);
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function stopEditing() {
+    editingProject = null;
+    form?.reset();
+    if (slugInput) {
+      slugInput.readOnly = false;
+      delete slugInput.dataset.edited;
+    }
+    if (editingBanner) editingBanner.hidden = true;
+    if (editingTitle) editingTitle.textContent = '';
+    if (saveProjectButton) saveProjectButton.textContent = 'Choose website folder & save';
+    updateVideoFields();
+    setStatus('Ready to create a new project.');
+  }
+
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
@@ -275,14 +464,21 @@ if (!import.meta.env.DEV) {
       const picker = (window as any).showDirectoryPicker;
       if (!picker) throw new Error('Direct saving is not supported here. Open Project Studio in current Chrome or Edge, or use “Download Markdown only”.');
       const project = projectData();
-      setStatus('Choose the rxn-developing-website folder in the browser window…');
-      const root = await picker({ mode: 'readwrite' });
+      if (!editingProject) setStatus('Choose the rxn-developing-website folder in the browser window…');
+      const root = editingProject && managerRoot ? managerRoot : await picker({ mode: 'readwrite' });
       await verifyWebsiteRoot(root);
       const contentDir = await nestedDirectory(root, ['src', 'content', 'projects']);
       const mediaDir = await nestedDirectory(root, ['public', 'assets', 'projects', project.slug]);
-      await writeFile(contentDir, `${project.slug}.md`, project.markdown);
+      const projectFile = editingProject?.file || `${project.slug}.md`;
+      await writeFile(contentDir, projectFile, project.markdown);
       for (const item of project.files) await writeFile(mediaDir, item.name, item.file);
-      setStatus(`Saved ${project.slug}.md and ${project.files.length} media file(s). Astro will update the local preview automatically.`, 'success');
+      managerRoot = root;
+      if (editingProject) {
+        editingProject = parseProjectFile(project.markdown, projectFile);
+        if (editingTitle) editingTitle.textContent = editingProject.title;
+        setStatus(`Updated ${projectFile}. ${project.files.length ? `${project.files.length} replacement media file(s) saved.` : 'Existing media preserved.'}`, 'success');
+      } else setStatus(`Saved ${project.slug}.md and ${project.files.length} media file(s). Astro will update the local preview automatically.`, 'success');
+      await refreshManagedProjects();
     } catch (error) {
       if ((error as Error).name === 'AbortError') setStatus('Folder selection cancelled.');
       else setStatus((error as Error).message, 'error');
@@ -302,21 +498,20 @@ if (!import.meta.env.DEV) {
   });
 
   async function refreshManagedProjects() {
-    if (!managerRoot || !projectSelect || !deleteProjectButton) return;
+    if (!managerRoot || !projectSelect || !deleteProjectButton || !editProjectButton) return;
     const contentDir = await nestedDirectory(managerRoot, ['src', 'content', 'projects']);
     managedProjects = [];
     for await (const [name, handle] of contentDir.entries()) {
       if (handle.kind !== 'file' || !name.endsWith('.md')) continue;
       const text = await (await handle.getFile()).text();
-      const title = (text.match(/^title:\s*(.+?)\s*$/m)?.[1] || name.replace(/\.md$/, '')).replace(/^["']|["']$/g, '');
-      const slug = (text.match(/^slug:\s*(.+?)\s*$/m)?.[1] || name.replace(/\.md$/, '')).replace(/^["']|["']$/g, '');
-      managedProjects.push({ file: name, title, slug });
+      managedProjects.push(parseProjectFile(text, name));
     }
     managedProjects.sort((a, b) => a.title.localeCompare(b.title));
     projectSelect.innerHTML = managedProjects.length
       ? `<option value="">Select a project</option>${managedProjects.map((project, index) => `<option value="${index}">${project.title}</option>`).join('')}`
       : '<option value="">No projects found</option>';
     projectSelect.disabled = !managedProjects.length;
+    editProjectButton.disabled = true;
     deleteProjectButton.disabled = true;
     if (managerStatus) managerStatus.textContent = managedProjects.length ? `${managedProjects.length} project(s) found.` : 'No project files were found.';
   }
@@ -334,8 +529,16 @@ if (!import.meta.env.DEV) {
   });
 
   projectSelect?.addEventListener('change', () => {
+    if (editProjectButton) editProjectButton.disabled = !projectSelect.value;
     if (deleteProjectButton) deleteProjectButton.disabled = !projectSelect.value;
   });
+
+  editProjectButton?.addEventListener('click', () => {
+    if (!projectSelect?.value) return;
+    loadProjectIntoForm(managedProjects[Number(projectSelect.value)]);
+  });
+
+  cancelEditButton?.addEventListener('click', stopEditing);
 
   deleteProjectButton?.addEventListener('click', async () => {
     if (!managerRoot || !projectSelect?.value) return;
@@ -351,6 +554,7 @@ if (!import.meta.env.DEV) {
         try { await projectsMediaDir.removeEntry(project.slug, { recursive: true }); } catch (error) { if ((error as Error).name !== 'NotFoundError') throw error; }
       }
       await refreshManagedProjects();
+      if (editingProject?.file === project.file) stopEditing();
       if (managerStatus) managerStatus.textContent = `Deleted ${project.title}${removeMedia ? ' and its media' : ''}.`;
     } catch (error) {
       if (managerStatus) managerStatus.textContent = `Could not delete the project: ${(error as Error).message}`;

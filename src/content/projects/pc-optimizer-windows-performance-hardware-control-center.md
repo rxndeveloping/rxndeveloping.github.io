@@ -51,8 +51,9 @@ gallery:
 videos:
   - type: "youtube"
     url: "https://youtu.be/lgBWkEwntYA"
-    title: "PC Optimizer Showcase"
-featured: false
+    title: "Project demonstration"
+    poster: "assets/projects/pc-optimizer-windows-performance-hardware-control-center/video-poster.png"
+featured: true
 draft: false
 ---
 
