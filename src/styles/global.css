@@ -170,9 +170,6 @@ em { color: var(--red-soft); font-style: normal; }
 .tag-list li { padding: 5px 9px; border: 1px solid var(--border); border-radius: 99px; color: var(--text-soft); font-family: 'IBM Plex Mono'; font-size: .64rem; }
 .project-card__cta { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 25px; font-weight: 650; font-size: .87rem; }
 .project-card__cta span { color: var(--red-soft); }
-.project-card__contributors { display: grid; gap: 7px; margin-top: 18px; padding-top: 15px; border-top: 1px solid var(--border); }
-.project-card__contributors > span { display: grid; grid-template-columns: minmax(52px, auto) 1fr; gap: 10px; color: var(--text-soft); font-size: .78rem; }
-.project-card__contributors strong { color: var(--text); font-weight: 650; }
 
 .empty-projects { position: relative; min-height: 360px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: clamp(2rem, 6vw, 5rem); border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(130deg, var(--surface), transparent), repeating-linear-gradient(90deg, transparent 0 69px, var(--border) 70px); overflow: hidden; }
 .empty-projects::after { content: ''; position: absolute; right: 7%; width: 200px; height: 200px; border: 1px solid var(--border-strong); border-radius: 50%; box-shadow: 0 0 0 34px var(--border), 0 0 0 68px var(--border); }

@@ -26,13 +26,6 @@ const data = project.data;
           {data.technologies.length > 4 && <li>+{data.technologies.length - 4}</li>}
         </ul>
       )}
-      {data.contributors.length > 0 && (
-        <div class="project-card__contributors" aria-label="Team roles">
-          {data.contributors.map((item) => (
-            <span><strong>{item.member === 'ryze' ? 'Ryze' : 'Ninja'}</strong>{item.role}</span>
-          ))}
-        </div>
-      )}
       <span class="project-card__cta">View project <span aria-hidden="true">↗</span></span>
     </div>
   </a>
