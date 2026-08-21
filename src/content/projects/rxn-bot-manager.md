@@ -2,7 +2,7 @@
 title: "RxN Bot Manager"
 slug: "rxn-bot-manager"
 portfolioType: "software"
-portfolioOrder: 2
+portfolioOrder: 4
 shortDescription: "RxN Bot Manager is a Windows desktop application designed to centrally manage multiple Discord and Telegram bots from a single interface. It provides real-time process monitoring, individual and global bot controls, integrated logs, background execution and automatic Windows startup."
 category: "Software/Automation/Dekstop Application"
 status: "Completed"
@@ -48,6 +48,28 @@ contributors:
     role: "Developed the process-management architecture, runtime validation, real-time logging, bot status monitoring, Windows startup integration and background system-tray functionality."
   - member: "ninja"
     role: "Designed the application interface and user experience, structured the Discord/Telegram management workflow, integrated bot configurations and assets, and handled application testing and release integration."
+translations:
+  - language: "it"
+    category: "Applicazione desktop Windows"
+    status: "Completato"
+    shortDescription: "Un'applicazione desktop Windows per gestire centralmente più bot Discord e Telegram da un'unica interfaccia, con monitoraggio in tempo reale, controlli individuali e globali, log integrati, esecuzione in background e avvio automatico."
+    description: "RxN Bot Manager centralizza l'esecuzione e il controllo di più bot Discord e Telegram in un'applicazione Windows moderna. Permette di avviare, arrestare e riavviare singoli processi o l'intero gruppo, controllare stato e log in tempo reale e configurare l'esecuzione in background e l'avvio con Windows. La configurazione viene salvata localmente e i dati sensibili restano protetti sul dispositivo."
+    roleRyze: "Ideazione, requisiti, flussi operativi, test dei bot, revisione UI/UX e controllo qualità."
+    roleNinja: "Architettura, sviluppo dell'applicazione Windows, gestione dei processi, log, persistenza, sicurezza e packaging."
+  - language: "fr"
+    category: "Application Windows"
+    status: "Terminé"
+    shortDescription: "Une application Windows permettant de gérer plusieurs bots Discord et Telegram depuis une interface unique, avec suivi en temps réel, commandes individuelles et globales, journaux intégrés, exécution en arrière-plan et démarrage automatique."
+    description: "RxN Bot Manager centralise l'exécution et le contrôle de plusieurs bots Discord et Telegram dans une application Windows moderne. Il permet de démarrer, arrêter et redémarrer chaque processus ou tout le groupe, de consulter l'état et les journaux en temps réel, puis de configurer l'arrière-plan et le lancement avec Windows. La configuration est enregistrée localement et les données sensibles restent protégées sur l'appareil."
+    roleRyze: "Concept, besoins, flux opérationnels, tests des bots, revue UI/UX et assurance qualité."
+    roleNinja: "Architecture, développement Windows, gestion des processus, journaux, persistance, sécurité et packaging."
+  - language: "es"
+    category: "Aplicación de escritorio Windows"
+    status: "Completado"
+    shortDescription: "Una aplicación Windows para gestionar varios bots de Discord y Telegram desde una sola interfaz, con monitorización en tiempo real, controles individuales y globales, registros integrados, ejecución en segundo plano e inicio automático."
+    description: "RxN Bot Manager centraliza la ejecución y el control de múltiples bots de Discord y Telegram en una aplicación moderna para Windows. Permite iniciar, detener y reiniciar procesos individuales o todo el grupo, consultar estado y registros en tiempo real y configurar la ejecución en segundo plano y el inicio con Windows. La configuración se guarda localmente y los datos sensibles permanecen protegidos en el dispositivo."
+    roleRyze: "Concepto, requisitos, flujos operativos, pruebas de bots, revisión UI/UX y control de calidad."
+    roleNinja: "Arquitectura, desarrollo Windows, gestión de procesos, registros, persistencia, seguridad y empaquetado."
 cover:
   src: "assets/projects/rxn-bot-manager/cover.png"
   alt: "RxN Bot Manager project cover"
@@ -70,29 +92,7 @@ videos:
     title: "Project demonstration"
     poster: "assets/projects/rxn-bot-manager/video-poster.png"
 featured: true
-featuredOrder: 2
-translations:
-  - language: "it"
-    shortDescription: "Un'applicazione desktop Windows per gestire centralmente più bot Discord e Telegram da un'unica interfaccia, con monitoraggio in tempo reale, controlli individuali e globali, log integrati, esecuzione in background e avvio automatico."
-    description: "RxN Bot Manager centralizza l'esecuzione e il controllo di più bot Discord e Telegram in un'applicazione Windows moderna. Permette di avviare, arrestare e riavviare singoli processi o l'intero gruppo, controllare stato e log in tempo reale e configurare l'esecuzione in background e l'avvio con Windows. La configurazione viene salvata localmente e i dati sensibili restano protetti sul dispositivo."
-    category: "Applicazione desktop Windows"
-    status: "Completato"
-    roleRyze: "Ideazione, requisiti, flussi operativi, test dei bot, revisione UI/UX e controllo qualità."
-    roleNinja: "Architettura, sviluppo dell'applicazione Windows, gestione dei processi, log, persistenza, sicurezza e packaging."
-  - language: "fr"
-    shortDescription: "Une application Windows permettant de gérer plusieurs bots Discord et Telegram depuis une interface unique, avec suivi en temps réel, commandes individuelles et globales, journaux intégrés, exécution en arrière-plan et démarrage automatique."
-    description: "RxN Bot Manager centralise l'exécution et le contrôle de plusieurs bots Discord et Telegram dans une application Windows moderne. Il permet de démarrer, arrêter et redémarrer chaque processus ou tout le groupe, de consulter l'état et les journaux en temps réel, puis de configurer l'arrière-plan et le lancement avec Windows. La configuration est enregistrée localement et les données sensibles restent protégées sur l'appareil."
-    category: "Application Windows"
-    status: "Terminé"
-    roleRyze: "Concept, besoins, flux opérationnels, tests des bots, revue UI/UX et assurance qualité."
-    roleNinja: "Architecture, développement Windows, gestion des processus, journaux, persistance, sécurité et packaging."
-  - language: "es"
-    shortDescription: "Una aplicación Windows para gestionar varios bots de Discord y Telegram desde una sola interfaz, con monitorización en tiempo real, controles individuales y globales, registros integrados, ejecución en segundo plano e inicio automático."
-    description: "RxN Bot Manager centraliza la ejecución y el control de múltiples bots de Discord y Telegram en una aplicación moderna para Windows. Permite iniciar, detener y reiniciar procesos individuales o todo el grupo, consultar estado y registros en tiempo real y configurar la ejecución en segundo plano y el inicio con Windows. La configuración se guarda localmente y los datos sensibles permanecen protegidos en el dispositivo."
-    category: "Aplicación de escritorio Windows"
-    status: "Completado"
-    roleRyze: "Concepto, requisitos, flujos operativos, pruebas de bots, revisión UI/UX y control de calidad."
-    roleNinja: "Arquitectura, desarrollo Windows, gestión de procesos, registros, persistencia, seguridad y empaquetado."
+featuredOrder: 4
 draft: false
 ---
 

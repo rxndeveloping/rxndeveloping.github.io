@@ -1,0 +1,55 @@
+---
+import ShowcaseLanguage from '../components/showcase/ShowcaseLanguage.astro';
+import ShowcaseText from '../components/showcase/ShowcaseText.astro';
+import '../styles/showcase-lume.css';
+import '../styles/showcase-braci.css';
+import '../styles/showcase-aureon.css';
+
+type Copy = { en: string; it: string; fr: string; es: string };
+interface Props {
+  title: string;
+  description: string;
+  brand: string;
+  variant: 'lume' | 'braci' | 'aureon';
+  home: string;
+  nav: Array<{ href: string; label: Copy }>;
+  cta?: { href: string; label: Copy };
+}
+const { title, description, brand, variant, home, nav, cta } = Astro.props;
+---
+<!doctype html>
+<html lang="en" data-showcase={variant}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index,follow" />
+    <title>{title}</title>
+  </head>
+  <body class={`showcase showcase--${variant}`}>
+    <div class="concept-bar">
+      <ShowcaseText en="Fictional concept by RxN Developing" it="Concept immaginario di RxN Developing" fr="Concept fictif par RxN Developing" es="Concepto ficticio de RxN Developing" />
+      <a href="/projects/#websites"><ShowcaseText en="Back to portfolio ↗" it="Torna al portfolio ↗" fr="Retour au portfolio ↗" es="Volver al portfolio ↗" /></a>
+    </div>
+    <header class="showcase-header">
+      <a class="showcase-brand" href={home}>{brand}</a>
+      <nav aria-label="Main navigation">
+        {nav.map((item) => <a href={item.href}><ShowcaseText {...item.label} /></a>)}
+      </nav>
+      <div class="showcase-actions">
+        <ShowcaseLanguage />
+        {cta && <a class="showcase-cta" href={cta.href}><ShowcaseText {...cta.label} /></a>}
+      </div>
+    </header>
+    <main><slot /></main>
+    <footer class="showcase-footer">
+      <a class="showcase-brand" href={home}>{brand}</a>
+      <p><ShowcaseText en="Demonstration website: brand, company, contacts, and availability are fictional." it="Sito dimostrativo: brand, attività, contatti e disponibilità sono immaginari." fr="Site de démonstration : marque, entreprise, contacts et disponibilités sont fictifs." es="Sitio de demostración: marca, empresa, contactos y disponibilidad son ficticios." /></p>
+      <p><ShowcaseText en="Design and development by" it="Design e sviluppo di" fr="Design et développement par" es="Diseño y desarrollo por" /> <a href="/">RxN Developing</a></p>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0}a{color:inherit;text-decoration:none}.concept-bar{height:32px;padding:0 clamp(18px,3vw,52px);display:flex;align-items:center;justify-content:space-between;font:700 9px/1 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase}.concept-bar a{text-decoration:underline;text-underline-offset:4px}.showcase-header{height:88px;padding:0 clamp(18px,3vw,52px);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;position:relative;z-index:20}.showcase-header nav{display:flex;gap:clamp(18px,2.4vw,38px);font:700 10px/1 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase}.showcase-header nav a{padding:12px 0;position:relative}.showcase-header nav a:after{content:'';position:absolute;left:0;bottom:5px;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .25s}.showcase-header nav a:hover:after{transform:scaleX(1);transform-origin:left}.showcase-brand{font-weight:900;letter-spacing:-.06em}.showcase-actions{display:flex;align-items:center;gap:12px;justify-self:end}.showcase-cta{padding:13px 17px;font:800 9px/1 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase}.showcase-footer{padding:70px clamp(20px,5vw,80px);display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:40px;align-items:end}.showcase-footer p{margin:0;font:11px/1.7 Arial,sans-serif}.showcase-footer p:last-child{text-align:right}.showcase-footer p a{text-decoration:underline}@media(max-width:840px){.showcase-header{grid-template-columns:1fr auto;height:auto;min-height:78px;padding-top:12px;padding-bottom:12px}.showcase-header nav{grid-column:1/-1;grid-row:2;justify-content:space-between;gap:10px;overflow:auto;padding-top:14px}.showcase-actions{gap:8px}.showcase-cta{display:none}.showcase-footer{grid-template-columns:1fr}.showcase-footer p:last-child{text-align:left}}
+</style>

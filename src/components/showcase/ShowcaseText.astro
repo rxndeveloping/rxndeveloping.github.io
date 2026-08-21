@@ -1,0 +1,15 @@
+---
+interface Props {
+  as?: keyof HTMLElementTagNameMap;
+  en: string;
+  it: string;
+  fr: string;
+  es: string;
+  class?: string;
+}
+
+const { as = 'span', en, it, fr, es, class: className } = Astro.props as Props;
+const Tag = as;
+---
+
+<Tag class={className} data-showcase-copy data-copy-en={en} data-copy-it={it} data-copy-fr={fr} data-copy-es={es}>{en}</Tag>

@@ -1,0 +1,79 @@
+---
+import ShowcaseText from './ShowcaseText.astro';
+type Copy = { en: string; it: string; fr: string; es: string };
+interface Props { brand: string; experiences: Array<{ id: string; title: Copy; detail: Copy }> }
+const { brand, experiences } = Astro.props;
+const times = ['19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+---
+
+<section class="booking-engine" data-booking-engine data-brand={brand}>
+  <div class="booking-progress" aria-label="Booking progress">
+    {[1,2,3,4].map((step) => <span data-progress={step} class={step === 1 ? 'active' : ''}>{String(step).padStart(2,'0')}</span>)}
+  </div>
+
+  <form>
+    <fieldset data-booking-step="1">
+      <legend><ShowcaseText en="Choose your experience" it="Scegli la tua esperienza" fr="Choisissez votre expérience" es="Elige tu experiencia" /></legend>
+      <p class="step-intro"><ShowcaseText en="Start by selecting the kind of evening you have in mind." it="Inizia scegliendo il tipo di serata che hai in mente." fr="Commencez par choisir le type de soirée souhaité." es="Empieza eligiendo el tipo de velada que deseas." /></p>
+      <div class="experience-options">
+        {experiences.map((experience, index) => <button type="button" class={index === 0 ? 'selected' : ''} data-experience={experience.id} data-title-en={experience.title.en} data-title-it={experience.title.it} data-title-fr={experience.title.fr} data-title-es={experience.title.es}><span>{String(index + 1).padStart(2,'0')}</span><strong><ShowcaseText {...experience.title} /></strong><small><ShowcaseText {...experience.detail} /></small></button>)}
+      </div>
+      <div class="booking-controls"><span></span><button type="button" data-next><ShowcaseText en="Continue" it="Continua" fr="Continuer" es="Continuar" /> →</button></div>
+    </fieldset>
+
+    <fieldset data-booking-step="2" hidden>
+      <legend><ShowcaseText en="Date and party" it="Data e numero di ospiti" fr="Date et nombre de convives" es="Fecha y número de personas" /></legend>
+      <p class="step-intro"><ShowcaseText en="Select a future date and tell us how many guests will join you." it="Seleziona una data futura e indica quante persone parteciperanno." fr="Sélectionnez une date et indiquez le nombre de convives." es="Selecciona una fecha e indica cuántas personas asistirán." /></p>
+      <div class="date-party"><label><ShowcaseText en="Date" it="Data" fr="Date" es="Fecha" /><input required type="date" data-booking-date /></label><div><span class="field-label"><ShowcaseText en="Guests" it="Ospiti" fr="Convives" es="Personas" /></span><div class="party-picker">{[1,2,3,4,5,6,7,8].map((count)=><button type="button" data-party={count} class={count === 2 ? 'selected' : ''}>{count}{count === 8 ? '+' : ''}</button>)}</div></div></div>
+      <div class="booking-controls"><button type="button" data-back>← <ShowcaseText en="Back" it="Indietro" fr="Retour" es="Atrás" /></button><button type="button" data-next><ShowcaseText en="Find a time" it="Trova un orario" fr="Trouver un horaire" es="Buscar horario" /> →</button></div>
+    </fieldset>
+
+    <fieldset data-booking-step="3" hidden>
+      <legend><ShowcaseText en="Available times" it="Orari disponibili" fr="Horaires disponibles" es="Horarios disponibles" /></legend>
+      <p class="step-intro"><ShowcaseText en="Availability is simulated for this portfolio demonstration." it="La disponibilità è simulata per questa dimostrazione portfolio." fr="Les disponibilités sont simulées pour cette démonstration." es="La disponibilidad está simulada para esta demostración." /></p>
+      <div class="time-slots">{times.map((time,index)=><button type="button" class={index === 2 ? 'selected' : ''} data-time={time}>{time}{index % 3 === 0 ? <ShowcaseText as="small" en="2 seats left" it="Ultimi 2 posti" fr="2 places restantes" es="Quedan 2 plazas" /> : <ShowcaseText as="small" en="Available" it="Disponibile" fr="Disponible" es="Disponible" />}</button>)}</div>
+      <label class="booking-notes"><ShowcaseText en="Preferences or dietary needs (optional)" it="Preferenze o esigenze alimentari (facoltativo)" fr="Préférences ou besoins alimentaires (facultatif)" es="Preferencias o necesidades alimentarias (opcional)" /><textarea rows="3" data-booking-notes></textarea></label>
+      <div class="booking-controls"><button type="button" data-back>← <ShowcaseText en="Back" it="Indietro" fr="Retour" es="Atrás" /></button><button type="button" data-next><ShowcaseText en="Guest details" it="Dati dell'ospite" fr="Coordonnées" es="Datos del cliente" /> →</button></div>
+    </fieldset>
+
+    <fieldset data-booking-step="4" hidden>
+      <legend><ShowcaseText en="Complete your request" it="Completa la richiesta" fr="Finalisez votre demande" es="Completa tu solicitud" /></legend>
+      <div class="booking-final-grid"><div class="guest-fields"><label><ShowcaseText en="Full name" it="Nome completo" fr="Nom complet" es="Nombre completo" /><input required name="name" autocomplete="name" /></label><label><ShowcaseText en="Email" it="Email" fr="E-mail" es="Correo electrónico" /><input required name="email" type="email" autocomplete="email" /></label><label><ShowcaseText en="Phone" it="Telefono" fr="Téléphone" es="Teléfono" /><input required name="phone" type="tel" autocomplete="tel" /></label><label class="consent"><input required type="checkbox" /><span><ShowcaseText en="I agree to the simulated booking terms." it="Accetto le condizioni della prenotazione simulata." fr="J'accepte les conditions de réservation simulée." es="Acepto las condiciones de la reserva simulada." /></span></label></div><aside><span><ShowcaseText en="Your request" it="La tua richiesta" fr="Votre demande" es="Tu solicitud" /></span><div data-booking-summary></div><small><ShowcaseText en="No payment or real reservation will be created." it="Non verrà creato alcun pagamento o prenotazione reale." fr="Aucun paiement ni réservation réelle ne sera créé." es="No se creará ningún pago ni reserva real." /></small></aside></div>
+      <div class="booking-controls"><button type="button" data-back>← <ShowcaseText en="Back" it="Indietro" fr="Retour" es="Atrás" /></button><button type="submit"><ShowcaseText en="Confirm request" it="Conferma richiesta" fr="Confirmer la demande" es="Confirmar solicitud" /> ↗</button></div>
+    </fieldset>
+  </form>
+
+  <section class="booking-confirmation" data-booking-confirmation hidden aria-live="polite"><span>✓</span><ShowcaseText as="h2" en="Request received" it="Richiesta ricevuta" fr="Demande reçue" es="Solicitud recibida" /><ShowcaseText as="p" en="This interactive flow is a portfolio demonstration. No real reservation was sent." it="Questo flusso interattivo è una dimostrazione portfolio. Non è stata inviata alcuna prenotazione reale." fr="Ce parcours interactif est une démonstration. Aucune réservation réelle n'a été envoyée." es="Este flujo interactivo es una demostración. No se ha enviado ninguna reserva real." /><strong data-booking-code></strong><button type="button" data-booking-reset><ShowcaseText en="Make another request" it="Crea un'altra richiesta" fr="Créer une autre demande" es="Crear otra solicitud" /></button></section>
+</section>
+
+<script>
+  type Lang = 'en'|'it'|'fr'|'es';
+  const engine = document.querySelector<HTMLElement>('[data-booking-engine]');
+  if (engine) {
+    const bookingEngine = engine;
+    const steps = [...engine.querySelectorAll<HTMLElement>('[data-booking-step]')];
+    const progress = [...engine.querySelectorAll<HTMLElement>('[data-progress]')];
+    const form = engine.querySelector<HTMLFormElement>('form');
+    const date = engine.querySelector<HTMLInputElement>('[data-booking-date]');
+    const summary = engine.querySelector<HTMLElement>('[data-booking-summary]');
+    let step = 1; let party = '2'; let time = '20:00'; let experience = engine.querySelector<HTMLButtonElement>('[data-experience].selected')?.dataset.experience || '';
+    if (date) { const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1); date.min = tomorrow.toISOString().slice(0,10); date.value = tomorrow.toISOString().slice(0,10); }
+    const language = ():Lang => (document.documentElement.dataset.showcaseLanguage as Lang) || 'en';
+    const labels = {en:{guests:'guests',date:'Date',time:'Time'},it:{guests:'ospiti',date:'Data',time:'Orario'},fr:{guests:'convives',date:'Date',time:'Heure'},es:{guests:'personas',date:'Fecha',time:'Hora'}};
+    function selectedExperience(){ const item=bookingEngine.querySelector<HTMLButtonElement>(`[data-experience="${experience}"]`); const lang=language(); const suffix=lang.charAt(0).toUpperCase()+lang.slice(1); return item?.dataset[`title${suffix}`] || item?.dataset.titleEn || experience; }
+    function renderSummary(){ if(!summary)return; const lang=language(); summary.innerHTML=`<strong>${selectedExperience()}</strong><span>${labels[lang].date}: ${date?.value || '—'}</span><span>${party} ${labels[lang].guests}</span><span>${labels[lang].time}: ${time}</span>`; }
+    function show(next:number){ step=Math.max(1,Math.min(4,next)); steps.forEach((item,index)=>item.hidden=index!==step-1); progress.forEach((item,index)=>item.classList.toggle('active',index<step)); if(step===4)renderSummary(); }
+    engine.querySelectorAll('[data-next]').forEach((button)=>button.addEventListener('click',()=>show(step+1)));
+    engine.querySelectorAll('[data-back]').forEach((button)=>button.addEventListener('click',()=>show(step-1)));
+    engine.querySelectorAll<HTMLButtonElement>('[data-experience]').forEach((button)=>button.addEventListener('click',()=>{engine.querySelectorAll('[data-experience]').forEach(i=>i.classList.remove('selected'));button.classList.add('selected');experience=button.dataset.experience||'';}));
+    engine.querySelectorAll<HTMLButtonElement>('[data-party]').forEach((button)=>button.addEventListener('click',()=>{engine.querySelectorAll('[data-party]').forEach(i=>i.classList.remove('selected'));button.classList.add('selected');party=button.dataset.party||'2';}));
+    engine.querySelectorAll<HTMLButtonElement>('[data-time]').forEach((button)=>button.addEventListener('click',()=>{engine.querySelectorAll('[data-time]').forEach(i=>i.classList.remove('selected'));button.classList.add('selected');time=button.dataset.time||'20:00';}));
+    window.addEventListener('showcase-language-change',renderSummary);
+    form?.addEventListener('submit',(event)=>{event.preventDefault();if(!form.reportValidity())return;form.hidden=true;progress.forEach(i=>i.hidden=true);const confirmation=engine.querySelector<HTMLElement>('[data-booking-confirmation]');const code=engine.querySelector<HTMLElement>('[data-booking-code]');if(code)code.textContent=`${engine.dataset.brand?.slice(0,3).toUpperCase()}-${Math.random().toString(36).slice(2,8).toUpperCase()}`;if(confirmation)confirmation.hidden=false;});
+    engine.querySelector('[data-booking-reset]')?.addEventListener('click',()=>{form?.reset();if(form)form.hidden=false;progress.forEach(i=>i.hidden=false);const confirmation=engine.querySelector<HTMLElement>('[data-booking-confirmation]');if(confirmation)confirmation.hidden=true;show(1);});
+  }
+</script>
+
+<style is:global>
+  .booking-engine{max-width:1120px;margin:0 auto;padding:clamp(25px,5vw,70px);border:1px solid var(--booking-line,#999);background:var(--booking-bg,transparent);color:var(--booking-text,inherit)}.booking-progress{display:flex;margin-bottom:60px}.booking-progress span{flex:1;padding:0 0 14px;border-bottom:2px solid var(--booking-line,#999);font:700 10px/1 monospace;opacity:.4}.booking-progress span.active{opacity:1;border-color:var(--booking-accent,currentColor)}.booking-engine fieldset{border:0;padding:0;margin:0}.booking-engine legend{font:700 clamp(34px,5vw,68px)/1 var(--booking-display,Arial,sans-serif);letter-spacing:-.04em}.step-intro{max-width:580px;line-height:1.7;opacity:.7;margin:22px 0 45px}.experience-options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.experience-options button{min-height:190px;text-align:left;padding:22px;border:1px solid var(--booking-line,#999);background:transparent;color:inherit;display:flex;flex-direction:column;cursor:pointer}.experience-options button span{font:10px monospace;opacity:.5}.experience-options button strong{font:700 22px/1.1 var(--booking-display,Arial);margin:38px 0 12px}.experience-options button small{line-height:1.5;opacity:.65}.experience-options button.selected,.party-picker button.selected,.time-slots button.selected{border-color:var(--booking-accent,currentColor);box-shadow:inset 0 0 0 1px var(--booking-accent,currentColor);background:var(--booking-selected,rgba(128,128,128,.1))}.booking-controls{display:flex;justify-content:space-between;align-items:center;margin-top:55px;padding-top:25px;border-top:1px solid var(--booking-line,#999)}.booking-controls button,.booking-confirmation button{border:0;background:var(--booking-accent,currentColor);color:var(--booking-button-text,#fff);padding:16px 20px;text-transform:uppercase;font:800 10px/1 Arial;letter-spacing:.12em;cursor:pointer}.booking-controls button[data-back]{background:transparent;color:inherit;border:1px solid var(--booking-line,#999)}.date-party{display:grid;grid-template-columns:.7fr 1.3fr;gap:50px}.date-party label,.booking-notes,.guest-fields label{font:700 10px/1.4 Arial;text-transform:uppercase;letter-spacing:.12em}.date-party input,.guest-fields input,.booking-notes textarea{width:100%;margin-top:12px;padding:16px;border:1px solid var(--booking-line,#999);background:transparent;color:inherit;font:18px/1 var(--booking-display,Arial)}.field-label{display:block;font:700 10px Arial;text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px}.party-picker{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}.party-picker button{aspect-ratio:1;border:1px solid var(--booking-line,#999);background:transparent;color:inherit;cursor:pointer}.time-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.time-slots button{padding:20px;border:1px solid var(--booking-line,#999);background:transparent;color:inherit;text-align:left;font-size:20px;cursor:pointer}.time-slots small{display:block;margin-top:8px;font-size:9px;opacity:.55;text-transform:uppercase}.booking-notes{display:block;margin-top:30px}.booking-final-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:60px;margin-top:45px}.guest-fields{display:grid;grid-template-columns:1fr 1fr;gap:25px}.guest-fields .consent{grid-column:1/-1;display:flex;align-items:center;gap:10px}.guest-fields .consent input{width:auto;margin:0}.booking-final-grid aside{padding:30px;border:1px solid var(--booking-line,#999)}.booking-final-grid aside>span{font:700 10px Arial;text-transform:uppercase;letter-spacing:.14em}.booking-final-grid aside div{display:flex;flex-direction:column;gap:11px;margin:30px 0}.booking-final-grid aside div strong{font:700 25px var(--booking-display,Arial)}.booking-final-grid aside small{opacity:.55;line-height:1.5}.booking-confirmation{text-align:center;padding:50px 10px}.booking-confirmation>span{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:var(--booking-accent,currentColor);color:var(--booking-button-text,#fff);margin:0 auto 30px}.booking-confirmation h2{font:700 clamp(38px,6vw,72px)/1 var(--booking-display,Arial);margin:0}.booking-confirmation p{max-width:580px;margin:25px auto;line-height:1.7}.booking-confirmation strong{display:block;font:700 18px monospace;margin:30px}.booking-confirmation button{margin:auto}@media(max-width:700px){.experience-options,.date-party,.booking-final-grid{grid-template-columns:1fr}.party-picker{grid-template-columns:repeat(4,1fr)}.time-slots{grid-template-columns:1fr 1fr}.guest-fields{grid-template-columns:1fr}.booking-engine{border-left:0;border-right:0}.booking-progress{margin-bottom:40px}}
+</style>

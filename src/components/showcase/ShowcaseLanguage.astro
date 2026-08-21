@@ -1,0 +1,68 @@
+<label class="showcase-language">
+  <span class="showcase-language__label">Language</span>
+  <select data-showcase-language aria-label="Select language">
+    <option value="en">EN</option>
+    <option value="it">IT</option>
+    <option value="fr">FR</option>
+    <option value="es">ES</option>
+  </select>
+</label>
+
+<script>
+  type ShowcaseLanguage = 'en' | 'it' | 'fr' | 'es';
+  const languages: ShowcaseLanguage[] = ['en', 'it', 'fr', 'es'];
+  const selector = document.querySelector<HTMLSelectElement>('[data-showcase-language]');
+  const isLanguage = (value: string | null): value is ShowcaseLanguage => Boolean(value && languages.includes(value as ShowcaseLanguage));
+
+  function requestedLanguage(): ShowcaseLanguage {
+    const query = new URLSearchParams(location.search).get('lang');
+    if (isLanguage(query)) return query;
+    const saved = localStorage.getItem('rxn-showcase-language');
+    return isLanguage(saved) ? saved : 'en';
+  }
+
+  function applyLanguage(language: ShowcaseLanguage, updateUrl = false) {
+    document.documentElement.lang = language;
+    document.documentElement.dataset.showcaseLanguage = language;
+    localStorage.setItem('rxn-showcase-language', language);
+    if (selector) selector.value = language;
+
+    document.querySelectorAll<HTMLElement>('[data-showcase-copy]').forEach((element) => {
+      const suffix = language.charAt(0).toUpperCase() + language.slice(1);
+      const value = element.dataset[`copy${suffix}`] || element.dataset.copyEn;
+      if (value) element.textContent = value;
+    });
+
+    document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-showcase-placeholder]').forEach((element) => {
+      const suffix = language.charAt(0).toUpperCase() + language.slice(1);
+      const value = element.dataset[`placeholder${suffix}`] || element.dataset.placeholderEn;
+      if (value) element.placeholder = value;
+    });
+
+    document.querySelectorAll<HTMLAnchorElement>('a[href]').forEach((anchor) => {
+      const raw = anchor.getAttribute('href');
+      if (!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:')) return;
+      const url = new URL(raw, location.href);
+      if (url.origin !== location.origin || !url.pathname.startsWith('/showcase/')) return;
+      if (language === 'en') url.searchParams.delete('lang');
+      else url.searchParams.set('lang', language);
+      anchor.href = `${url.pathname}${url.search}${url.hash}`;
+    });
+
+    if (updateUrl) {
+      const url = new URL(location.href);
+      if (language === 'en') url.searchParams.delete('lang');
+      else url.searchParams.set('lang', language);
+      history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    }
+
+    window.dispatchEvent(new CustomEvent('showcase-language-change', { detail: { language } }));
+  }
+
+  applyLanguage(requestedLanguage());
+  selector?.addEventListener('change', () => applyLanguage(isLanguage(selector.value) ? selector.value : 'en', true));
+</script>
+
+<style>
+  .showcase-language{display:flex;align-items:center;gap:8px}.showcase-language__label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}select{border:1px solid currentColor;background:transparent;color:inherit;padding:9px 24px 9px 10px;font:700 10px/1 Arial,sans-serif;letter-spacing:.12em;cursor:pointer}option{color:#111;background:#fff}
+</style>
