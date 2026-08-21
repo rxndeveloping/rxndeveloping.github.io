@@ -14,6 +14,8 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    portfolioType: z.enum(['software', 'website']).default('software'),
+    portfolioOrder: z.number().int().nonnegative().optional(),
     shortDescription: z.string().min(1),
     category: z.string().optional(),
     status: z.string().optional(),
@@ -42,6 +44,16 @@ const projects = defineCollection({
     developmentPeriod: z.string().optional(),
     featured: z.boolean().default(false),
     featuredOrder: z.number().int().nonnegative().optional(),
+    translations: z.array(z.object({
+      language: z.enum(['it', 'fr', 'es']),
+      shortDescription: z.string().optional(),
+      description: z.string().optional(),
+      category: z.string().optional(),
+      status: z.string().optional(),
+      systems: z.array(z.string()).default([]),
+      roleRyze: z.string().optional(),
+      roleNinja: z.string().optional()
+    })).default([]),
     draft: z.boolean().default(false),
     seo: z.object({
       title: z.string().optional(),

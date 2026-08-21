@@ -1,0 +1,75 @@
+<label class="language-selector">
+  <span class="sr-only" data-i18n="language.label">Language</span>
+  <select data-language-select aria-label="Language">
+    <option value="en">EN</option>
+    <option value="it">IT</option>
+    <option value="fr">FR</option>
+    <option value="es">ES</option>
+  </select>
+</label>
+
+<script>
+  import { translations, type Language } from '../../i18n/translations';
+
+  const supported: Language[] = ['en', 'it', 'fr', 'es'];
+  const select = document.querySelector<HTMLSelectElement>('[data-language-select]');
+
+  const isLanguage = (value: string | null): value is Language => Boolean(value && supported.includes(value as Language));
+
+  function resolveLanguage(): Language {
+    const requested = new URLSearchParams(window.location.search).get('lang');
+    if (isLanguage(requested)) return requested;
+    const saved = localStorage.getItem('rxn-language');
+    return isLanguage(saved) ? saved : 'en';
+  }
+
+  function translatePage(language: Language) {
+    const dictionary = translations[language];
+    document.documentElement.lang = language;
+    document.documentElement.dataset.language = language;
+    localStorage.setItem('rxn-language', language);
+    if (select) select.value = language;
+
+    document.querySelectorAll<HTMLElement>('[data-i18n]').forEach((element) => {
+      const key = element.dataset.i18n;
+      if (!key || !dictionary[key]) return;
+      if (element.hasAttribute('data-i18n-html')) element.innerHTML = dictionary[key];
+      else element.textContent = dictionary[key];
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-localized]').forEach((element) => {
+      const suffix = language.charAt(0).toUpperCase() + language.slice(1);
+      const localized = element.dataset[`localized${suffix}`] || element.dataset.localizedEn;
+      if (localized) element.textContent = localized;
+    });
+
+    const projectCopies = [...document.querySelectorAll<HTMLElement>('[data-project-copy]')];
+    if (projectCopies.length) {
+      const available = new Set(projectCopies.map((element) => element.dataset.projectCopy));
+      const active = language !== 'en' && available.has(language) ? language : 'en';
+      projectCopies.forEach((element) => { element.hidden = element.dataset.projectCopy !== active; });
+    }
+
+    document.querySelectorAll<HTMLAnchorElement>('a[href]').forEach((anchor) => {
+      const raw = anchor.getAttribute('href');
+      if (!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:')) return;
+      const url = new URL(raw, window.location.href);
+      if (url.origin !== window.location.origin) return;
+      if (language === 'en') url.searchParams.delete('lang');
+      else url.searchParams.set('lang', language);
+      anchor.href = `${url.pathname}${url.search}${url.hash}`;
+    });
+  }
+
+  const initialLanguage = resolveLanguage();
+  translatePage(initialLanguage);
+
+  select?.addEventListener('change', () => {
+    const language = isLanguage(select.value) ? select.value : 'en';
+    const url = new URL(window.location.href);
+    if (language === 'en') url.searchParams.delete('lang');
+    else url.searchParams.set('lang', language);
+    history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    translatePage(language);
+  });
+</script>

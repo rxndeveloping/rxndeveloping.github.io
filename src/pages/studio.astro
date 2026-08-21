@@ -28,6 +28,8 @@ if (!import.meta.env.DEV) {
         <div class="form-grid">
           <label class="field field--wide"><span>Project title *</span><input name="title" required autocomplete="off" placeholder="Project title" /></label>
           <label class="field"><span>URL slug *</span><input name="slug" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="project-title" /></label>
+          <label class="field"><span>Portfolio section</span><select name="portfolioType"><option value="software">Software & systems</option><option value="website">Website development</option></select></label>
+          <label class="field"><span>Position in portfolio</span><input type="number" name="portfolioOrder" min="1" step="1" placeholder="1 = first" /></label>
           <label class="field"><span>Category</span><input name="category" placeholder="Software, Gaming, Automation…" /></label>
           <label class="field"><span>Status</span><input name="status" placeholder="Completed, In development…" /></label>
           <label class="field"><span>Development period</span><input name="developmentPeriod" placeholder="2026 or Jan–Mar 2026" /></label>
@@ -36,6 +38,29 @@ if (!import.meta.env.DEV) {
           <label class="field field--wide"><span>Systems or features developed</span><textarea name="systems" rows="5" placeholder="One item per line"></textarea></label>
         </div>
       </section>
+
+      <details class="studio-section studio-translations">
+        <summary><span>Translations</span><small>Optional project content for Italian, French, and Spanish</small></summary>
+        <p class="studio-translations__help">The project title and technology names stay unchanged. Empty translated fields automatically fall back to English.</p>
+        {[
+          { code: 'it', label: 'Italian' },
+          { code: 'fr', label: 'French' },
+          { code: 'es', label: 'Spanish' }
+        ].map(({ code, label }) => (
+          <fieldset class="translation-editor">
+            <legend>{label}</legend>
+            <div class="form-grid">
+              <label class="field"><span>Category</span><input name={`${code}Category`} /></label>
+              <label class="field"><span>Status</span><input name={`${code}Status`} /></label>
+              <label class="field field--wide"><span>Short description</span><textarea name={`${code}ShortDescription`} rows="3"></textarea></label>
+              <label class="field field--wide"><span>Full description</span><textarea name={`${code}Description`} rows="6"></textarea></label>
+              <label class="field field--wide"><span>Systems or features — one per line, in the same order as English</span><textarea name={`${code}Systems`} rows="5"></textarea></label>
+              <label class="field"><span>Ryze’s role</span><textarea name={`${code}RoleRyze`} rows="3"></textarea></label>
+              <label class="field"><span>Ninja’s role</span><textarea name={`${code}RoleNinja`} rows="3"></textarea></label>
+            </div>
+          </fieldset>
+        ))}
+      </details>
 
       <section class="studio-section">
         <div class="studio-section__heading"><span>02</span><div><h2>Technologies and team</h2><p>Select the primary languages and describe who worked on the project. Entering a role automatically includes that member.</p></div></div>
@@ -66,7 +91,8 @@ if (!import.meta.env.DEV) {
         <div class="form-grid">
           <label class="field"><span>Cover image <small data-cover-help></small></span><input type="file" name="cover" accept="image/*" /></label>
           <label class="field"><span>Cover alt text</span><input name="coverAlt" placeholder="Describe the cover image" /></label>
-          <label class="field field--wide"><span>New gallery images <small data-gallery-help></small></span><input type="file" name="gallery" accept="image/*" multiple /></label>
+          <label class="field field--wide"><span>New gallery images <small data-gallery-help></small></span><input type="file" name="gallery" accept="image/*" multiple data-gallery-input /></label>
+          <div class="studio-new-gallery field--wide" data-new-gallery-grid hidden></div>
           <label class="choice field--wide" data-replace-gallery-option hidden><input type="checkbox" name="replaceGallery" /><span>Replace the complete existing gallery with the newly selected images</span></label>
           <label class="field"><span>Video type</span><select name="videoType"><option value="">No video</option><option value="youtube">YouTube</option><option value="vimeo">Vimeo</option><option value="local">Local MP4 / WebM</option></select></label>
           <label class="field"><span>Video title</span><input name="videoTitle" placeholder="Project demonstration" /></label>
@@ -86,6 +112,7 @@ if (!import.meta.env.DEV) {
             <label class="choice"><input type="checkbox" name="featured" /><span>Featured on Home</span></label>
             <label class="choice"><input type="checkbox" name="draft" /><span>Keep as draft</span></label>
           </div>
+          <label class="field"><span>Position among featured projects</span><input type="number" name="featuredOrder" min="1" step="1" placeholder="1 = first" /></label>
         </div>
       </section>
 
@@ -149,6 +176,8 @@ if (!import.meta.env.DEV) {
   const replaceGalleryOption = document.querySelector<HTMLElement>('[data-replace-gallery-option]');
   const coverHelp = document.querySelector<HTMLElement>('[data-cover-help]');
   const galleryHelp = document.querySelector<HTMLElement>('[data-gallery-help]');
+  const galleryInput = document.querySelector<HTMLInputElement>('[data-gallery-input]');
+  const newGalleryGrid = document.querySelector<HTMLElement>('[data-new-gallery-grid]');
   const ryzeRoleInput = form?.elements.namedItem('roleRyze') as HTMLInputElement | null;
   const ninjaRoleInput = form?.elements.namedItem('roleNinja') as HTMLInputElement | null;
   const ryzeMemberInput = form?.elements.namedItem('memberRyze') as HTMLInputElement | null;
@@ -156,17 +185,20 @@ if (!import.meta.env.DEV) {
   let managerRoot: any = null;
   type ProjectImage = { src: string; alt: string; caption?: string; position?: string };
   type ProjectVideo = { type: string; title: string; url?: string; poster?: string; mp4?: string; webm?: string; caption?: string };
+  type ProjectTranslation = { language: 'it' | 'fr' | 'es'; shortDescription?: string; description?: string; category?: string; status?: string; systems: string[]; roleRyze?: string; roleNinja?: string };
   type ParsedProject = {
-    title: string; slug: string; shortDescription: string; description: string;
+    title: string; slug: string; portfolioType: 'software' | 'website'; portfolioOrder?: number; featuredOrder?: number; shortDescription: string; description: string;
     category?: string; status?: string; developmentPeriod?: string;
     technologies: string[]; systems: string[];
     contributors: Array<{ member: string; role: string }>;
     cover?: ProjectImage; gallery: ProjectImage[]; videos: ProjectVideo[];
-    links: Record<string, string>; featured: boolean; draft: boolean;
+    links: Record<string, string>; translations: ProjectTranslation[]; featured: boolean; draft: boolean;
   };
   type ManagedProject = { file: string; slug: string; title: string; text: string; data: ParsedProject };
   let managedProjects: ManagedProject[] = [];
   let editingProject: ManagedProject | null = null;
+  let pendingGalleryFiles: File[] = [];
+  let pendingPreviewUrls: string[] = [];
 
   const slugify = (value: string) => value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const quote = (value: string) => JSON.stringify(value);
@@ -178,7 +210,8 @@ if (!import.meta.env.DEV) {
     if (!trimmed) return '';
     if (trimmed === 'true') return true;
     if (trimmed === 'false') return false;
-    if (trimmed.startsWith('"')) {
+    if (/^-?\d+(?:\.\d+)?$/.test(trimmed)) return Number(trimmed);
+    if (trimmed.startsWith('"') || trimmed.startsWith('[') || trimmed.startsWith('{')) {
       try { return JSON.parse(trimmed); } catch { return trimmed.slice(1, -1); }
     }
     return trimmed.replace(/^['"]|['"]$/g, '');
@@ -218,8 +251,8 @@ if (!import.meta.env.DEV) {
     };
     const objectList = (key: string) => {
       const start = header.findIndex((item) => item === `${key}:`);
-      const values: Array<Record<string, string>> = [];
-      let current: Record<string, string> | null = null;
+      const values: Array<Record<string, unknown>> = [];
+      let current: Record<string, unknown> | null = null;
       if (start < 0) return values;
       for (let index = start + 1; index < header.length; index += 1) {
         const line = header[index];
@@ -227,9 +260,9 @@ if (!import.meta.env.DEV) {
         const first = line.match(/^  -\s+([A-Za-z][A-Za-z0-9]*):\s*(.*)$/);
         const next = line.match(/^    ([A-Za-z][A-Za-z0-9]*):\s*(.*)$/);
         if (first) {
-          current = { [first[1]]: String(parseValue(first[2])) };
+          current = { [first[1]]: parseValue(first[2]) };
           values.push(current);
-        } else if (next && current) current[next[1]] = String(parseValue(next[2]));
+        } else if (next && current) current[next[1]] = parseValue(next[2]);
       }
       return values;
     };
@@ -237,6 +270,9 @@ if (!import.meta.env.DEV) {
     const data: ParsedProject = {
       title: String(scalar('title') || file.replace(/\.md$/, '')),
       slug: String(scalar('slug') || file.replace(/\.md$/, '')),
+      portfolioType: scalar('portfolioType') === 'website' ? 'website' : 'software',
+      portfolioOrder: typeof scalar('portfolioOrder') === 'number' ? Number(scalar('portfolioOrder')) : undefined,
+      featuredOrder: typeof scalar('featuredOrder') === 'number' ? Number(scalar('featuredOrder')) : undefined,
       shortDescription: String(scalar('shortDescription')),
       description: match[2].trim(),
       category: String(scalar('category') || ''),
@@ -249,6 +285,16 @@ if (!import.meta.env.DEV) {
       gallery: objectList('gallery') as ProjectImage[],
       videos: objectList('videos') as ProjectVideo[],
       links: objectSection('links'),
+      translations: objectList('translations').map((item) => ({
+        language: item.language as 'it' | 'fr' | 'es',
+        shortDescription: String(item.shortDescription || ''),
+        description: String(item.description || ''),
+        category: String(item.category || ''),
+        status: String(item.status || ''),
+        systems: Array.isArray(item.systems) ? item.systems.map(String) : [],
+        roleRyze: String(item.roleRyze || ''),
+        roleNinja: String(item.roleNinja || '')
+      })),
       featured: scalar('featured') === true,
       draft: scalar('draft') === true
     };
@@ -269,6 +315,88 @@ if (!import.meta.env.DEV) {
   videoType?.addEventListener('change', updateVideoFields);
   updateVideoFields();
 
+  function moveItem<T>(items: T[], index: number, direction: -1 | 1) {
+    const target = index + direction;
+    if (target < 0 || target >= items.length) return;
+    [items[index], items[target]] = [items[target], items[index]];
+  }
+
+  function orderButtons(onMove: (direction: -1 | 1) => void, index: number, length: number) {
+    const controls = document.createElement('div');
+    controls.className = 'studio-media-order';
+    const previous = document.createElement('button');
+    const next = document.createElement('button');
+    previous.type = next.type = 'button';
+    previous.textContent = '←';
+    next.textContent = '→';
+    previous.title = 'Move image earlier';
+    next.title = 'Move image later';
+    previous.disabled = index === 0;
+    next.disabled = index === length - 1;
+    previous.addEventListener('click', () => onMove(-1));
+    next.addEventListener('click', () => onMove(1));
+    controls.append(previous, next);
+    return controls;
+  }
+
+  function renderExistingMedia() {
+    if (!existingMediaGrid || !editingProject) return;
+    existingMediaGrid.replaceChildren();
+    const cover = editingProject.data.cover;
+    if (cover) {
+      const figure = document.createElement('figure');
+      const image = document.createElement('img');
+      const caption = document.createElement('figcaption');
+      image.src = `/${cover.src.replace(/^\//, '')}`;
+      image.alt = cover.alt;
+      caption.textContent = 'Current cover';
+      figure.append(image, caption);
+      existingMediaGrid.append(figure);
+    }
+    editingProject.data.gallery.forEach((item, index) => {
+      const figure = document.createElement('figure');
+      const image = document.createElement('img');
+      const caption = document.createElement('figcaption');
+      image.src = `/${item.src.replace(/^\//, '')}`;
+      image.alt = item.alt || `Gallery ${index + 1}`;
+      image.loading = 'lazy';
+      caption.textContent = `Gallery ${index + 1}`;
+      figure.append(image, caption, orderButtons((direction) => {
+        moveItem(editingProject!.data.gallery, index, direction);
+        renderExistingMedia();
+      }, index, editingProject!.data.gallery.length));
+      existingMediaGrid.append(figure);
+    });
+  }
+
+  function renderPendingGallery() {
+    pendingPreviewUrls.forEach((url) => URL.revokeObjectURL(url));
+    pendingPreviewUrls = [];
+    if (!newGalleryGrid) return;
+    newGalleryGrid.replaceChildren();
+    newGalleryGrid.hidden = !pendingGalleryFiles.length;
+    pendingGalleryFiles.forEach((file, index) => {
+      const figure = document.createElement('figure');
+      const image = document.createElement('img');
+      const caption = document.createElement('figcaption');
+      const url = URL.createObjectURL(file);
+      pendingPreviewUrls.push(url);
+      image.src = url;
+      image.alt = file.name;
+      caption.textContent = `${index + 1}. ${file.name}`;
+      figure.append(image, caption, orderButtons((direction) => {
+        moveItem(pendingGalleryFiles, index, direction);
+        renderPendingGallery();
+      }, index, pendingGalleryFiles.length));
+      newGalleryGrid.append(figure);
+    });
+  }
+
+  galleryInput?.addEventListener('change', () => {
+    pendingGalleryFiles = [...(galleryInput.files || [])];
+    renderPendingGallery();
+  });
+
   titleInput?.addEventListener('input', () => {
     if (slugInput && !slugInput.dataset.edited) slugInput.value = slugify(titleInput.value);
   });
@@ -288,7 +416,7 @@ if (!import.meta.env.DEV) {
     const data = new FormData(form);
     const slug = slugify(String(data.get('slug') || data.get('title') || ''));
     const cover = (data.get('cover') as File);
-    const gallery = [...((form.elements.namedItem('gallery') as HTMLInputElement).files || [])];
+    const gallery = [...pendingGalleryFiles];
     const poster = data.get('videoPoster') as File;
     const localVideos = [...((form.elements.namedItem('localVideos') as HTMLInputElement).files || [])];
     const selectedTech = data.getAll('technologies').map(String);
@@ -298,6 +426,9 @@ if (!import.meta.env.DEV) {
     const output: string[] = ['---'];
     output.push(`title: ${quote(String(data.get('title') || ''))}`);
     output.push(`slug: ${quote(slug)}`);
+    output.push(`portfolioType: ${quote(String(data.get('portfolioType') || 'software'))}`);
+    const portfolioOrder = String(data.get('portfolioOrder') || '').trim();
+    if (portfolioOrder) output.push(`portfolioOrder: ${Number(portfolioOrder)}`);
     output.push(`shortDescription: ${quote(String(data.get('shortDescription') || ''))}`);
     for (const key of ['category', 'status', 'developmentPeriod']) {
       const value = String(data.get(key) || '').trim();
@@ -320,6 +451,29 @@ if (!import.meta.env.DEV) {
     if (contributors.length) {
       output.push('contributors:');
       contributors.forEach((item) => { output.push(`  - member: ${quote(item.member)}`); output.push(`    role: ${quote(item.role)}`); });
+    }
+    const projectTranslations = (['it', 'fr', 'es'] as const).map((language) => {
+      const prefix = language;
+      return {
+        language,
+        category: String(data.get(`${prefix}Category`) || '').trim(),
+        status: String(data.get(`${prefix}Status`) || '').trim(),
+        shortDescription: String(data.get(`${prefix}ShortDescription`) || '').trim(),
+        description: String(data.get(`${prefix}Description`) || '').trim(),
+        systems: lines(data.get(`${prefix}Systems`)),
+        roleRyze: String(data.get(`${prefix}RoleRyze`) || '').trim(),
+        roleNinja: String(data.get(`${prefix}RoleNinja`) || '').trim()
+      };
+    }).filter((item) => item.category || item.status || item.shortDescription || item.description || item.systems.length || item.roleRyze || item.roleNinja);
+    if (projectTranslations.length) {
+      output.push('translations:');
+      projectTranslations.forEach((item) => {
+        output.push(`  - language: ${quote(item.language)}`);
+        for (const key of ['category', 'status', 'shortDescription', 'description', 'roleRyze', 'roleNinja'] as const) {
+          if (item[key]) output.push(`    ${key}: ${quote(item[key])}`);
+        }
+        if (item.systems.length) output.push(`    systems: ${JSON.stringify(item.systems)}`);
+      });
     }
     const files: Array<{ file: File; name: string }> = [];
     const existing = editingProject?.data;
@@ -406,6 +560,8 @@ if (!import.meta.env.DEV) {
       links.forEach(([key, value]) => output.push(`  ${key}: ${quote(value)}`));
     }
     output.push(`featured: ${data.get('featured') ? 'true' : 'false'}`);
+    const featuredOrder = String(data.get('featuredOrder') || '').trim();
+    if (featuredOrder) output.push(`featuredOrder: ${Number(featuredOrder)}`);
     output.push(`draft: ${data.get('draft') ? 'true' : 'false'}`);
     output.push('---', '', String(data.get('description') || '').trim(), '');
     return { slug, markdown: output.join('\n'), files };
@@ -429,7 +585,7 @@ if (!import.meta.env.DEV) {
     if (!packageText.includes('rxn-developing-website')) throw new Error('That is not the rxn-developing-website root folder.');
   }
 
-  function setFormValue(name: string, value: string | boolean | undefined) {
+  function setFormValue(name: string, value: string | number | boolean | undefined) {
     if (!form) return;
     const control = form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
     if (!control) return;
@@ -442,7 +598,9 @@ if (!import.meta.env.DEV) {
     editingProject = project;
     form.reset();
     const data = project.data;
-    for (const key of ['title', 'slug', 'shortDescription', 'description', 'category', 'status', 'developmentPeriod'] as const) setFormValue(key, data[key]);
+    pendingGalleryFiles = [];
+    renderPendingGallery();
+    for (const key of ['title', 'slug', 'portfolioType', 'portfolioOrder', 'featuredOrder', 'shortDescription', 'description', 'category', 'status', 'developmentPeriod'] as const) setFormValue(key, data[key]);
     setFormValue('systems', data.systems.join('\n'));
     const technologyInputs = [...form.querySelectorAll<HTMLInputElement>('input[name="technologies"]')];
     const knownTechnologies = new Set(technologyInputs.map((input) => input.value));
@@ -464,28 +622,22 @@ if (!import.meta.env.DEV) {
     setFormValue('download', data.links.download);
     setFormValue('featured', data.featured);
     setFormValue('draft', data.draft);
+    (['it', 'fr', 'es'] as const).forEach((language) => {
+      const translation = data.translations.find((item) => item.language === language);
+      const prefix = language;
+      setFormValue(`${prefix}Category`, translation?.category);
+      setFormValue(`${prefix}Status`, translation?.status);
+      setFormValue(`${prefix}ShortDescription`, translation?.shortDescription);
+      setFormValue(`${prefix}Description`, translation?.description);
+      setFormValue(`${prefix}Systems`, translation?.systems.join('\n'));
+      setFormValue(`${prefix}RoleRyze`, translation?.roleRyze);
+      setFormValue(`${prefix}RoleNinja`, translation?.roleNinja);
+    });
     if (existingMediaPanel) existingMediaPanel.hidden = false;
     if (replaceGalleryOption) replaceGalleryOption.hidden = !data.gallery.length;
     if (coverHelp) coverHelp.textContent = data.cover ? '— leave empty to keep the current cover' : '';
     if (galleryHelp) galleryHelp.textContent = data.gallery.length ? '— existing images are kept and new ones are added' : '';
-    if (existingMediaGrid) {
-      existingMediaGrid.replaceChildren();
-      const media = [
-        ...(data.cover ? [{ ...data.cover, label: 'Current cover' }] : []),
-        ...data.gallery.map((image, index) => ({ ...image, label: `Gallery ${index + 1}` }))
-      ];
-      media.forEach((item) => {
-        const figure = document.createElement('figure');
-        const image = document.createElement('img');
-        const caption = document.createElement('figcaption');
-        image.src = `/${item.src.replace(/^\//, '')}`;
-        image.alt = item.alt || item.label;
-        image.loading = 'lazy';
-        caption.textContent = item.label;
-        figure.append(image, caption);
-        existingMediaGrid.append(figure);
-      });
-    }
+    renderExistingMedia();
     if (slugInput) {
       slugInput.readOnly = true;
       slugInput.dataset.edited = 'true';
@@ -501,6 +653,8 @@ if (!import.meta.env.DEV) {
   function stopEditing() {
     editingProject = null;
     form?.reset();
+    pendingGalleryFiles = [];
+    renderPendingGallery();
     if (slugInput) {
       slugInput.readOnly = false;
       delete slugInput.dataset.edited;

@@ -5,25 +5,56 @@ import ProjectCard from '../../components/projects/ProjectCard.astro';
 import EmptyProjects from '../../components/projects/EmptyProjects.astro';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .sort((a, b) => (a.data.featuredOrder ?? 999) - (b.data.featuredOrder ?? 999));
+  .sort((a, b) => (a.data.portfolioOrder ?? 999) - (b.data.portfolioOrder ?? 999) || a.data.title.localeCompare(b.data.title));
+const softwareProjects = projects.filter(({ data }) => data.portfolioType === 'software');
+const websiteProjects = projects.filter(({ data }) => data.portfolioType === 'website');
 ---
 
-<BaseLayout title="Projects" description="Explore the software, automation systems, gaming tools, and digital solutions created by RxN Developing.">
+<BaseLayout title="Portfolio" description="Explore the software, automation systems, websites, and digital solutions created by RxN Developing.">
   <section class="page-hero">
     <div class="container page-hero__grid">
-      <div><p class="eyebrow"><span></span>Project archive</p><h1>Work made to be <em>used.</em></h1></div>
-      <p>Every published project is documented from its purpose to the systems, technologies, and team contributions behind it.</p>
+      <div><p class="eyebrow"><span></span><span data-i18n="portfolio.eyebrow">Our portfolio</span></p><h1 data-i18n="portfolio.title" data-i18n-html>Digital work made to be <em>used.</em></h1></div>
+      <p data-i18n="portfolio.intro">Two focused portfolios: software and technical systems, plus websites designed around real businesses and their customers.</p>
     </div>
   </section>
-  <section class="section project-index">
+
+  <nav class="container portfolio-switchboard" aria-label="Portfolio sections">
+    <a href="#software"><span>01</span><div><strong data-i18n="portfolio.software.title">Software & systems</strong><small data-i18n="portfolio.software.nav">Applications, bots, automation, gaming tools</small></div><b aria-hidden="true">↓</b></a>
+    <a href="#websites"><span>02</span><div><strong data-i18n="portfolio.web.title">Website development</strong><small data-i18n="portfolio.web.nav">Business websites, restaurant sites, landing pages</small></div><b aria-hidden="true">↓</b></a>
+  </nav>
+
+  <section class="section project-index portfolio-section" id="software">
+    <div class="container portfolio-section__heading">
+      <div><p class="eyebrow"><span></span>01 / <span data-i18n="portfolio.software.eyebrow">Software portfolio</span></p><h2 data-i18n="portfolio.software.title">Software & systems</h2></div>
+      <p data-i18n="portfolio.software.description">Custom applications, automation, bots, community systems, gaming tools, and Windows utilities documented in detail.</p>
+    </div>
     <div class="container project-index__header">
-      <p class="mono-label">{String(projects.length).padStart(2, '0')} published {projects.length === 1 ? 'project' : 'projects'}</p>
-      <span>More work will be added as it becomes ready.</span>
+      <p class="mono-label">{String(softwareProjects.length).padStart(2, '0')} <span data-i18n="portfolio.published">published projects</span></p>
+      <span data-i18n="portfolio.more">More work will be added as it becomes ready.</span>
     </div>
     <div class="container">
-      {projects.length > 0
-        ? <div class="project-grid">{projects.map((project, index) => <ProjectCard project={project} index={index} />)}</div>
+      {softwareProjects.length > 0
+        ? <div class="project-grid">{softwareProjects.map((project, index) => <ProjectCard project={project} index={index} />)}</div>
         : <EmptyProjects />}
+    </div>
+  </section>
+
+  <section class="section portfolio-section portfolio-section--web" id="websites">
+    <div class="container portfolio-section__heading">
+      <div><p class="eyebrow"><span></span>02 / <span data-i18n="portfolio.web.eyebrow">Web development portfolio</span></p><h2 data-i18n="portfolio.web.title">Website development</h2></div>
+      <p data-i18n="portfolio.web.description">Responsive websites shaped around each activity, with distinct visual directions, clear content, and practical customer journeys.</p>
+    </div>
+    <div class="container">
+      {websiteProjects.length > 0
+        ? <div class="project-grid">{websiteProjects.map((project, index) => <ProjectCard project={project} index={index} />)}</div>
+        : <div class="website-portfolio-empty">
+            <div><p class="mono-label" data-i18n="portfolio.web.preparing">Portfolio in preparation</p><h3 data-i18n="portfolio.web.emptyTitle">Our first website showcases are being designed.</h3><p data-i18n="portfolio.web.emptyText">This area will contain complete, navigable examples for restaurants, companies, professionals, and other business types—each with its own style and functionality.</p></div>
+            <ul>
+              <li data-i18n="portfolio.web.restaurant">Restaurant & hospitality websites</li>
+              <li data-i18n="portfolio.web.business">Company & service websites</li>
+              <li data-i18n="portfolio.web.landing">Landing pages & digital presentations</li>
+            </ul>
+          </div>}
     </div>
   </section>
 </BaseLayout>

@@ -4,6 +4,10 @@ import { assetPath, sitePath } from '../../utils/paths';
 interface Props { project: CollectionEntry<'projects'>; index?: number; }
 const { project, index = 0 } = Astro.props;
 const data = project.data;
+const localized = (language: 'it' | 'fr' | 'es') => data.translations.find((item) => item.language === language);
+const it = localized('it');
+const fr = localized('fr');
+const es = localized('es');
 ---
 
 <article class="project-card reveal" style={`--delay:${Math.min(index * 70, 280)}ms`}>
@@ -15,18 +19,18 @@ const data = project.data;
     </div>
     <div class="project-card__body">
       <div class="project-card__meta">
-        {data.category && <span>{data.category}</span>}
-        {data.status && <span class="status-dot">{data.status}</span>}
+        {data.category && <span data-localized data-localized-en={data.category} data-localized-it={it?.category} data-localized-fr={fr?.category} data-localized-es={es?.category}>{data.category}</span>}
+        {data.status && <span class="status-dot" data-localized data-localized-en={data.status} data-localized-it={it?.status} data-localized-fr={fr?.status} data-localized-es={es?.status}>{data.status}</span>}
       </div>
       <h3>{data.title}</h3>
-      <p>{data.shortDescription}</p>
+      <p data-localized data-localized-en={data.shortDescription} data-localized-it={it?.shortDescription} data-localized-fr={fr?.shortDescription} data-localized-es={es?.shortDescription}>{data.shortDescription}</p>
       {data.technologies.length > 0 && (
         <ul class="tag-list" aria-label="Technologies">
           {data.technologies.slice(0, 4).map((item) => <li>{item}</li>)}
           {data.technologies.length > 4 && <li>+{data.technologies.length - 4}</li>}
         </ul>
       )}
-      <span class="project-card__cta">View project <span aria-hidden="true">↗</span></span>
+      <span class="project-card__cta"><span data-i18n="project.view">View project</span><span aria-hidden="true">↗</span></span>
     </div>
   </a>
 </article>

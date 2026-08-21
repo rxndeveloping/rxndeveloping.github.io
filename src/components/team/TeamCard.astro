@@ -11,9 +11,9 @@ const { member, compact = false } = Astro.props;
     <img src={assetPath(member.avatar)} alt={`${member.name} avatar`} width="512" height="512" loading="lazy" />
   </div>
   <div class="team-card__body">
-    <p class="mono-label">{member.role}</p>
+    <p class="mono-label" data-i18n={`team.${member.id}.role`}>{member.role}</p>
     <h3>{member.name}</h3>
-    <p>{member.bio[0]}</p>
-    {!compact && member.bio.slice(1).map((paragraph) => <p>{paragraph}</p>)}
+    <p data-i18n={`team.${member.id}.bio.0`}>{member.bio[0]}</p>
+    {!compact && member.bio.slice(1).map((paragraph, index) => <p data-i18n={`team.${member.id}.bio.${index + 1}`}>{paragraph}</p>)}
   </div>
 </article>

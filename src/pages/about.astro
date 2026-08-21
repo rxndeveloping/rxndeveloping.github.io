@@ -10,23 +10,23 @@ import skills from '../data/skills.json';
 <BaseLayout title="About" description="Meet Ryze and Ninja and learn about the goals, capabilities, and approach behind RxN Developing.">
   <section class="page-hero about-hero">
     <div class="container page-hero__grid">
-      <div><p class="eyebrow"><span></span>About RxN</p><h1>Independent by nature. <em>Practical by design.</em></h1></div>
-      <div>{site.about.map((paragraph) => <p>{paragraph}</p>)}</div>
+      <div><p class="eyebrow"><span></span><span data-i18n="about.eyebrow">About RxN</span></p><h1 data-i18n="about.title" data-i18n-html>Independent by nature. <em>Practical by design.</em></h1></div>
+      <div>{site.about.map((paragraph, index) => <p data-i18n={`about.copy.${index}`}>{paragraph}</p>)}</div>
     </div>
   </section>
 
   <section class="section about-team">
-    <div class="container"><SectionHeading eyebrow="The people" title="Ryze & Ninja" description="A compact team combining development, experimentation, testing, and design." /></div>
+    <div class="container"><SectionHeading eyebrow="The people" title="Ryze & Ninja" description="A compact team combining development, experimentation, testing, and design." eyebrowKey="about.people" descriptionKey="about.peopleText" /></div>
     <div class="container team-grid team-grid--full">{team.map((member) => <TeamCard member={member} />)}</div>
   </section>
 
   <section class="section goals-section">
-    <div class="container split-heading"><SectionHeading eyebrow="Direction" title="What we’re working toward." /><p>Our goals are deliberately practical: learn continuously, build responsibly, and turn useful ideas into systems people can actually use.</p></div>
-    <div class="container goals-grid">{site.goals.map((goal, index) => <article class="goal-item reveal"><span>{String(index + 1).padStart(2, '0')}</span><p>{goal}</p></article>)}</div>
+    <div class="container split-heading"><SectionHeading eyebrow="Direction" title="What we’re working toward." eyebrowKey="about.direction" titleKey="about.directionTitle" /><p data-i18n="about.directionText">Our goals are deliberately practical: learn continuously, build responsibly, and turn useful ideas into systems people can actually use.</p></div>
+    <div class="container goals-grid">{site.goals.map((goal, index) => <article class="goal-item reveal"><span>{String(index + 1).padStart(2, '0')}</span><p data-i18n={`about.goal.${index}`}>{goal}</p></article>)}</div>
   </section>
 
   <section class="section stack-section">
-    <div class="container"><SectionHeading eyebrow="Core stack" title="Languages we work with." /></div>
+    <div class="container"><SectionHeading eyebrow="Core stack" title="Languages and technologies we work with." eyebrowKey="about.stack" titleKey="about.stackTitle" /></div>
     <div class="container stack-grid">{skills.languages.map((language, index) => <div class="stack-item"><span>{String(index + 1).padStart(2, '0')}</span><strong>{language}</strong></div>)}</div>
   </section>
 </BaseLayout>

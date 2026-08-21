@@ -1,0 +1,87 @@
+---
+const menu = [
+  { name: 'Ricordo di pomodoro', detail: 'Pomodoro cuore di bue, mandorla, basilico e acqua di mozzarella', price: '18' },
+  { name: 'Raviolo del sottobosco', detail: 'Pasta fresca, porcini, nocciola, timo e fondo vegetale', price: '24' },
+  { name: 'Ombrina alla brace', detail: 'Ombrina, finocchio, limone fermentato e salsa alle erbe', price: '32' },
+  { name: 'Luce d’agrumi', detail: 'Limone, bergamotto, meringa italiana e olio extravergine', price: '14' },
+];
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Lume Ristorante: concept website dimostrativo creato da RxN Developing." />
+    <title>Lume Ristorante — Concept by RxN Developing</title>
+  </head>
+  <body>
+    <div class="demo-note"><span>Concept website by RxN Developing</span><a href="/projects/#websites">Torna al portfolio ↗</a></div>
+    <header>
+      <a class="brand" href="#home" aria-label="Lume home"><i></i>Lume</a>
+      <nav aria-label="Navigazione principale">
+        <a href="#storia">Storia</a><a href="#menu">Menu</a><a href="#esperienza">Esperienza</a>
+      </nav>
+      <a class="reserve-link" href="#prenota">Prenota un tavolo</a>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <img src="/assets/showcases/lume/interior.jpg" alt="Sala elegante di un ristorante contemporaneo" />
+        <div class="hero-shade"></div>
+        <div class="hero-copy">
+          <p>Cucina italiana contemporanea · Roma</p>
+          <h1>La materia,<br /><em>illuminata.</em></h1>
+          <a href="#menu">Scopri il menu <span>↓</span></a>
+        </div>
+        <div class="open"><span>Mar — Dom</span><strong>19:00 — 23:30</strong></div>
+      </section>
+
+      <section class="story" id="storia">
+        <p class="kicker">01 · La nostra storia</p>
+        <div>
+          <h2>Una cucina essenziale, radicata nel territorio.</h2>
+          <p>Lume nasce dall’incontro tra piccoli produttori, stagioni italiane e una ricerca gastronomica delicata. Ogni piatto conserva la riconoscibilità della materia e lascia spazio a contrasti precisi, mai superflui.</p>
+          <p class="signature">Elena Marchetti — Chef</p>
+        </div>
+      </section>
+
+      <section class="menu" id="menu">
+        <div class="menu-heading">
+          <p class="kicker">02 · Dalla cucina</p><h2>Menu della sera</h2><p>Una selezione stagionale. Il percorso degustazione completo è disponibile a € 95.</p>
+        </div>
+        <div class="menu-list">
+          {menu.map((item, index) => <article><span>0{index + 1}</span><div><h3>{item.name}</h3><p>{item.detail}</p></div><strong>€ {item.price}</strong></article>)}
+        </div>
+      </section>
+
+      <section class="experience" id="esperienza">
+        <div class="experience-image"><img src="/assets/showcases/lume/dining-room.jpg" alt="Tavoli apparecchiati nella sala di Lume" /></div>
+        <div class="experience-copy"><p class="kicker">03 · L’esperienza</p><h2>Tempo, attenzione, ospitalità.</h2><p>Una sala raccolta, ventotto coperti e un servizio pensato per accompagnare il ritmo della cucina. La cantina esplora vignaioli italiani, territori minori e abbinamenti su misura.</p><ul><li>Menu vegetariano su richiesta</li><li>Abbinamento vini disponibile</li><li>Eventi privati fino a 28 ospiti</li></ul></div>
+      </section>
+
+      <section class="booking" id="prenota">
+        <p class="kicker">Prenotazioni</p><h2>Il tuo tavolo<br />ti aspetta.</h2>
+        <form id="booking-form">
+          <label>Nome<input required name="name" placeholder="Il tuo nome" /></label>
+          <label>Data<input required name="date" type="date" /></label>
+          <label>Ospiti<select name="guests"><option>2 persone</option><option>3 persone</option><option>4 persone</option><option>5+ persone</option></select></label>
+          <button type="submit">Richiedi disponibilità</button>
+        </form>
+        <p class="form-result" id="form-result" hidden>Questa è una demo: la richiesta non è stata inviata.</p>
+      </section>
+    </main>
+    <footer><a class="brand" href="#home"><i></i>Lume</a><p>Via del Gelsomino 18 · Roma<br />+39 06 0000 0000 · sala@lumeristorante.example</p><p>Concept dimostrativo — attività e contatti sono immaginari.<br />Design & development: <a href="/">RxN Developing</a></p></footer>
+
+    <script>
+      document.querySelector('#booking-form')?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        document.querySelector('#form-result')?.removeAttribute('hidden');
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root{--ink:#162019;--cream:#f3efe5;--sage:#6d7965;--rust:#a55336}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,sans-serif}a{color:inherit;text-decoration:none}.demo-note{height:34px;padding:0 4vw;background:var(--ink);color:#e9e4d8;display:flex;align-items:center;justify-content:space-between;font:10px/1 Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase}.demo-note a{border-bottom:1px solid #899087}header{height:88px;padding:0 4vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #c9c4b9;position:absolute;top:34px;left:0;right:0;color:white;z-index:3}.brand{font:italic 34px Georgia,serif;letter-spacing:-.04em;display:flex;align-items:center;gap:10px}.brand i{display:block;width:12px;height:12px;border:1px solid currentColor;border-radius:50%;position:relative}.brand i:after{content:'';position:absolute;width:1px;height:21px;background:currentColor;transform:rotate(45deg);left:10px;top:-5px}nav{display:flex;gap:36px;font-size:12px;letter-spacing:.12em;text-transform:uppercase}.reserve-link{font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding-bottom:7px;border-bottom:1px solid}.hero{height:min(900px,100vh);min-height:650px;position:relative;color:white;display:flex;align-items:flex-end;padding:9vh 7vw;overflow:hidden}.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,14,10,.72),rgba(8,12,9,.14)),linear-gradient(0deg,rgba(7,10,8,.55),transparent 55%)}.hero-copy{position:relative;z-index:1}.hero-copy p,.kicker{font-size:10px;letter-spacing:.24em;text-transform:uppercase}.hero h1{font:400 clamp(64px,10vw,148px)/.82 Georgia,serif;letter-spacing:-.06em;margin:30px 0 55px}.hero h1 em{font-weight:400}.hero-copy>a{font-size:12px;text-transform:uppercase;letter-spacing:.15em;border-bottom:1px solid;padding-bottom:8px}.hero-copy>a span{margin-left:40px}.open{position:absolute;right:5vw;bottom:9vh;z-index:1;display:flex;flex-direction:column;gap:8px;text-align:right}.open span{font-size:9px;letter-spacing:.2em;text-transform:uppercase}.open strong{font:400 18px Georgia,serif}.story{padding:140px 8vw;display:grid;grid-template-columns:1fr 2fr;gap:10vw;border-bottom:1px solid #c9c4b9}.story>div{max-width:760px}.story h2,.experience h2,.booking h2{font:400 clamp(45px,6vw,86px)/1 Georgia,serif;letter-spacing:-.05em;margin:0 0 45px}.story>div>p:not(.signature),.experience-copy>p{max-width:620px;font:20px/1.7 Georgia,serif;color:#4f584e}.signature{margin-top:50px;font:italic 21px Georgia,serif}.menu{padding:130px 8vw;background:#172019;color:#f3efe5;display:grid;grid-template-columns:.8fr 1.4fr;gap:10vw}.menu-heading h2{font:400 clamp(50px,6vw,82px)/1 Georgia,serif;margin:22px 0 35px}.menu-heading>p:last-child{max-width:330px;color:#adb6ab;line-height:1.7}.menu-list article{display:grid;grid-template-columns:40px 1fr auto;gap:25px;padding:28px 0;border-top:1px solid #4a5149}.menu-list article>span{font:10px/1 monospace;color:#899087}.menu-list h3{font:400 28px Georgia,serif;margin:0 0 10px}.menu-list p{margin:0;color:#aeb4ad;line-height:1.5}.menu-list strong{font:400 18px Georgia,serif}.experience{display:grid;grid-template-columns:1.1fr .9fr;min-height:750px}.experience-image img{width:100%;height:100%;object-fit:cover}.experience-copy{padding:10vw 8vw;display:flex;flex-direction:column;justify-content:center}.experience-copy h2{font-size:clamp(43px,5vw,72px);margin-top:25px}.experience-copy ul{margin:35px 0 0;padding:25px 0 0;border-top:1px solid #c9c4b9;list-style:none}.experience-copy li{padding:8px 0;font-size:12px;letter-spacing:.08em;text-transform:uppercase}.booking{text-align:center;padding:130px 6vw;background:#d8d3c5}.booking h2{margin:25px 0 60px}.booking form{max-width:920px;margin:auto;display:grid;grid-template-columns:1fr 1fr 1fr auto;align-items:end;gap:20px;text-align:left}.booking label{font-size:9px;letter-spacing:.18em;text-transform:uppercase}.booking input,.booking select{display:block;width:100%;border:0;border-bottom:1px solid #798075;background:transparent;padding:15px 0;font:16px Georgia,serif;border-radius:0}.booking button{border:0;background:var(--rust);color:white;padding:18px 25px;text-transform:uppercase;font-size:10px;letter-spacing:.14em;cursor:pointer}.form-result{margin-top:25px}footer{padding:70px 6vw;background:#111713;color:#d8d3c5;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;align-items:end}footer p{font-size:11px;line-height:1.8;color:#8f978f}footer p:last-child{text-align:right}footer p a{text-decoration:underline}@media(max-width:780px){header{height:72px}header nav{display:none}.reserve-link{font-size:9px}.hero{min-height:680px;padding:100px 7vw 65px}.hero h1{font-size:64px}.open{display:none}.story,.menu,.experience{grid-template-columns:1fr}.story,.menu{padding:90px 7vw}.story{gap:50px}.menu{gap:55px}.experience-image{height:430px}.experience-copy{padding:90px 7vw}.booking{padding:90px 7vw}.booking form{grid-template-columns:1fr}.booking button{margin-top:15px}footer{grid-template-columns:1fr}footer p:last-child{text-align:left}}
+</style>

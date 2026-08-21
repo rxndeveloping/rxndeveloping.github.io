@@ -1,9 +1,11 @@
 ---
 title: "PC Optimizer — Windows Performance & Hardware Control Center"
 slug: "pc-optimizer-windows-performance-hardware-control-center"
+portfolioType: "software"
+portfolioOrder: 1
 shortDescription: "A Windows 11 desktop application designed to improve system performance, latency, and stability through global profiles, real-time hardware monitoring, verified changes, persistent snapshots, and emergency rollback."
 category: "Software"
-status: "Completed Partially"
+status: "Partially Completed"
 developmentPeriod: "Aug-Aug 2026"
 technologies:
   - "C#"
@@ -59,6 +61,29 @@ videos:
     title: "Project demonstration"
     poster: "assets/projects/pc-optimizer-windows-performance-hardware-control-center/video-poster.png"
 featured: true
+featuredOrder: 1
+translations:
+  - language: "it"
+    shortDescription: "Un'applicazione desktop per Windows 11 progettata per migliorare prestazioni, latenza e stabilità tramite profili globali, monitoraggio hardware in tempo reale, modifiche verificate, snapshot persistenti e ripristino di emergenza."
+    description: "PC Optimizer è un centro di controllo nativo per Windows 11 che riunisce ottimizzazione software, tuning hardware NVIDIA e operazioni di sistema in un'unica interfaccia WinUI 3. L'applicazione applica soltanto modifiche verificabili, conserva snapshot persistenti e permette di annullare in sicurezza ogni intervento. Monitoraggio in tempo reale, gestione dei profili, rollback e diagnostica sono progettati per rendere l'ottimizzazione più trasparente e affidabile."
+    category: "Software desktop"
+    status: "Completato parzialmente"
+    roleRyze: "Direzione del progetto, definizione dei requisiti, scripting PowerShell, design UI/UX, test hardware, validazione delle prestazioni e controllo qualità."
+    roleNinja: "Architettura software, sviluppo C# e WinUI, integrazione Windows e NVML, sicurezza e rollback, test automatizzati e packaging della release."
+  - language: "fr"
+    shortDescription: "Une application Windows 11 conçue pour améliorer les performances, la latence et la stabilité grâce aux profils globaux, au suivi matériel en temps réel, aux changements vérifiés, aux instantanés persistants et au retour d'urgence."
+    description: "PC Optimizer est un centre de contrôle natif pour Windows 11 réunissant l'optimisation logicielle, le réglage du matériel NVIDIA et les opérations système dans une interface WinUI 3. L'application applique uniquement des changements vérifiables, conserve des instantanés persistants et permet d'annuler chaque intervention en toute sécurité. Le suivi en temps réel, les profils, le rollback et le diagnostic rendent l'optimisation plus transparente et fiable."
+    category: "Logiciel de bureau"
+    status: "Partiellement terminé"
+    roleRyze: "Direction du projet, définition des besoins, scripts PowerShell, design UI/UX, tests matériels, validation des performances et assurance qualité."
+    roleNinja: "Architecture logicielle, développement C# et WinUI, intégration Windows et NVML, sécurité et rollback, tests automatisés et packaging."
+  - language: "es"
+    shortDescription: "Una aplicación de escritorio para Windows 11 diseñada para mejorar rendimiento, latencia y estabilidad mediante perfiles globales, monitorización de hardware, cambios verificados, instantáneas persistentes y reversión de emergencia."
+    description: "PC Optimizer es un centro de control nativo para Windows 11 que reúne optimización de software, ajuste de hardware NVIDIA y operaciones del sistema en una interfaz WinUI 3. La aplicación aplica solo cambios verificables, conserva instantáneas persistentes y permite revertir cada intervención de forma segura. La monitorización, los perfiles, el rollback y el diagnóstico hacen que la optimización sea más transparente y fiable."
+    category: "Software de escritorio"
+    status: "Completado parcialmente"
+    roleRyze: "Dirección del proyecto, definición de requisitos, scripts PowerShell, diseño UI/UX, pruebas de hardware, validación de rendimiento y control de calidad."
+    roleNinja: "Arquitectura de software, desarrollo C# y WinUI, integración Windows y NVML, seguridad y rollback, pruebas automatizadas y empaquetado."
 draft: false
 ---
 

@@ -7,10 +7,10 @@ import { sitePath } from '../utils/paths';
   <section class="not-found">
     <div class="container not-found__inner">
       <span class="not-found__code">404</span>
-      <p class="eyebrow"><span></span>Signal lost</p>
-      <h1>This route doesn’t lead anywhere.</h1>
-      <p>The page may have moved, or the address may be incomplete.</p>
-      <div class="hero-actions"><a class="button button--primary" href={sitePath()}>Return home</a><a class="button button--ghost" href={sitePath('projects/')}>View projects</a></div>
+      <p class="eyebrow"><span></span><span data-i18n="error.eyebrow">Signal lost</span></p>
+      <h1 data-i18n="error.title">This route doesn’t lead anywhere.</h1>
+      <p data-i18n="error.text">The page may have moved, or the address may be incomplete.</p>
+      <div class="hero-actions"><a class="button button--primary" href={sitePath()} data-i18n="error.home">Return home</a><a class="button button--ghost" href={sitePath('projects/')} data-i18n="error.portfolio">View portfolio</a></div>
     </div>
   </section>
 </BaseLayout>

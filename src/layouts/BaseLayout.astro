@@ -56,11 +56,18 @@ const socialImage = new URL(assetPath(image), Astro.site);
           : saved;
         document.documentElement.dataset.theme = resolved;
         document.documentElement.dataset.themePreference = saved;
+        const requestedLanguage = new URLSearchParams(location.search).get('lang');
+        const savedLanguage = localStorage.getItem('rxn-language');
+        const language = ['en', 'it', 'fr', 'es'].includes(requestedLanguage || '')
+          ? requestedLanguage
+          : (['en', 'it', 'fr', 'es'].includes(savedLanguage || '') ? savedLanguage : 'en');
+        document.documentElement.lang = language;
+        document.documentElement.dataset.language = language;
       })();
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to content</a>
+    <a class="skip-link" href="#main-content" data-i18n="global.skip">Skip to content</a>
     <div class="site-shell">
       <Header />
       <main id="main-content">

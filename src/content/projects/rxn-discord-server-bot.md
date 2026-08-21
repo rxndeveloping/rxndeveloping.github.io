@@ -1,6 +1,8 @@
 ---
 title: "RxN Discord Server Bot"
 slug: "rxn-discord-server-bot"
+portfolioType: "software"
+portfolioOrder: 3
 shortDescription: "This is a custom bot for our Assetto Corsa Discord Server that automates server management, ticket support, giveaways, event announcements, member onboarding and more!"
 category: "Discord Bot"
 status: "Completed"
@@ -50,6 +52,26 @@ videos:
     title: "Project demonstration"
     poster: "assets/projects/rxn-discord-server-bot/video-poster.png"
 featured: true
+featuredOrder: 3
+translations:
+  - language: "it"
+    shortDescription: "Un bot personalizzato per il nostro server Discord di Assetto Corsa che automatizza gestione del server, ticket di supporto, giveaway, annunci di eventi, ingresso dei membri e altro."
+    description: "RxN Discord Server Bot riunisce gli strumenti operativi necessari a una community gaming: ticket, onboarding, annunci, giveaway, moderazione e automazioni quotidiane. È stato progettato per ridurre il lavoro manuale dello staff e offrire ai membri interazioni più rapide e organizzate."
+    category: "Bot Discord"
+    status: "In sviluppo"
+    systems: ["Gestione ticket di supporto", "Onboarding dei membri", "Giveaway automatizzati", "Annunci di eventi", "Strumenti di moderazione", "Messaggi e notifiche automatiche", "Gestione della community"]
+  - language: "fr"
+    shortDescription: "Un bot personnalisé pour notre serveur Discord Assetto Corsa qui automatise la gestion, les tickets, les concours, les annonces d'événements, l'accueil des membres et plus encore."
+    description: "RxN Discord Server Bot rassemble les outils nécessaires à une communauté gaming : tickets, accueil, annonces, concours, modération et automatisations quotidiennes. Il réduit le travail manuel du staff et offre aux membres des interactions plus rapides et mieux organisées."
+    category: "Bot Discord"
+    status: "En développement"
+    systems: ["Gestion des tickets d'assistance", "Accueil des membres", "Concours automatisés", "Annonces d'événements", "Outils de modération", "Messages et notifications automatiques", "Gestion de communauté"]
+  - language: "es"
+    shortDescription: "Un bot personalizado para nuestro servidor Discord de Assetto Corsa que automatiza gestión, tickets, sorteos, anuncios de eventos, incorporación de miembros y mucho más."
+    description: "RxN Discord Server Bot reúne las herramientas operativas de una comunidad gaming: tickets, incorporación, anuncios, sorteos, moderación y automatizaciones diarias. Reduce el trabajo manual del equipo y ofrece a los miembros interacciones más rápidas y organizadas."
+    category: "Bot de Discord"
+    status: "En desarrollo"
+    systems: ["Gestión de tickets de soporte", "Incorporación de miembros", "Sorteos automatizados", "Anuncios de eventos", "Herramientas de moderación", "Mensajes y notificaciones automáticas", "Gestión de comunidad"]
 draft: false
 ---
 

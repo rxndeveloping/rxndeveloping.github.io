@@ -9,13 +9,13 @@ const isDev = import.meta.env.DEV;
   <div class="container footer-grid">
     <div>
       <a class="footer-mark" href={sitePath()}>RxN<span>Developing</span></a>
-      <p>Custom software, automation, gaming tools, and digital systems.</p>
+      <p data-i18n="footer.description">Custom software, automation, gaming tools, websites, and digital systems.</p>
     </div>
     <div class="footer-links" aria-label="Footer navigation">
-      <a href={sitePath('projects/')}>Projects</a>
-      <a href={sitePath('about/')}>About</a>
-      <a href={sitePath('contact/')}>Contact</a>
-      {isDev && <a href={sitePath('studio/')}>Project Studio</a>}
+      <a href={sitePath('projects/')} data-i18n="nav.portfolio">Portfolio</a>
+      <a href={sitePath('about/')} data-i18n="nav.about">About</a>
+      <a href={sitePath('contact/')} data-i18n="nav.contact">Contact</a>
+      {isDev && <a href={sitePath('studio/')} data-i18n="nav.studio">Project Studio</a>}
     </div>
     <div class="footer-contact">
       <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(socials.email)}`} target="_blank" rel="noreferrer">{socials.email}</a>
@@ -24,6 +24,6 @@ const isDev = import.meta.env.DEV;
   </div>
   <div class="container footer-bottom">
     <span>© {year} RxN Developing</span>
-    <span>Built to evolve.</span>
+    <span data-i18n="footer.built">Built to evolve.</span>
   </div>
 </footer>

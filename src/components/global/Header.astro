@@ -1,12 +1,13 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
+import LanguageSelector from './LanguageSelector.astro';
 import { assetPath, sitePath } from '../../utils/paths';
 
 const links = [
-  { href: '', label: 'Home' },
-  { href: 'projects/', label: 'Projects' },
-  { href: 'about/', label: 'About' },
-  { href: 'contact/', label: 'Contact' }
+  { href: '', label: 'Home', key: 'nav.home' },
+  { href: 'projects/', label: 'Portfolio', key: 'nav.portfolio' },
+  { href: 'about/', label: 'About', key: 'nav.about' },
+  { href: 'contact/', label: 'Contact', key: 'nav.contact' }
 ];
 const currentPath = Astro.url.pathname;
 const isDev = import.meta.env.DEV;
@@ -21,10 +22,11 @@ const isDev = import.meta.env.DEV;
       {links.map((link) => {
         const href = sitePath(link.href);
         const isActive = link.href === '' ? currentPath === href : currentPath.startsWith(href);
-        return <a href={href} aria-current={isActive ? 'page' : undefined}>{link.label}</a>;
+        return <a href={href} aria-current={isActive ? 'page' : undefined} data-i18n={link.key}>{link.label}</a>;
       })}
     </nav>
     <div class="header-actions">
+      <LanguageSelector />
       <ThemeToggle />
       <button class="menu-toggle" type="button" data-menu-toggle aria-controls="mobile-menu" aria-expanded="false">
         <span></span><span></span><span></span>
@@ -34,8 +36,8 @@ const isDev = import.meta.env.DEV;
   </div>
   <nav class="mobile-nav" id="mobile-menu" data-mobile-menu aria-label="Mobile navigation">
     <div class="container">
-      {links.map((link) => <a href={sitePath(link.href)}>{link.label}</a>)}
-      {isDev && <a href={sitePath('studio/')}>Project Studio</a>}
+      {links.map((link) => <a href={sitePath(link.href)} data-i18n={link.key}>{link.label}</a>)}
+      {isDev && <a href={sitePath('studio/')} data-i18n="nav.studio">Project Studio</a>}
     </div>
   </nav>
 </header>

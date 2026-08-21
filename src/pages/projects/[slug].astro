@@ -15,25 +15,33 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 const data = project.data;
 const hasBody = Boolean(project.body?.trim().length);
+const localized = (language: 'it' | 'fr' | 'es') => data.translations.find((item) => item.language === language);
+const it = localized('it');
+const fr = localized('fr');
+const es = localized('es');
+const roleTranslation = (member: 'ryze' | 'ninja', language: 'it' | 'fr' | 'es') => {
+  const translation = localized(language);
+  return member === 'ryze' ? translation?.roleRyze : translation?.roleNinja;
+};
 ---
 
 <BaseLayout title={data.seo?.title || data.title} description={data.seo?.description || data.shortDescription} image={data.seo?.image || data.cover?.src}>
   <article class="project-detail">
     <header class="project-hero">
       <div class="container">
-        <a class="back-link" href={sitePath('projects/')}><span aria-hidden="true">←</span> All projects</a>
+        <a class="back-link" href={sitePath('projects/')} data-i18n="project.back">← All projects</a>
         <div class="project-hero__grid">
           <div>
             <div class="project-hero__meta">
-              {data.category && <span>{data.category}</span>}
-              {data.status && <span class="status-dot">{data.status}</span>}
+              {data.category && <span data-localized data-localized-en={data.category} data-localized-it={it?.category} data-localized-fr={fr?.category} data-localized-es={es?.category}>{data.category}</span>}
+              {data.status && <span class="status-dot" data-localized data-localized-en={data.status} data-localized-it={it?.status} data-localized-fr={fr?.status} data-localized-es={es?.status}>{data.status}</span>}
             </div>
             <h1>{data.title}</h1>
-            <p>{data.shortDescription}</p>
+            <p data-localized data-localized-en={data.shortDescription} data-localized-it={it?.shortDescription} data-localized-fr={fr?.shortDescription} data-localized-es={es?.shortDescription}>{data.shortDescription}</p>
           </div>
           <div class="project-hero__aside">
-            {data.developmentPeriod && <div><span>Development</span><strong>{data.developmentPeriod}</strong></div>}
-            {data.contributors.length > 0 && <div><span>Team</span><strong>{data.contributors.map((item) => item.member === 'ryze' ? 'Ryze' : 'Ninja').join(' · ')}</strong></div>}
+            {data.developmentPeriod && <div><span data-i18n="project.development">Development</span><strong>{data.developmentPeriod}</strong></div>}
+            {data.contributors.length > 0 && <div><span data-i18n="project.team">Team</span><strong>{data.contributors.map((item) => item.member === 'ryze' ? 'Ryze' : 'Ninja').join(' · ')}</strong></div>}
           </div>
         </div>
       </div>
@@ -43,15 +51,16 @@ const hasBody = Boolean(project.body?.trim().length);
 
     <div class="container project-content-grid">
       <div class="project-main">
-        {hasBody && <section class="prose"><Content /></section>}
-        {data.systems.length > 0 && <section class="detail-section"><p class="mono-label">Systems developed</p><ul class="system-list">{data.systems.map((system) => <li>{system}</li>)}</ul></section>}
-        {data.gallery.length > 0 && <section class="detail-section"><p class="mono-label">Gallery</p><MediaGallery images={data.gallery} /></section>}
-        {data.videos.length > 0 && <section class="detail-section"><p class="mono-label">Video</p><VideoGallery videos={data.videos} /></section>}
+        {hasBody && <section class="prose" data-project-copy="en"><Content /></section>}
+        {data.translations.filter((item) => item.description).map((item) => <section class="prose" data-project-copy={item.language} hidden>{item.description?.split(/\n\n+/).map((paragraph) => <p>{paragraph}</p>)}</section>)}
+        {data.systems.length > 0 && <section class="detail-section"><p class="mono-label" data-i18n="project.systems">Systems developed</p><ul class="system-list">{data.systems.map((system, index) => <li data-localized data-localized-en={system} data-localized-it={it?.systems[index]} data-localized-fr={fr?.systems[index]} data-localized-es={es?.systems[index]}>{system}</li>)}</ul></section>}
+        {data.gallery.length > 0 && <section class="detail-section"><p class="mono-label" data-i18n="project.gallery">Gallery</p><MediaGallery images={data.gallery} /></section>}
+        {data.videos.length > 0 && <section class="detail-section"><p class="mono-label" data-i18n="project.video">Video</p><VideoGallery videos={data.videos} /></section>}
       </div>
       <aside class="project-sidebar">
-        {data.technologies.length > 0 && <section><p class="mono-label">Technologies</p><ul class="tag-list tag-list--large">{data.technologies.map((technology) => <li>{technology}</li>)}</ul></section>}
-        {data.contributors.length > 0 && <section><p class="mono-label">Team roles</p>{data.contributors.map((item) => <div class="contribution"><strong>{item.member === 'ryze' ? 'Ryze' : 'Ninja'}</strong><span>{item.role}</span></div>)}</section>}
-        {Object.values(data.links).some(Boolean) && <section><p class="mono-label">Links</p><div class="project-links">{data.links.github && <a href={data.links.github} target="_blank" rel="noreferrer">GitHub <span>↗</span></a>}{data.links.demo && <a href={data.links.demo} target="_blank" rel="noreferrer">Live demo <span>↗</span></a>}{data.links.download && <a href={data.links.download} target="_blank" rel="noreferrer">Download <span>↗</span></a>}</div></section>}
+        {data.technologies.length > 0 && <section><p class="mono-label" data-i18n="project.technologies">Technologies</p><ul class="tag-list tag-list--large">{data.technologies.map((technology) => <li>{technology}</li>)}</ul></section>}
+        {data.contributors.length > 0 && <section><p class="mono-label" data-i18n="project.roles">Team roles</p>{data.contributors.map((item) => <div class="contribution"><strong>{item.member === 'ryze' ? 'Ryze' : 'Ninja'}</strong><span data-localized data-localized-en={item.role} data-localized-it={roleTranslation(item.member, 'it')} data-localized-fr={roleTranslation(item.member, 'fr')} data-localized-es={roleTranslation(item.member, 'es')}>{item.role}</span></div>)}</section>}
+        {Object.values(data.links).some(Boolean) && <section><p class="mono-label" data-i18n="project.links">Links</p><div class="project-links">{data.links.github && <a href={data.links.github} target="_blank" rel="noreferrer">GitHub <span>↗</span></a>}{data.links.demo && <a href={data.links.demo} target="_blank" rel="noreferrer">Live demo <span>↗</span></a>}{data.links.download && <a href={data.links.download} target="_blank" rel="noreferrer">Download <span>↗</span></a>}</div></section>}
       </aside>
     </div>
   </article>
