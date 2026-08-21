@@ -1,0 +1,8 @@
+---
+import AdvancedConceptPage from '../../../components/showcase/AdvancedConceptPage.astro';
+import { advancedShowcases, type AdvancedConcept } from '../../../data/advancedShowcases';
+export function getStaticPaths(){ return advancedShowcases.map((concept)=>({params:{concept:concept.slug},props:{concept}})); }
+interface Props { concept: AdvancedConcept }
+const { concept } = Astro.props;
+---
+<AdvancedConceptPage concept={concept} />
