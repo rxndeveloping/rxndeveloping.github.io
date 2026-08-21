@@ -10,19 +10,20 @@ const fr = localized('fr');
 const es = localized('es');
 ---
 
-<article class="project-card reveal" style={`--delay:${Math.min(index * 70, 280)}ms`}>
-  <a class="project-card__link" href={sitePath(`projects/${data.slug}/`)} aria-label={`View ${data.title}`}>
+<article class:list={['project-card', 'reveal', data.portfolioType === 'website' && 'project-card--website']} style={`--delay:${Math.min(index * 70, 280)}ms`}>
+  <div class="project-card__link">
+    <a href={sitePath(`projects/${data.slug}/`)} aria-label={`View ${data.title}`}>
     <div class:list={['project-card__media', !data.cover && 'project-card__media--empty']}>
       {data.cover
         ? <img src={assetPath(data.cover.src)} alt={data.cover.alt} loading="lazy" style={`object-position:${data.cover.position || 'center'}`} />
         : <span aria-hidden="true">{String(index + 1).padStart(2, '0')} / RxN</span>}
-    </div>
+    </div></a>
     <div class="project-card__body">
       <div class="project-card__meta">
         {data.category && <span data-localized data-localized-en={data.category} data-localized-it={it?.category} data-localized-fr={fr?.category} data-localized-es={es?.category}>{data.category}</span>}
         {data.status && <span class="status-dot" data-localized data-localized-en={data.status} data-localized-it={it?.status} data-localized-fr={fr?.status} data-localized-es={es?.status}>{data.status}</span>}
       </div>
-      <h3>{data.title}</h3>
+      <h3><a href={sitePath(`projects/${data.slug}/`)}>{data.title}</a></h3>
       <p data-localized data-localized-en={data.shortDescription} data-localized-it={it?.shortDescription} data-localized-fr={fr?.shortDescription} data-localized-es={es?.shortDescription}>{data.shortDescription}</p>
       {data.technologies.length > 0 && (
         <ul class="tag-list" aria-label="Technologies">
@@ -30,7 +31,10 @@ const es = localized('es');
           {data.technologies.length > 4 && <li>+{data.technologies.length - 4}</li>}
         </ul>
       )}
-      <span class="project-card__cta"><span data-i18n="project.view">View project</span><span aria-hidden="true">↗</span></span>
+      <div class="project-card__actions">
+        {data.portfolioType === 'website' && data.links.demo && <a class="project-card__demo" href={data.links.demo} target="_blank" rel="noreferrer"><span data-localized data-localized-en="Open live website" data-localized-it="Apri il sito web" data-localized-fr="Ouvrir le site" data-localized-es="Abrir el sitio web">Open live website</span><span aria-hidden="true">↗</span></a>}
+        <a class="project-card__details" href={sitePath(`projects/${data.slug}/`)}><span data-localized data-localized-en="Project details" data-localized-it="Dettagli progetto" data-localized-fr="Détails du projet" data-localized-es="Detalles del proyecto">Project details</span><span aria-hidden="true">→</span></a>
+      </div>
     </div>
-  </a>
+  </div>
 </article>

@@ -20,3 +20,17 @@ export const aureonNav = [
   { href: '/showcase/aureon-industries/projects/', label: copy('Projects', 'Progetti', 'Projets', 'Proyectos') },
 ];
 export const aureonCta = { href: '/showcase/aureon-industries/contact/', label: copy('Start a project', 'Avvia un progetto', 'Démarrer un projet', 'Iniciar un proyecto') };
+
+export const noxNav = [
+  { href: '/showcase/nox-social-club/', label: copy('Home', 'Home', 'Accueil', 'Inicio') },
+  { href: '/showcase/nox-social-club/cocktails/', label: copy('Cocktails', 'Cocktail', 'Cocktails', 'Cócteles') },
+  { href: '/showcase/nox-social-club/nights/', label: copy('Nights', 'Serate', 'Soirées', 'Noches') },
+];
+export const noxCta = { href: '/showcase/nox-social-club/reserve/', label: copy('Join the night', 'Prenota la serata', 'Réserver la soirée', 'Reservar la noche') };
+
+export const mareaNav = [
+  { href: '/showcase/marea-beach-club/', label: copy('Home', 'Home', 'Accueil', 'Inicio') },
+  { href: '/showcase/marea-beach-club/dining/', label: copy('Dining', 'Cucina', 'Cuisine', 'Cocina') },
+  { href: '/showcase/marea-beach-club/experiences/', label: copy('Experiences', 'Esperienze', 'Expériences', 'Experiencias') },
+];
+export const mareaCta = { href: '/showcase/marea-beach-club/book/', label: copy('Plan your day', 'Organizza la giornata', 'Planifier la journée', 'Planifica tu día') };

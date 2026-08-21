@@ -4,13 +4,17 @@ import ShowcaseText from '../components/showcase/ShowcaseText.astro';
 import '../styles/showcase-lume.css';
 import '../styles/showcase-braci.css';
 import '../styles/showcase-aureon.css';
+import '../styles/showcase-nox.css';
+import '../styles/showcase-marea.css';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/space-grotesk';
 
 type Copy = { en: string; it: string; fr: string; es: string };
 interface Props {
   title: string;
   description: string;
   brand: string;
-  variant: 'lume' | 'braci' | 'aureon';
+  variant: 'lume' | 'braci' | 'aureon' | 'nox' | 'marea';
   home: string;
   nav: Array<{ href: string; label: Copy }>;
   cta?: { href: string; label: Copy };
@@ -47,6 +51,42 @@ const { title, description, brand, variant, home, nav, cta } = Astro.props;
       <p><ShowcaseText en="Demonstration website: brand, company, contacts, and availability are fictional." it="Sito dimostrativo: brand, attività, contatti e disponibilità sono immaginari." fr="Site de démonstration : marque, entreprise, contacts et disponibilités sont fictifs." es="Sitio de demostración: marca, empresa, contactos y disponibilidad son ficticios." /></p>
       <p><ShowcaseText en="Design and development by" it="Design e sviluppo di" fr="Design et développement par" es="Diseño y desarrollo por" /> <a href="/">RxN Developing</a></p>
     </footer>
+    <script>
+      const monthInput = document.querySelector<HTMLInputElement>('.showcase--aureon input[type="month"]');
+      if (monthInput) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'aureon-month-picker';
+        const months = [
+          ['January','Gennaio','Janvier','Enero'],['February','Febbraio','Février','Febrero'],['March','Marzo','Mars','Marzo'],
+          ['April','Aprile','Avril','Abril'],['May','Maggio','Mai','Mayo'],['June','Giugno','Juin','Junio'],
+          ['July','Luglio','Juillet','Julio'],['August','Agosto','Août','Agosto'],['September','Settembre','Septembre','Septiembre'],
+          ['October','Ottobre','Octobre','Octubre'],['November','Novembre','Novembre','Noviembre'],['December','Dicembre','Décembre','Diciembre']
+        ];
+        const month = document.createElement('select');
+        month.ariaLabel = 'Month';
+        months.forEach((labels, index) => {
+          const option = document.createElement('option');
+          option.value = String(index + 1).padStart(2, '0');
+          option.textContent = labels[0];
+          option.dataset.showcaseCopy = '';
+          ['en','it','fr','es'].forEach((language, labelIndex) => option.dataset[`copy${language[0].toUpperCase()}${language.slice(1)}`] = labels[labelIndex]);
+          month.append(option);
+        });
+        const year = document.createElement('select');
+        year.ariaLabel = 'Year';
+        ['2026','2027','2028'].forEach((value) => year.add(new Option(value, value)));
+        wrapper.append(month, year);
+        monthInput.replaceWith(wrapper);
+        const initialLanguage = document.documentElement.lang as 'en' | 'it' | 'fr' | 'es';
+        const initialIndex = Math.max(0, ['en','it','fr','es'].indexOf(initialLanguage));
+        Array.from(month.options).forEach((option, optionIndex) => option.textContent = months[optionIndex][initialIndex]);
+        window.addEventListener('showcase-language-change', (event) => {
+          const language = (event as CustomEvent<{ language: 'en' | 'it' | 'fr' | 'es' }>).detail.language;
+          const index = ['en','it','fr','es'].indexOf(language);
+          Array.from(month.options).forEach((option, optionIndex) => option.textContent = months[optionIndex][index]);
+        });
+      }
+    </script>
   </body>
 </html>
 

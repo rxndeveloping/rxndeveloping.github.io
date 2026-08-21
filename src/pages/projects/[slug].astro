@@ -38,6 +38,7 @@ const roleTranslation = (member: 'ryze' | 'ninja', language: 'it' | 'fr' | 'es')
             </div>
             <h1>{data.title}</h1>
             <p data-localized data-localized-en={data.shortDescription} data-localized-it={it?.shortDescription} data-localized-fr={fr?.shortDescription} data-localized-es={es?.shortDescription}>{data.shortDescription}</p>
+            {data.portfolioType === 'website' && data.links.demo && <a class="project-live-cta" href={data.links.demo} target="_blank" rel="noreferrer"><span data-localized data-localized-en="Open the live website" data-localized-it="Apri il sito web completo" data-localized-fr="Ouvrir le site complet" data-localized-es="Abrir el sitio web completo">Open the live website</span><span aria-hidden="true">↗</span></a>}
           </div>
           <div class="project-hero__aside">
             {data.developmentPeriod && <div><span data-i18n="project.development">Development</span><strong>{data.developmentPeriod}</strong></div>}

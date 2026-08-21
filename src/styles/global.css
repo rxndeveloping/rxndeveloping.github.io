@@ -170,6 +170,14 @@ em { color: var(--red-soft); font-style: normal; }
 .tag-list li { padding: 5px 9px; border: 1px solid var(--border); border-radius: 99px; color: var(--text-soft); font-family: 'IBM Plex Mono'; font-size: .64rem; }
 .project-card__cta { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 25px; font-weight: 650; font-size: .87rem; }
 .project-card__cta span { color: var(--red-soft); }
+.project-card__actions { display: grid; gap: 9px; margin-top: auto; padding-top: 25px; }
+.project-card__actions a { min-height: 46px; display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 0 15px; border: 1px solid var(--border); border-radius: 8px; font-size: .84rem; font-weight: 650; }
+.project-card__actions .project-card__demo { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 0 10px 24px rgba(200,5,9,.22); }
+.project-card__actions .project-card__demo:hover { background: #e20a0f; }
+.project-card__link > a:first-child { display: block; }
+.project-card__details:hover { border-color: var(--red); color: var(--red-soft); }
+.project-live-cta { width: fit-content; min-height: 52px; display: inline-flex; align-items: center; gap: 24px; margin-top: 30px; padding: 0 21px; border-radius: 8px; background: var(--red); color: #fff; font-weight: 700; box-shadow: 0 14px 30px rgba(200,5,9,.25); }
+.project-live-cta:hover { background: #e20a0f; transform: translateY(-2px); }
 
 .empty-projects { position: relative; min-height: 360px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: clamp(2rem, 6vw, 5rem); border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(130deg, var(--surface), transparent), repeating-linear-gradient(90deg, transparent 0 69px, var(--border) 70px); overflow: hidden; }
 .empty-projects::after { content: ''; position: absolute; right: 7%; width: 200px; height: 200px; border: 1px solid var(--border-strong); border-radius: 50%; box-shadow: 0 0 0 34px var(--border), 0 0 0 68px var(--border); }
