@@ -36,12 +36,12 @@ const Site = sites[concept.tool];
       if(kind==='automotive')value=Math.max(0,((value-(Number(range?.value)||0))/48)*1.035);
       if(kind==='travel')value=value*(Number(range?.value)||1);
       if(kind==='academy'){if(total)total.textContent=`${Math.min(value,100)} / 100`;return}
-      if(kind==='clinic'){if(total)total.textContent=selected.size?'MATCH READY':'—';return}
-      if(total)total.textContent=value?new Intl.NumberFormat('en-IE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(value):'—';
+      if(kind==='clinic'){const labels={en:'MATCH READY',it:'PERCORSO PRONTO',fr:'PARCOURS PRÊT',es:'RUTA LISTA'};if(total)total.textContent=selected.size?labels[(document.documentElement.lang as keyof typeof labels)||'en']:'—';return}
+      const locales={en:'en-IE',it:'it-IT',fr:'fr-FR',es:'es-ES'};const language=(document.documentElement.lang as keyof typeof locales)||'en';if(total)total.textContent=value?new Intl.NumberFormat(locales[language],{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(value):'—';
     }
     options.forEach((item)=>item.addEventListener('click',()=>{if(single)options.forEach((other)=>{other.classList.remove('active');selected.delete(other)});item.classList.toggle('active');if(item.classList.contains('active'))selected.add(item);else selected.delete(item);calculate()}));
     tool.querySelectorAll<HTMLButtonElement>('[data-seat]').forEach((seat)=>seat.addEventListener('click',()=>{seat.classList.toggle('active');calculate()}));
     range?.addEventListener('input',()=>{if(output)output.textContent=kind==='automotive'?`€${Number(range.value).toLocaleString()}`:range.value;calculate()});
-    tool.querySelector('[data-system-submit]')?.addEventListener('click',()=>{const result=tool.querySelector<HTMLElement>('[data-system-result]');if(result)result.hidden=false}); calculate();
+    tool.querySelector('[data-system-submit]')?.addEventListener('click',()=>{const result=tool.querySelector<HTMLElement>('[data-system-result]');if(result)result.hidden=false;if(kind==='tickets'&&result){const timer=result.querySelector<HTMLElement>('strong');if(timer){const labels={en:'SEATS HELD',it:'POSTI BLOCCATI',fr:'PLACES BLOQUÉES',es:'ASIENTOS BLOQUEADOS'};const language=(document.documentElement.lang as keyof typeof labels)||'en';let remaining=300;const previous=Number(timer.dataset.interval);if(previous)window.clearInterval(previous);const tick=()=>{remaining=Math.max(0,remaining-1);timer.textContent=`${labels[language]} / ${String(Math.floor(remaining/60)).padStart(2,'0')}:${String(remaining%60).padStart(2,'0')}`};tick();const id=window.setInterval(()=>{tick();if(remaining===0)window.clearInterval(id)},1000);timer.dataset.interval=String(id)}}}); calculate();
   });
 </script>

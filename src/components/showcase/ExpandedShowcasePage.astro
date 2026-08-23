@@ -1,150 +1,104 @@
 ---
 import ShowcaseShell from '../../layouts/ShowcaseShell.astro';
-import ShowcaseText from './ShowcaseText.astro';
+import T from './ShowcaseText.astro';
 import type { ExpansionPage, ExpansionSite } from '../../data/showcaseExpansion';
+import { experienceFor } from '../../data/showcaseExperiences';
 
 interface Props { site: ExpansionSite; page: ExpansionPage }
 const { site, page } = Astro.props;
-const homeLabel = { en:'Home', it:'Home', fr:'Accueil', es:'Inicio' };
-const nav = [
-  { href:`/showcase/${site.slug}/`, label:homeLabel },
-  ...site.pages.map((item) => ({ href:`/showcase/${site.slug}/${item.slug}/`, label:item.label }))
-];
-const cta = { href:`/showcase/${site.slug}/${site.pages[(site.pages.indexOf(page) + 1) % site.pages.length].slug}/`, label:{en:'Next chapter',it:'Prossimo capitolo',fr:'Chapitre suivant',es:'Siguiente capítulo'} };
-const modules = {
-  hospitality: [
-    ['01','Spaces & atmosphere','Spazi e atmosfera','Espaces et ambiance','Espacios y ambiente'],
-    ['02','Menus & formats','Menu e formule','Menus et formules','Menús y formatos'],
-    ['03','Planning & production','Pianificazione e produzione','Planification et production','Planificación y producción'],
-  ],
-  commerce: [
-    ['01','Browse the collection','Esplora la selezione','Explorer la sélection','Explora la selección'],
-    ['02','Compare the details','Confronta i dettagli','Comparer les détails','Compara los detalles'],
-    ['03','Configure the request','Configura la richiesta','Configurer la demande','Configura la solicitud'],
-  ],
-  product: [
-    ['01','Control centre','Centro di controllo','Centre de contrôle','Centro de control'],
-    ['02','Connected workflows','Workflow connessi','Workflows connectés','Flujos conectados'],
-    ['03','Reports & decisions','Report e decisioni','Rapports et décisions','Informes y decisiones'],
-  ],
-  technical: [
-    ['01','Architecture','Architettura','Architecture','Arquitectura'],
-    ['02','Security controls','Controlli di sicurezza','Contrôles de sécurité','Controles de seguridad'],
-    ['03','Operational evidence','Evidenze operative','Preuves opérationnelles','Evidencia operativa'],
-  ],
-  event: [
-    ['01','Programme','Programma','Programme','Programa'],
-    ['02','Live access','Accesso live','Accès live','Acceso en vivo'],
-    ['03','Venue & community','Venue e community','Lieu et communauté','Lugar y comunidad'],
-  ],
-  service: [
-    ['01','Tell us what you need','Raccontaci cosa ti serve','Dites-nous votre besoin','Cuéntanos qué necesitas'],
-    ['02','Build your plan','Costruisci il piano','Construisez votre plan','Construye tu plan'],
-    ['03','Track every step','Segui ogni fase','Suivez chaque étape','Sigue cada etapa'],
-  ],
-  editorial: [
-    ['01','Latest stories','Ultime storie','Derniers récits','Últimas historias'],
-    ['02','People & practice','Persone e pratica','Personnes et pratique','Personas y práctica'],
-    ['03','Archive & research','Archivio e ricerca','Archives et recherche','Archivo e investigación'],
-  ]
-}[page.kind];
-const verb = page.kind === 'event' ? ['Check availability','Controlla disponibilità','Voir les disponibilités','Ver disponibilidad'] : page.kind === 'editorial' ? ['Open the archive','Apri l’archivio','Ouvrir les archives','Abrir el archivo'] : ['Start the guided journey','Inizia il percorso guidato','Commencer le parcours','Iniciar el recorrido'];
+const experience = experienceFor(site.slug,page.slug);
+if(!experience) throw new Error(`Missing showcase experience: ${site.slug}/${page.slug}`);
+const nav=[{href:`/showcase/${site.slug}/`,label:{en:'Home',it:'Home',fr:'Accueil',es:'Inicio'}},...site.pages.map(item=>({href:`/showcase/${site.slug}/${item.slug}/`,label:item.label}))];
+const next=site.pages[(site.pages.indexOf(page)+1)%site.pages.length];
+const cta={href:`/showcase/${site.slug}/${next.slug}/`,label:{en:'Next section',it:'Sezione successiva',fr:'Section suivante',es:'Siguiente sección'}};
+const editorials=experience.items;
 ---
 <ShowcaseShell title={`${page.title.en} — ${site.brand}`} description={page.intro.en} brand={site.brand} variant={site.variant as any} home={`/showcase/${site.slug}/`} nav={nav} cta={cta}>
-  <article class={`expansion-page expansion-page--${page.kind}`}>
-    <header class="expansion-hero">
-      <div class="expansion-hero__copy">
-        <p class="expansion-kicker"><ShowcaseText {...page.label} /> · {site.brand}</p>
-        <h1><ShowcaseText {...page.title} /></h1>
-        <p class="expansion-lead"><ShowcaseText {...page.intro} /></p>
-        <a href="#explore" class="expansion-primary"><ShowcaseText en={verb[0]} it={verb[1]} fr={verb[2]} es={verb[3]} /> <span>↓</span></a>
-      </div>
-      <figure>
-        <img src={site.image} alt="" loading="eager" />
-        <figcaption>{page.kind.toUpperCase()} / {new Date().getFullYear()}</figcaption>
-      </figure>
+  <article class={`experience experience--${experience.layout}`} data-experience={experience.layout}>
+    <header class="experience-hero">
+      <div class="experience-hero__copy"><p class="experience-kicker"><T {...page.label}/> / {site.brand}</p><h1><T {...page.title}/></h1><T as="p" class="experience-intro" {...page.intro}/></div>
+      <figure><img src={site.image} alt=""/><figcaption>{site.brand} / {page.slug.replaceAll('-',' ').toUpperCase()}</figcaption></figure>
     </header>
 
-    <section class="expansion-overview" id="explore">
-      <div class="expansion-section-title">
-        <span>01</span>
-        <h2><ShowcaseText en="A complete journey, not a single screen." it="Un percorso completo, non una singola schermata." fr="Un parcours complet, pas un simple écran." es="Un recorrido completo, no una sola pantalla." /></h2>
-      </div>
-      <div class="expansion-module-grid">
-        {modules.map((module) => (
-          <article>
-            <span>{module[0]}</span>
-            <h3><ShowcaseText en={module[1]} it={module[2]} fr={module[3]} es={module[4]} /></h3>
-            <p><ShowcaseText en="Detailed information, meaningful choices, live feedback, and a clear next action are designed into every step." it="Informazioni dettagliate, scelte utili, feedback live e una prossima azione chiara sono progettati in ogni fase." fr="Informations détaillées, choix utiles, retour live et prochaine action claire à chaque étape." es="Información detallada, decisiones útiles, feedback en vivo y una acción clara en cada paso." /></p>
-          </article>
-        ))}
-      </div>
-    </section>
+    {experience.layout==='editorial' && <section class="xp-editorial">
+      <article class="xp-editorial__lead"><span>01 / <T en="Feature" it="In evidenza" fr="À la une" es="Destacado"/></span><h2><T {...editorials[0].title}/></h2>{editorials[0].detail&&<T as="p" {...editorials[0].detail}/>}<T as="b" {...editorials[0].meta}/><a href="#article"><T en="Read the full story" it="Leggi la storia completa" fr="Lire l’histoire complète" es="Leer la historia completa"/> ↗</a></article>
+      <div class="xp-editorial__list">{editorials.slice(1).map((item,index)=><article><span>0{index+2}</span><div><T as="small" {...item.meta}/><h3><T {...item.title}/></h3>{item.detail&&<T as="p" {...item.detail}/>}</div><a href="#article" aria-label="Open">↗</a></article>)}</div>
+      <aside><T as="strong" en="Browse the archive" it="Esplora l’archivio" fr="Parcourir les archives" es="Explorar el archivo"/><div><button><T en="Stories" it="Storie" fr="Récits" es="Historias"/></button><button><T en="People" it="Persone" fr="Personnes" es="Personas"/></button><button><T en="Research" it="Ricerca" fr="Recherche" es="Investigación"/></button><button><T en="Guides" it="Guide" fr="Guides" es="Guías"/></button></div></aside>
+    </section>}
 
-    <section class="expansion-workspace">
-      <div class="expansion-workspace__rail">
-        <span>02 / LIVE MODULE</span>
-        <h2><ShowcaseText en="Make the experience respond." it="Fai rispondere l’esperienza." fr="Rendez l’expérience réactive." es="Haz que la experiencia responda." /></h2>
-        <p><ShowcaseText en="This interactive prototype turns browsing into a guided decision with filters, states, and immediate confirmation." it="Questo prototipo interattivo trasforma la navigazione in una decisione guidata con filtri, stati e conferma immediata." fr="Ce prototype transforme la navigation en décision guidée avec filtres, états et confirmation immédiate." es="Este prototipo convierte la navegación en una decisión guiada con filtros, estados y confirmación inmediata." /></p>
-      </div>
-      <div class="expansion-console" data-expansion-console>
-        <div class="expansion-console__top"><span></span><span></span><span></span><b>{site.brand} / CONTROL</b></div>
-        <div class="expansion-console__body">
-          <p><ShowcaseText en="Choose your priority" it="Scegli la priorità" fr="Choisissez votre priorité" es="Elige tu prioridad" /></p>
-          <div class="expansion-options">
-            <button type="button" class="active"><ShowcaseText en="Personalised" it="Personalizzato" fr="Personnalisé" es="Personalizado" /></button>
-            <button type="button"><ShowcaseText en="Fastest" it="Più rapido" fr="Le plus rapide" es="Más rápido" /></button>
-            <button type="button"><ShowcaseText en="Most complete" it="Più completo" fr="Le plus complet" es="Más completo" /></button>
-          </div>
-          <label><span><ShowcaseText en="Intensity / scope" it="Intensità / portata" fr="Intensité / portée" es="Intensidad / alcance" /></span><input type="range" min="1" max="5" value="3" /></label>
-          <div class="expansion-result">
-            <span><ShowcaseText en="Recommended path" it="Percorso consigliato" fr="Parcours conseillé" es="Recorrido recomendado" /></span>
-            <strong data-expansion-result>03 / BALANCED</strong>
-          </div>
-          <button class="expansion-confirm" type="button"><ShowcaseText en="Confirm selection" it="Conferma selezione" fr="Confirmer" es="Confirmar selección" /></button>
-          <output hidden><ShowcaseText en="Selection saved in this demo." it="Selezione salvata in questa demo." fr="Sélection enregistrée dans cette démo." es="Selección guardada en esta demo." /></output>
-        </div>
-      </div>
-    </section>
+    {experience.layout==='catalog' && <section class="xp-catalog" data-catalog>
+      <header><div><span>01 / <T en="Collection" it="Collezione" fr="Collection" es="Colección"/></span><h2><T en="Find the right match." it="Trova la scelta giusta." fr="Trouvez le bon choix." es="Encuentra la opción adecuada."/></h2></div><label><span>⌕</span><input data-catalog-search type="search" data-showcase-placeholder data-placeholder-en="Search the collection" data-placeholder-it="Cerca nella collezione" data-placeholder-fr="Rechercher dans la collection" data-placeholder-es="Buscar en la colección" placeholder="Search the collection"/></label></header>
+      <div class="xp-catalog__filters"><button class="active" data-filter="all"><T en="All" it="Tutti" fr="Tous" es="Todos"/></button>{[...new Set(experience.items.map(item=>item.group).filter(Boolean))].map(group=><button data-filter={group}>{group?.toUpperCase()}</button>)}</div>
+      <div class="xp-catalog__grid">{experience.items.map((item,index)=><article data-catalog-item data-group={item.group||'all'} data-name={item.title.en.toLowerCase()}><div class="xp-catalog__visual"><span>0{index+1}</span><b>{site.brand.slice(0,2).toUpperCase()}</b></div><T as="small" {...item.meta}/><h3><T {...item.title}/></h3>{item.detail&&<T as="p" {...item.detail}/>}<button><T en="View details" it="Vedi dettagli" fr="Voir les détails" es="Ver detalles"/> ↗</button></article>)}</div>
+      <footer><span><T en="Need a recommendation?" it="Hai bisogno di un consiglio?" fr="Besoin d’un conseil ?" es="¿Necesitas una recomendación?"/></span><a href={`mailto:businessrxndeveloping@gmail.com?subject=${encodeURIComponent(site.brand+' concept enquiry')}`}><T en="Speak with a specialist" it="Parla con uno specialista" fr="Parler à un spécialiste" es="Hablar con un especialista"/> ↗</a></footer>
+    </section>}
 
-    <section class="expansion-flow">
-      <div class="expansion-section-title">
-        <span>03</span>
-        <h2><ShowcaseText en="From discovery to follow-through." it="Dalla scoperta al passo successivo." fr="De la découverte au suivi." es="Del descubrimiento al seguimiento." /></h2>
-      </div>
-      <ol>
-        <li><span>01</span><strong><ShowcaseText en="Discover" it="Scopri" fr="Découvrir" es="Descubre" /></strong><p><ShowcaseText en="Clear context before any commitment." it="Contesto chiaro prima di ogni impegno." fr="Un contexte clair avant tout engagement." es="Contexto claro antes de comprometerse." /></p></li>
-        <li><span>02</span><strong><ShowcaseText en="Configure" it="Configura" fr="Configurer" es="Configura" /></strong><p><ShowcaseText en="Choices adapt to needs and availability." it="Le scelte si adattano a esigenze e disponibilità." fr="Les choix s’adaptent aux besoins et disponibilités." es="Las opciones se adaptan a necesidades y disponibilidad." /></p></li>
-        <li><span>03</span><strong><ShowcaseText en="Confirm" it="Conferma" fr="Confirmer" es="Confirma" /></strong><p><ShowcaseText en="A transparent summary before submission." it="Un riepilogo trasparente prima dell’invio." fr="Un résumé transparent avant l’envoi." es="Un resumen transparente antes del envío." /></p></li>
-        <li><span>04</span><strong><ShowcaseText en="Continue" it="Continua" fr="Continuer" es="Continúa" /></strong><p><ShowcaseText en="Useful status, support, and next actions." it="Stato, supporto e prossime azioni utili." fr="Statut, assistance et prochaines actions." es="Estado, soporte y siguientes acciones." /></p></li>
-      </ol>
-    </section>
+    {experience.layout==='directory' && <section class="xp-directory" data-directory>
+      <aside><span>01 / <T en="Directory" it="Elenco" fr="Répertoire" es="Directorio"/></span><h2><T en="People and places, clearly organised." it="Persone e luoghi, organizzati chiaramente." fr="Personnes et lieux, clairement organisés." es="Personas y lugares, claramente organizados."/></h2><T as="p" {...page.intro}/><label><T en="Search" it="Cerca" fr="Rechercher" es="Buscar"/><input data-directory-search type="search" placeholder="…"/></label></aside>
+      <div class="xp-directory__results">{experience.items.map((item,index)=><article data-directory-item data-name={item.title.en.toLowerCase()}><span>0{index+1}</span><div><h3><T {...item.title}/></h3><T as="small" {...item.meta}/>{item.detail&&<T as="p" {...item.detail}/>}</div><button><T en="Open profile" it="Apri profilo" fr="Ouvrir le profil" es="Abrir perfil"/> ↗</button></article>)}</div>
+    </section>}
 
-    <section class="expansion-chapters">
-      <div class="expansion-section-title"><span>04</span><h2><ShowcaseText en="Continue through the ecosystem." it="Continua nell’ecosistema." fr="Continuez dans l’écosystème." es="Continúa por el ecosistema." /></h2></div>
-      <div>
-        {site.pages.filter((item) => item.slug !== page.slug).map((item, index) => (
-          <a href={`/showcase/${site.slug}/${item.slug}/`}><span>0{index + 1}</span><h3><ShowcaseText {...item.title} /></h3><b>↗</b></a>
-        ))}
-      </div>
-    </section>
+    {experience.layout==='order' && <section class="xp-order" data-order>
+      <div class="xp-order__menu"><header><span>01 / <T en="Order" it="Ordina" fr="Commander" es="Pedir"/></span><h2><T en="Build your order." it="Crea il tuo ordine." fr="Composez votre commande." es="Crea tu pedido."/></h2><div><button class="active"><T en="Delivery" it="Consegna" fr="Livraison" es="Entrega"/></button><button><T en="Collection" it="Ritiro" fr="Retrait" es="Recogida"/></button></div></header>{experience.items.map(item=><article><div><h3><T {...item.title}/></h3><T as="small" {...item.meta}/>{item.detail&&<T as="p" {...item.detail}/>}</div><button data-order-add data-price={item.value||0}>+ <T en="Add" it="Aggiungi" fr="Ajouter" es="Añadir"/></button></article>)}</div>
+      <aside class="xp-order__cart"><span><T en="Your order" it="Il tuo ordine" fr="Votre commande" es="Tu pedido"/></span><strong><b data-order-count>0</b> <T en="items" it="articoli" fr="articles" es="artículos"/></strong><dl><div><dt><T en="Subtotal" it="Subtotale" fr="Sous-total" es="Subtotal"/></dt><dd data-order-total>€0</dd></div><div><dt><T en="Delivery" it="Consegna" fr="Livraison" es="Entrega"/></dt><dd>€2.50</dd></div></dl><button data-demo-submit><T en="Choose a time" it="Scegli un orario" fr="Choisir une heure" es="Elegir una hora"/> →</button><output hidden><T en="Demo order ready." it="Ordine dimostrativo pronto." fr="Commande de démonstration prête." es="Pedido de demostración listo."/></output></aside>
+    </section>}
+
+    {experience.layout==='booking' && <section class="xp-booking" data-booking>
+      <header><span>01 / <T en="Live booking demonstration" it="Prenotazione dimostrativa live" fr="Démonstration de réservation" es="Demostración de reserva"/></span><h2><T en="Plan every detail." it="Organizza ogni dettaglio." fr="Planifiez chaque détail." es="Planifica cada detalle."/></h2></header>
+      <form><fieldset><legend><T en="Choose an experience" it="Scegli un’esperienza" fr="Choisissez une expérience" es="Elige una experiencia"/></legend><div class="xp-booking__options">{experience.items.map((item,index)=><label><input type="radio" name="experience" value={item.meta.en} checked={index===0}/><span><b>0{index+1}</b><strong><T {...item.title}/></strong><T as="small" {...item.meta}/></span></label>)}</div></fieldset>
+      <div class="xp-booking__details"><label><T en="Date" it="Data" fr="Date" es="Fecha"/><input required type="date" value="2026-09-18"/></label><label><T en="Guests" it="Ospiti" fr="Convives" es="Personas"/><select><option>2</option><option>4</option><option>6</option><option>8</option></select></label><fieldset><legend><T en="Available time" it="Orario disponibile" fr="Heure disponible" es="Hora disponible"/></legend><div class="xp-booking__times"><label><input type="radio" name="time" checked/><span>18:30</span></label><label><input type="radio" name="time"/><span>20:00</span></label><label><input type="radio" name="time"/><span>21:30</span></label></div></fieldset></div>
+      <div class="xp-booking__contact"><label><T en="Name" it="Nome" fr="Nom" es="Nombre"/><input required/></label><label>Email<input required type="email"/></label><label><T en="Notes" it="Note" fr="Notes" es="Notas"/><textarea rows="3"></textarea></label></div><button type="submit"><T en="Review request" it="Rivedi richiesta" fr="Vérifier la demande" es="Revisar solicitud"/> →</button><output hidden><T en="Request prepared. No real booking was sent." it="Richiesta preparata. Nessuna prenotazione reale è stata inviata." fr="Demande préparée. Aucune réservation réelle n’a été envoyée." es="Solicitud preparada. No se envió ninguna reserva real."/></output></form>
+    </section>}
+
+    {experience.layout==='schedule' && <section class="xp-schedule" data-schedule>
+      <header><div><span>01 / <T en="Programme" it="Programma" fr="Programme" es="Programa"/></span><h2><T en="What is happening next." it="Cosa succede prossimamente." fr="Ce qui arrive ensuite." es="Lo que viene después."/></h2></div><div class="xp-schedule__days"><button class="active">18</button><button>19</button><button>20</button><button>21</button></div></header>
+      <div class="xp-schedule__timeline">{experience.items.map((item,index)=><article><time>{String(10+index*3).padStart(2,'0')}:00</time><div><span><T en="Available" it="Disponibile" fr="Disponible" es="Disponible"/></span><h3><T {...item.title}/></h3><T as="p" {...item.meta}/></div><button data-demo-submit><T en="Reserve" it="Prenota" fr="Réserver" es="Reservar"/> ↗</button><output hidden>✓</output></article>)}</div>
+      <footer><T en="Times and availability are part of this fictional portfolio demonstration." it="Orari e disponibilità fanno parte di questa dimostrazione immaginaria." fr="Horaires et disponibilités font partie de cette démonstration fictive." es="Horarios y disponibilidad forman parte de esta demostración ficticia."/></footer>
+    </section>}
+
+    {experience.layout==='pricing' && <section class="xp-pricing" data-pricing>
+      <header><span>01 / <T en="Plans" it="Piani" fr="Offres" es="Planes"/></span><h2><T en="Clear choices. Real numbers." it="Scelte chiare. Numeri reali." fr="Des choix clairs. Des chiffres réels." es="Opciones claras. Números reales."/></h2><T as="p" {...page.intro}/></header>
+      <div class="xp-pricing__plans">{experience.items.map((item,index)=><article class={index===1?'featured':''}><span>{index===1&&<T en="Most selected" it="Più scelto" fr="Le plus choisi" es="Más elegido"/>}</span><h3><T {...item.title}/></h3><T as="strong" {...item.meta}/>{item.detail&&<T as="p" {...item.detail}/>}<ul><li><T en="Flexible access" it="Accesso flessibile" fr="Accès flexible" es="Acceso flexible"/></li><li><T en="Dedicated support" it="Supporto dedicato" fr="Assistance dédiée" es="Soporte dedicado"/></li><li><T en="No hidden fees" it="Nessun costo nascosto" fr="Aucun frais caché" es="Sin costes ocultos"/></li></ul><button data-plan={item.title.en}><T en="Select plan" it="Seleziona piano" fr="Choisir l’offre" es="Elegir plan"/> →</button></article>)}</div>
+      <output hidden><T en="Plan selected for this demonstration:" it="Piano selezionato per questa dimostrazione:" fr="Offre choisie pour cette démonstration :" es="Plan elegido para esta demostración:"/> <b data-plan-name></b></output>
+      <div class="xp-pricing__compare"><h3><T en="Compare what is included" it="Confronta cosa è incluso" fr="Comparer les inclusions" es="Compara lo incluido"/></h3><table><tbody><tr><th><T en="Priority access" it="Accesso prioritario" fr="Accès prioritaire" es="Acceso prioritario"/></th><td>—</td><td>✓</td><td>✓</td></tr><tr><th><T en="Personal support" it="Supporto personale" fr="Assistance personnelle" es="Soporte personal"/></th><td>EMAIL</td><td>1:1</td><td>24/7</td></tr><tr><th><T en="Guest access" it="Accesso ospiti" fr="Accès invités" es="Acceso de invitados"/></th><td>—</td><td>2</td><td>6</td></tr></tbody></table></div>
+    </section>}
+
+    {experience.layout==='dashboard' && <section class="xp-dashboard">
+      <aside><strong>{site.brand}</strong><a class="active"><T en="Overview" it="Panoramica" fr="Vue d’ensemble" es="Resumen"/></a><a><T en="Activity" it="Attività" fr="Activité" es="Actividad"/></a><a><T en="Documents" it="Documenti" fr="Documents" es="Documentos"/></a><a><T en="Settings" it="Impostazioni" fr="Paramètres" es="Ajustes"/></a></aside>
+      <main><header><div><span><T en="Live overview" it="Panoramica live" fr="Vue en direct" es="Resumen en vivo"/></span><h2><T {...page.title}/></h2></div><button><T en="Export report" it="Esporta report" fr="Exporter le rapport" es="Exportar informe"/> ↓</button></header><div class="xp-dashboard__stats">{experience.items.map((item,index)=><article><span>0{index+1}</span><h3><T {...item.title}/></h3><T as="strong" {...item.meta}/><i style={`--value:${62+index*9}%`}></i></article>)}</div><section class="xp-dashboard__table"><header><T en="Recent activity" it="Attività recente" fr="Activité récente" es="Actividad reciente"/><span><T en="Updated now" it="Aggiornato ora" fr="Mis à jour maintenant" es="Actualizado ahora"/></span></header>{experience.items.map((item,index)=><div><time>{9+index}:2{index}</time><T {...item.title}/><span class="ok"><T en="Complete" it="Completato" fr="Terminé" es="Completado"/></span></div>)}</section></main>
+    </section>}
+
+    {experience.layout==='technical' && <section class="xp-technical">
+      <header><span>SECURITY / ARCHITECTURE</span><h2><T en="Controls you can inspect." it="Controlli che puoi verificare." fr="Des contrôles que vous pouvez inspecter." es="Controles que puedes inspeccionar."/></h2><T as="p" {...page.intro}/></header>
+      <div class="xp-technical__architecture"><div><b>01</b><T en="Identity" it="Identità" fr="Identité" es="Identidad"/></div><i>→</i><div><b>02</b><T en="Policy engine" it="Policy engine" fr="Moteur de règles" es="Motor de políticas"/></div><i>→</i><div><b>03</b><T en="Edge boundary" it="Confine edge" fr="Périmètre edge" es="Límite edge"/></div><i>→</i><div><b>04</b><T en="Audit store" it="Archivio audit" fr="Stockage audit" es="Almacén de auditoría"/></div></div>
+      <div class="xp-technical__matrix">{experience.items.map(item=><article><div><h3><T {...item.title}/></h3><T as="small" {...item.meta}/></div><span class="ok">● <T en="Verified" it="Verificato" fr="Vérifié" es="Verificado"/></span><button><T en="Read control" it="Leggi controllo" fr="Lire le contrôle" es="Leer control"/> ↗</button></article>)}</div>
+    </section>}
+
+    {experience.layout==='cases' && <section class="xp-cases">
+      <header><span>01 / <T en="Selected work" it="Lavori selezionati" fr="Projets sélectionnés" es="Trabajos seleccionados"/></span><h2><T en="Context, system, measurable outcome." it="Contesto, sistema, risultato misurabile." fr="Contexte, système, résultat mesurable." es="Contexto, sistema, resultado medible."/></h2></header>
+      {experience.items.map((item,index)=><article><span>0{index+1}</span><div><T as="small" {...item.meta}/><h3><T {...item.title}/></h3>{item.detail&&<T as="p" {...item.detail}/>}</div><dl><div><dt><T en="Scope" it="Ambito" fr="Périmètre" es="Alcance"/></dt><dd><T en="12 WEEKS" it="12 SETTIMANE" fr="12 SEMAINES" es="12 SEMANAS"/></dd></div><div><dt><T en="Outcome" it="Risultato" fr="Résultat" es="Resultado"/></dt><dd><T {...item.meta}/></dd></div></dl><button><T en="Open case study" it="Apri caso studio" fr="Ouvrir le cas" es="Abrir caso"/> ↗</button></article>)}
+    </section>}
+
+    {experience.layout==='roster' && <section class="xp-roster">
+      <header><div><span>SEASON / 2026</span><h2><T en="League table and current form." it="Classifica e forma attuale." fr="Classement et forme actuelle." es="Clasificación y forma actual."/></h2></div><div class="xp-roster__live"><i></i><T en="Live data simulation" it="Simulazione dati live" fr="Simulation de données live" es="Simulación de datos en vivo"/></div></header>
+      <div class="xp-roster__table"><div class="head"><span>#</span><span><T en="Team" it="Team" fr="Équipe" es="Equipo"/></span><span>W</span><span>L</span><span><T en="Form" it="Forma" fr="Forme" es="Forma"/></span><span><T en="Profile" it="Profilo" fr="Profil" es="Perfil"/></span></div>{experience.items.map((item,index)=><article><b>0{index+1}</b><h3><T {...item.title}/></h3><strong>{18-index*2}</strong><span>{3+index*2}</span><div><i></i><i></i><i></i><i class="lost"></i><i></i></div><button><T en="View roster" it="Vedi roster" fr="Voir l’effectif" es="Ver plantilla"/> ↗</button></article>)}</div>
+    </section>}
+
+    {experience.layout==='form' && <section class="xp-form" data-xp-form>
+      <aside><span>01 / 03</span><h2><T en="Start with the right information." it="Inizia con le informazioni giuste." fr="Commencez avec les bonnes informations." es="Empieza con la información adecuada."/></h2><ol>{experience.items.map((item,index)=><li class={index===0?'active':''}><b>0{index+1}</b><T {...item.title}/><T as="small" {...item.meta}/></li>)}</ol></aside>
+      <form><header><span><T en="Guided request" it="Richiesta guidata" fr="Demande guidée" es="Solicitud guiada"/></span><h2><T {...page.title}/></h2><T as="p" {...page.intro}/></header><div class="xp-form__fields"><label><T en="Your name" it="Il tuo nome" fr="Votre nom" es="Tu nombre"/><input required/></label><label>Email<input required type="email"/></label><label><T en="Preferred date" it="Data preferita" fr="Date souhaitée" es="Fecha preferida"/><input type="date"/></label><label><T en="Estimated scope" it="Portata stimata" fr="Périmètre estimé" es="Alcance estimado"/><select><option><T en="Essential" it="Essenziale" fr="Essentiel" es="Esencial"/></option><option><T en="Complete" it="Completo" fr="Complet" es="Completo"/></option><option><T en="Custom" it="Personalizzato" fr="Sur mesure" es="Personalizado"/></option></select></label><label class="wide"><T en="Tell us what matters" it="Raccontaci cosa conta" fr="Dites-nous ce qui compte" es="Cuéntanos qué importa"/><textarea required rows="6"></textarea></label></div><label class="xp-form__check"><input required type="checkbox"/><T en="I understand this is a fictional portfolio demonstration." it="Ho capito che questa è una dimostrazione immaginaria del portfolio." fr="Je comprends qu’il s’agit d’une démonstration fictive." es="Entiendo que es una demostración ficticia."/></label><button type="submit"><T en="Prepare summary" it="Prepara riepilogo" fr="Préparer le résumé" es="Preparar resumen"/> →</button><output hidden><T en="Summary ready. Nothing was transmitted." it="Riepilogo pronto. Nessun dato è stato trasmesso." fr="Résumé prêt. Aucune donnée n’a été transmise." es="Resumen listo. No se transmitió ningún dato."/></output></form>
+    </section>}
+
+    <nav class="experience-next"><span><T en="Continue exploring" it="Continua a esplorare" fr="Continuer l’exploration" es="Seguir explorando"/></span><a href={cta.href}><T {...next.title}/> <b>↗</b></a></nav>
   </article>
 </ShowcaseShell>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-expansion-console]').forEach((consoleElement) => {
-    const buttons = [...consoleElement.querySelectorAll<HTMLButtonElement>('.expansion-options button')];
-    const range = consoleElement.querySelector<HTMLInputElement>('input[type="range"]');
-    const result = consoleElement.querySelector<HTMLElement>('[data-expansion-result]');
-    buttons.forEach((button, index) => button.addEventListener('click', () => {
-      buttons.forEach((item) => item.classList.remove('active'));
-      button.classList.add('active');
-      if (result) result.textContent = `0${Number(range?.value || 3)} / ${['PERSONALISED','FAST','COMPLETE'][index]}`;
-    }));
-    range?.addEventListener('input', () => { if (result) result.textContent = `0${range.value} / ADAPTIVE`; });
-    consoleElement.querySelector('.expansion-confirm')?.addEventListener('click', () => {
-      const output = consoleElement.querySelector<HTMLOutputElement>('output');
-      if (output) output.hidden = false;
-    });
-  });
+  const setOutput=(root:Element)=>{const out=root.querySelector<HTMLOutputElement>('output');if(out)out.hidden=false};
+  document.querySelectorAll<HTMLElement>('[data-catalog]').forEach(root=>{const items=[...root.querySelectorAll<HTMLElement>('[data-catalog-item]')];let filter='all';const search=root.querySelector<HTMLInputElement>('[data-catalog-search]');const apply=()=>items.forEach(item=>item.hidden=!((filter==='all'||item.dataset.group===filter)&&(item.dataset.name||'').includes((search?.value||'').toLowerCase())));root.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach(button=>button.addEventListener('click',()=>{root.querySelectorAll('[data-filter]').forEach(x=>x.classList.remove('active'));button.classList.add('active');filter=button.dataset.filter||'all';apply()}));search?.addEventListener('input',apply)});
+  document.querySelectorAll<HTMLElement>('[data-directory]').forEach(root=>{const search=root.querySelector<HTMLInputElement>('[data-directory-search]');search?.addEventListener('input',()=>root.querySelectorAll<HTMLElement>('[data-directory-item]').forEach(item=>item.hidden=!(item.dataset.name||'').includes(search.value.toLowerCase())))});
+  document.querySelectorAll<HTMLElement>('[data-order]').forEach(root=>{let count=0,total=0;root.querySelectorAll<HTMLButtonElement>('[data-order-add]').forEach(button=>button.addEventListener('click',()=>{count++;total+=Number(button.dataset.price)||0;const countNode=root.querySelector('[data-order-count]');const totalNode=root.querySelector('[data-order-total]');if(countNode)countNode.textContent=String(count);if(totalNode)totalNode.textContent=`€${total.toFixed(2)}`}))});
+  document.querySelectorAll<HTMLFormElement>('[data-booking] form,[data-xp-form] form').forEach(form=>form.addEventListener('submit',event=>{event.preventDefault();if(form.reportValidity())setOutput(form)}));
+  document.querySelectorAll<HTMLElement>('[data-pricing]').forEach(root=>root.querySelectorAll<HTMLButtonElement>('[data-plan]').forEach(button=>button.addEventListener('click',()=>{const name=root.querySelector('[data-plan-name]');if(name)name.textContent=button.dataset.plan||'';setOutput(root)})));
+  document.querySelectorAll<HTMLButtonElement>('[data-demo-submit]').forEach(button=>button.addEventListener('click',()=>setOutput(button.closest('article,aside,section')||button.parentElement!)));
 </script>

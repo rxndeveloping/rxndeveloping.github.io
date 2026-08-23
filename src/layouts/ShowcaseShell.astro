@@ -11,6 +11,7 @@ import '../styles/showcase-marea.css';
 import '../styles/showcase-advanced.css';
 import '../styles/showcase-distinct.css';
 import '../styles/showcase-expansion.css';
+import '../styles/showcase-fixes.css';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
 
@@ -27,6 +28,7 @@ interface Props {
 const { title, description, brand, variant, home, nav, cta } = Astro.props;
 const showcaseSlug = Astro.url.pathname.split('/').filter(Boolean)[1] || '';
 const expansionSite = expansionBySlug(showcaseSlug);
+const isShowcaseHome = Astro.url.pathname.split('/').filter(Boolean).length === 2;
 ---
 <!doctype html>
 <html lang="en" data-showcase={variant}>
@@ -52,7 +54,7 @@ const expansionSite = expansionBySlug(showcaseSlug);
         {cta && <a class="showcase-cta" href={cta.href}><ShowcaseText {...cta.label} /></a>}
       </div>
     </header>
-    <main><slot />{expansionSite && <ShowcaseDirectory site={expansionSite} />}</main>
+    <main><slot />{expansionSite && isShowcaseHome && <ShowcaseDirectory site={expansionSite} />}</main>
     <footer class="showcase-footer">
       <a class="showcase-brand" href={home}>{brand}</a>
       <p><ShowcaseText en="Demonstration website: brand, company, contacts, and availability are fictional." it="Sito dimostrativo: brand, attività, contatti e disponibilità sono immaginari." fr="Site de démonstration : marque, entreprise, contacts et disponibilités sont fictifs." es="Sitio de demostración: marca, empresa, contactos y disponibilidad son ficticios." /></p>
