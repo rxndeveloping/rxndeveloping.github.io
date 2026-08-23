@@ -1,0 +1,49 @@
+---
+import ShowcaseText from './ShowcaseText.astro';
+import type { ExpansionSite } from '../../data/showcaseExpansion';
+
+interface Props { site: ExpansionSite }
+const { site } = Astro.props;
+---
+<section class="showcase-directory" aria-labelledby={`directory-${site.slug}`}>
+  <div class="showcase-directory__intro">
+    <span class="showcase-directory__index">{String(site.pages.length).padStart(2, '0')} / RXN</span>
+    <div>
+      <p class="showcase-directory__eyebrow"><ShowcaseText en="A complete digital ecosystem" it="Un ecosistema digitale completo" fr="Un écosystème numérique complet" es="Un ecosistema digital completo" /></p>
+      <h2 id={`directory-${site.slug}`}><ShowcaseText en={`Explore ${site.brand}`} it={`Esplora ${site.brand}`} fr={`Explorer ${site.brand}`} es={`Explora ${site.brand}`} /></h2>
+      <p><ShowcaseText en="Move beyond the landing page: discover the services, stories, tools, and dedicated journeys behind this concept." it="Vai oltre la landing page: scopri servizi, storie, strumenti e percorsi dedicati dietro questo concept." fr="Au-delà de la landing page : découvrez les services, récits, outils et parcours de ce concept." es="Más allá de la landing: descubre los servicios, historias, herramientas y recorridos de este concepto." /></p>
+    </div>
+  </div>
+  <div class="showcase-directory__grid">
+    {site.pages.map((page, index) => (
+      <a href={`/showcase/${site.slug}/${page.slug}/`} class="showcase-directory__card">
+        <span>{String(index + 1).padStart(2, '0')}</span>
+        <h3><ShowcaseText {...page.label} /></h3>
+        <p><ShowcaseText {...page.intro} /></p>
+        <b aria-hidden="true">↗</b>
+      </a>
+    ))}
+  </div>
+  <form class="showcase-directory__newsletter" data-showcase-newsletter>
+    <div>
+      <strong><ShowcaseText en="Stay close to the project" it="Resta vicino al progetto" fr="Restez proche du projet" es="Sigue de cerca el proyecto" /></strong>
+      <span><ShowcaseText en="Occasional updates, releases, and invitations." it="Aggiornamenti, novità e inviti occasionali." fr="Actualités, nouveautés et invitations occasionnelles." es="Actualizaciones, novedades e invitaciones ocasionales." /></span>
+    </div>
+    <label>
+      <span class="sr-only">Email</span>
+      <input type="email" required placeholder="email@example.com" />
+    </label>
+    <button type="submit"><ShowcaseText en="Subscribe" it="Iscriviti" fr="S’inscrire" es="Suscribirse" /></button>
+    <output hidden><ShowcaseText en="You are on the fictional list — demo complete." it="Sei nella lista immaginaria — demo completata." fr="Vous êtes sur la liste fictive — démo terminée." es="Estás en la lista ficticia — demo completada." /></output>
+  </form>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-showcase-newsletter]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const output = form.querySelector<HTMLOutputElement>('output');
+      if (output) output.hidden = false;
+    });
+  });
+</script>

@@ -1,8 +1,14 @@
 ---
 import AdvancedConceptPage from '../../../components/showcase/AdvancedConceptPage.astro';
+import ExpandedShowcasePage from '../../../components/showcase/ExpandedShowcasePage.astro';
 import { advancedShowcases, type AdvancedConcept } from '../../../data/advancedShowcases';
-export function getStaticPaths(){ return advancedShowcases.flatMap((concept)=>concept.pages.map((page)=>({params:{concept:concept.slug,section:page.slug},props:{concept,section:page.slug}}))); }
-interface Props { concept: AdvancedConcept; section: string }
-const { concept, section } = Astro.props;
+import { showcaseExpansions, type ExpansionPage, type ExpansionSite } from '../../../data/showcaseExpansion';
+export function getStaticPaths(){
+  const advanced = advancedShowcases.flatMap((concept)=>concept.pages.map((page)=>({params:{concept:concept.slug,section:page.slug},props:{mode:'advanced' as const,concept,section:page.slug}})));
+  const expanded = showcaseExpansions.flatMap((site)=>site.pages.map((page)=>({params:{concept:site.slug,section:page.slug},props:{mode:'expanded' as const,site,page}})));
+  return [...advanced,...expanded];
+}
+type Props = { mode:'advanced'; concept:AdvancedConcept; section:string } | { mode:'expanded'; site:ExpansionSite; page:ExpansionPage };
+const props = Astro.props as Props;
 ---
-<AdvancedConceptPage concept={concept} section={section} />
+{props.mode === 'advanced' ? <AdvancedConceptPage concept={props.concept} section={props.section} /> : <ExpandedShowcasePage site={props.site} page={props.page} />}

@@ -1,6 +1,8 @@
 ---
 import ShowcaseLanguage from '../components/showcase/ShowcaseLanguage.astro';
 import ShowcaseText from '../components/showcase/ShowcaseText.astro';
+import ShowcaseDirectory from '../components/showcase/ShowcaseDirectory.astro';
+import { expansionBySlug } from '../data/showcaseExpansion';
 import '../styles/showcase-lume.css';
 import '../styles/showcase-braci.css';
 import '../styles/showcase-aureon.css';
@@ -8,6 +10,7 @@ import '../styles/showcase-nox.css';
 import '../styles/showcase-marea.css';
 import '../styles/showcase-advanced.css';
 import '../styles/showcase-distinct.css';
+import '../styles/showcase-expansion.css';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
 
@@ -22,6 +25,8 @@ interface Props {
   cta?: { href: string; label: Copy };
 }
 const { title, description, brand, variant, home, nav, cta } = Astro.props;
+const showcaseSlug = Astro.url.pathname.split('/').filter(Boolean)[1] || '';
+const expansionSite = expansionBySlug(showcaseSlug);
 ---
 <!doctype html>
 <html lang="en" data-showcase={variant}>
@@ -47,7 +52,7 @@ const { title, description, brand, variant, home, nav, cta } = Astro.props;
         {cta && <a class="showcase-cta" href={cta.href}><ShowcaseText {...cta.label} /></a>}
       </div>
     </header>
-    <main><slot /></main>
+    <main><slot />{expansionSite && <ShowcaseDirectory site={expansionSite} />}</main>
     <footer class="showcase-footer">
       <a class="showcase-brand" href={home}>{brand}</a>
       <p><ShowcaseText en="Demonstration website: brand, company, contacts, and availability are fictional." it="Sito dimostrativo: brand, attività, contatti e disponibilità sono immaginari." fr="Site de démonstration : marque, entreprise, contacts et disponibilités sont fictifs." es="Sitio de demostración: marca, empresa, contactos y disponibilidad son ficticios." /></p>

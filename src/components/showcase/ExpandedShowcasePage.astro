@@ -1,0 +1,150 @@
+---
+import ShowcaseShell from '../../layouts/ShowcaseShell.astro';
+import ShowcaseText from './ShowcaseText.astro';
+import type { ExpansionPage, ExpansionSite } from '../../data/showcaseExpansion';
+
+interface Props { site: ExpansionSite; page: ExpansionPage }
+const { site, page } = Astro.props;
+const homeLabel = { en:'Home', it:'Home', fr:'Accueil', es:'Inicio' };
+const nav = [
+  { href:`/showcase/${site.slug}/`, label:homeLabel },
+  ...site.pages.map((item) => ({ href:`/showcase/${site.slug}/${item.slug}/`, label:item.label }))
+];
+const cta = { href:`/showcase/${site.slug}/${site.pages[(site.pages.indexOf(page) + 1) % site.pages.length].slug}/`, label:{en:'Next chapter',it:'Prossimo capitolo',fr:'Chapitre suivant',es:'Siguiente capítulo'} };
+const modules = {
+  hospitality: [
+    ['01','Spaces & atmosphere','Spazi e atmosfera','Espaces et ambiance','Espacios y ambiente'],
+    ['02','Menus & formats','Menu e formule','Menus et formules','Menús y formatos'],
+    ['03','Planning & production','Pianificazione e produzione','Planification et production','Planificación y producción'],
+  ],
+  commerce: [
+    ['01','Browse the collection','Esplora la selezione','Explorer la sélection','Explora la selección'],
+    ['02','Compare the details','Confronta i dettagli','Comparer les détails','Compara los detalles'],
+    ['03','Configure the request','Configura la richiesta','Configurer la demande','Configura la solicitud'],
+  ],
+  product: [
+    ['01','Control centre','Centro di controllo','Centre de contrôle','Centro de control'],
+    ['02','Connected workflows','Workflow connessi','Workflows connectés','Flujos conectados'],
+    ['03','Reports & decisions','Report e decisioni','Rapports et décisions','Informes y decisiones'],
+  ],
+  technical: [
+    ['01','Architecture','Architettura','Architecture','Arquitectura'],
+    ['02','Security controls','Controlli di sicurezza','Contrôles de sécurité','Controles de seguridad'],
+    ['03','Operational evidence','Evidenze operative','Preuves opérationnelles','Evidencia operativa'],
+  ],
+  event: [
+    ['01','Programme','Programma','Programme','Programa'],
+    ['02','Live access','Accesso live','Accès live','Acceso en vivo'],
+    ['03','Venue & community','Venue e community','Lieu et communauté','Lugar y comunidad'],
+  ],
+  service: [
+    ['01','Tell us what you need','Raccontaci cosa ti serve','Dites-nous votre besoin','Cuéntanos qué necesitas'],
+    ['02','Build your plan','Costruisci il piano','Construisez votre plan','Construye tu plan'],
+    ['03','Track every step','Segui ogni fase','Suivez chaque étape','Sigue cada etapa'],
+  ],
+  editorial: [
+    ['01','Latest stories','Ultime storie','Derniers récits','Últimas historias'],
+    ['02','People & practice','Persone e pratica','Personnes et pratique','Personas y práctica'],
+    ['03','Archive & research','Archivio e ricerca','Archives et recherche','Archivo e investigación'],
+  ]
+}[page.kind];
+const verb = page.kind === 'event' ? ['Check availability','Controlla disponibilità','Voir les disponibilités','Ver disponibilidad'] : page.kind === 'editorial' ? ['Open the archive','Apri l’archivio','Ouvrir les archives','Abrir el archivo'] : ['Start the guided journey','Inizia il percorso guidato','Commencer le parcours','Iniciar el recorrido'];
+---
+<ShowcaseShell title={`${page.title.en} — ${site.brand}`} description={page.intro.en} brand={site.brand} variant={site.variant as any} home={`/showcase/${site.slug}/`} nav={nav} cta={cta}>
+  <article class={`expansion-page expansion-page--${page.kind}`}>
+    <header class="expansion-hero">
+      <div class="expansion-hero__copy">
+        <p class="expansion-kicker"><ShowcaseText {...page.label} /> · {site.brand}</p>
+        <h1><ShowcaseText {...page.title} /></h1>
+        <p class="expansion-lead"><ShowcaseText {...page.intro} /></p>
+        <a href="#explore" class="expansion-primary"><ShowcaseText en={verb[0]} it={verb[1]} fr={verb[2]} es={verb[3]} /> <span>↓</span></a>
+      </div>
+      <figure>
+        <img src={site.image} alt="" loading="eager" />
+        <figcaption>{page.kind.toUpperCase()} / {new Date().getFullYear()}</figcaption>
+      </figure>
+    </header>
+
+    <section class="expansion-overview" id="explore">
+      <div class="expansion-section-title">
+        <span>01</span>
+        <h2><ShowcaseText en="A complete journey, not a single screen." it="Un percorso completo, non una singola schermata." fr="Un parcours complet, pas un simple écran." es="Un recorrido completo, no una sola pantalla." /></h2>
+      </div>
+      <div class="expansion-module-grid">
+        {modules.map((module) => (
+          <article>
+            <span>{module[0]}</span>
+            <h3><ShowcaseText en={module[1]} it={module[2]} fr={module[3]} es={module[4]} /></h3>
+            <p><ShowcaseText en="Detailed information, meaningful choices, live feedback, and a clear next action are designed into every step." it="Informazioni dettagliate, scelte utili, feedback live e una prossima azione chiara sono progettati in ogni fase." fr="Informations détaillées, choix utiles, retour live et prochaine action claire à chaque étape." es="Información detallada, decisiones útiles, feedback en vivo y una acción clara en cada paso." /></p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="expansion-workspace">
+      <div class="expansion-workspace__rail">
+        <span>02 / LIVE MODULE</span>
+        <h2><ShowcaseText en="Make the experience respond." it="Fai rispondere l’esperienza." fr="Rendez l’expérience réactive." es="Haz que la experiencia responda." /></h2>
+        <p><ShowcaseText en="This interactive prototype turns browsing into a guided decision with filters, states, and immediate confirmation." it="Questo prototipo interattivo trasforma la navigazione in una decisione guidata con filtri, stati e conferma immediata." fr="Ce prototype transforme la navigation en décision guidée avec filtres, états et confirmation immédiate." es="Este prototipo convierte la navegación en una decisión guiada con filtros, estados y confirmación inmediata." /></p>
+      </div>
+      <div class="expansion-console" data-expansion-console>
+        <div class="expansion-console__top"><span></span><span></span><span></span><b>{site.brand} / CONTROL</b></div>
+        <div class="expansion-console__body">
+          <p><ShowcaseText en="Choose your priority" it="Scegli la priorità" fr="Choisissez votre priorité" es="Elige tu prioridad" /></p>
+          <div class="expansion-options">
+            <button type="button" class="active"><ShowcaseText en="Personalised" it="Personalizzato" fr="Personnalisé" es="Personalizado" /></button>
+            <button type="button"><ShowcaseText en="Fastest" it="Più rapido" fr="Le plus rapide" es="Más rápido" /></button>
+            <button type="button"><ShowcaseText en="Most complete" it="Più completo" fr="Le plus complet" es="Más completo" /></button>
+          </div>
+          <label><span><ShowcaseText en="Intensity / scope" it="Intensità / portata" fr="Intensité / portée" es="Intensidad / alcance" /></span><input type="range" min="1" max="5" value="3" /></label>
+          <div class="expansion-result">
+            <span><ShowcaseText en="Recommended path" it="Percorso consigliato" fr="Parcours conseillé" es="Recorrido recomendado" /></span>
+            <strong data-expansion-result>03 / BALANCED</strong>
+          </div>
+          <button class="expansion-confirm" type="button"><ShowcaseText en="Confirm selection" it="Conferma selezione" fr="Confirmer" es="Confirmar selección" /></button>
+          <output hidden><ShowcaseText en="Selection saved in this demo." it="Selezione salvata in questa demo." fr="Sélection enregistrée dans cette démo." es="Selección guardada en esta demo." /></output>
+        </div>
+      </div>
+    </section>
+
+    <section class="expansion-flow">
+      <div class="expansion-section-title">
+        <span>03</span>
+        <h2><ShowcaseText en="From discovery to follow-through." it="Dalla scoperta al passo successivo." fr="De la découverte au suivi." es="Del descubrimiento al seguimiento." /></h2>
+      </div>
+      <ol>
+        <li><span>01</span><strong><ShowcaseText en="Discover" it="Scopri" fr="Découvrir" es="Descubre" /></strong><p><ShowcaseText en="Clear context before any commitment." it="Contesto chiaro prima di ogni impegno." fr="Un contexte clair avant tout engagement." es="Contexto claro antes de comprometerse." /></p></li>
+        <li><span>02</span><strong><ShowcaseText en="Configure" it="Configura" fr="Configurer" es="Configura" /></strong><p><ShowcaseText en="Choices adapt to needs and availability." it="Le scelte si adattano a esigenze e disponibilità." fr="Les choix s’adaptent aux besoins et disponibilités." es="Las opciones se adaptan a necesidades y disponibilidad." /></p></li>
+        <li><span>03</span><strong><ShowcaseText en="Confirm" it="Conferma" fr="Confirmer" es="Confirma" /></strong><p><ShowcaseText en="A transparent summary before submission." it="Un riepilogo trasparente prima dell’invio." fr="Un résumé transparent avant l’envoi." es="Un resumen transparente antes del envío." /></p></li>
+        <li><span>04</span><strong><ShowcaseText en="Continue" it="Continua" fr="Continuer" es="Continúa" /></strong><p><ShowcaseText en="Useful status, support, and next actions." it="Stato, supporto e prossime azioni utili." fr="Statut, assistance et prochaines actions." es="Estado, soporte y siguientes acciones." /></p></li>
+      </ol>
+    </section>
+
+    <section class="expansion-chapters">
+      <div class="expansion-section-title"><span>04</span><h2><ShowcaseText en="Continue through the ecosystem." it="Continua nell’ecosistema." fr="Continuez dans l’écosystème." es="Continúa por el ecosistema." /></h2></div>
+      <div>
+        {site.pages.filter((item) => item.slug !== page.slug).map((item, index) => (
+          <a href={`/showcase/${site.slug}/${item.slug}/`}><span>0{index + 1}</span><h3><ShowcaseText {...item.title} /></h3><b>↗</b></a>
+        ))}
+      </div>
+    </section>
+  </article>
+</ShowcaseShell>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-expansion-console]').forEach((consoleElement) => {
+    const buttons = [...consoleElement.querySelectorAll<HTMLButtonElement>('.expansion-options button')];
+    const range = consoleElement.querySelector<HTMLInputElement>('input[type="range"]');
+    const result = consoleElement.querySelector<HTMLElement>('[data-expansion-result]');
+    buttons.forEach((button, index) => button.addEventListener('click', () => {
+      buttons.forEach((item) => item.classList.remove('active'));
+      button.classList.add('active');
+      if (result) result.textContent = `0${Number(range?.value || 3)} / ${['PERSONALISED','FAST','COMPLETE'][index]}`;
+    }));
+    range?.addEventListener('input', () => { if (result) result.textContent = `0${range.value} / ADAPTIVE`; });
+    consoleElement.querySelector('.expansion-confirm')?.addEventListener('click', () => {
+      const output = consoleElement.querySelector<HTMLOutputElement>('output');
+      if (output) output.hidden = false;
+    });
+  });
+</script>

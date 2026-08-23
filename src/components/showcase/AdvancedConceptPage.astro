@@ -1,6 +1,7 @@
 ---
 import ShowcaseShell from '../../layouts/ShowcaseShell.astro';
 import type { AdvancedConcept } from '../../data/advancedShowcases';
+import { expansionBySlug } from '../../data/showcaseExpansion';
 import VertexSite from './distinct/VertexSite.astro';
 import KineticSite from './distinct/KineticSite.astro';
 import NorthlineSite from './distinct/NorthlineSite.astro';
@@ -10,7 +11,8 @@ import ForgeSite from './distinct/ForgeSite.astro';
 interface Props { concept: AdvancedConcept; section?: string }
 const { concept, section = '' } = Astro.props;
 const page = concept.pages.find((item) => item.slug === section);
-const nav = [{ href:`/showcase/${concept.slug}/`, label:{en:'Home',it:'Home',fr:'Accueil',es:'Inicio'} }, ...concept.pages.map((item)=>({href:`/showcase/${concept.slug}/${item.slug}/`,label:item.label}))];
+const expansion = expansionBySlug(concept.slug);
+const nav = [{ href:`/showcase/${concept.slug}/`, label:{en:'Home',it:'Home',fr:'Accueil',es:'Inicio'} }, ...concept.pages.map((item)=>({href:`/showcase/${concept.slug}/${item.slug}/`,label:item.label})), ...(expansion?.pages.slice(0, 1).map((item)=>({href:`/showcase/${concept.slug}/${item.slug}/`,label:item.label})) || [])];
 const cta = { href:`/showcase/${concept.slug}/${concept.pages[1].slug}/`, label: concept.pages[1].label };
 const sites = { tickets: VertexSite, fitness: KineticSite, automotive: NorthlineSite, clinic: NovacareSite, travel: AtlasSite, academy: ForgeSite };
 const Site = sites[concept.tool];
