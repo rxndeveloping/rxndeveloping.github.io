@@ -2,6 +2,7 @@
 import ShowcaseLanguage from '../components/showcase/ShowcaseLanguage.astro';
 import ShowcaseText from '../components/showcase/ShowcaseText.astro';
 import ShowcaseDirectory from '../components/showcase/ShowcaseDirectory.astro';
+import ShowcaseInteractionLayer from '../components/showcase/ShowcaseInteractionLayer.astro';
 import { expansionBySlug } from '../data/showcaseExpansion';
 import '../styles/showcase-lume.css';
 import '../styles/showcase-braci.css';
@@ -12,6 +13,7 @@ import '../styles/showcase-advanced.css';
 import '../styles/showcase-distinct.css';
 import '../styles/showcase-expansion.css';
 import '../styles/showcase-fixes.css';
+import '../styles/showcase-polish.css';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
 
@@ -60,6 +62,7 @@ const isShowcaseHome = Astro.url.pathname.split('/').filter(Boolean).length === 
       <p><ShowcaseText en="Demonstration website: brand, company, contacts, and availability are fictional." it="Sito dimostrativo: brand, attività, contatti e disponibilità sono immaginari." fr="Site de démonstration : marque, entreprise, contacts et disponibilités sont fictifs." es="Sitio de demostración: marca, empresa, contactos y disponibilidad son ficticios." /></p>
       <p><ShowcaseText en="Design and development by" it="Design e sviluppo di" fr="Design et développement par" es="Diseño y desarrollo por" /> <a href="/">RxN Developing</a></p>
     </footer>
+    <ShowcaseInteractionLayer />
     <script>
       const monthInput = document.querySelector<HTMLInputElement>('.showcase--aureon input[type="month"]');
       if (monthInput) {
