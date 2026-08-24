@@ -39,8 +39,8 @@ export const showcaseExperiences:Record<string,ShowcaseExperience>={
   i(c('Chef’s table','Tavolo dello chef','Table du chef','Mesa del chef'),'6 GUESTS · FROM €840',undefined,840),
   i(c('Lume exclusive','Lume in esclusiva','Lume en exclusivité','Lume en exclusiva'),'20—42 GUESTS · ON REQUEST',undefined,1600)]),
  'lume-ristorante/journal':e('editorial',[
-  i(c('Winter citrus, preserved','Agrumi d’inverno, conservati','Agrumes d’hiver, conservés','Cítricos de invierno, conservados'),'6 MIN READ'),
-  i(c('Inside the bread programme','Dentro il programma del pane','Dans le programme du pain','Dentro del programa de pan'),'8 MIN READ'),
+  i(c('Winter citrus, preserved','Agrumi d’inverno, conservati','Agrumes d’hiver, conservés','Cítricos de invierno, conservados'),'3 MIN READ'),
+  i(c('Inside the bread programme','Dentro il programma del pane','Dans le programme du pain','Dentro del programa de pan'),'4 MIN READ'),
   i(c('Meet Mara, our ceramicist','Mara, la nostra ceramista','Mara, notre céramiste','Mara, nuestra ceramista'),'PORTRAIT · 05')]),
 
  'braci-basilico/story':e('editorial',[
@@ -128,8 +128,8 @@ export const showcaseExperiences:Record<string,ShowcaseExperience>={
   i(c('Caster table','Tavolo caster','Table commentateurs','Mesa de comentaristas'),'€2,700 / 16 GUESTS',undefined,2700),
   i(c('Arena takeover','Arena takeover','Privatisation arène','Arena exclusiva'),'FROM €8,900',undefined,8900)]),
  'vertex-arena/news':e('editorial',[
-  i(c('NOVA changes its late-round system','NOVA cambia il sistema dei round finali','NOVA change son système de fin de manche','NOVA cambia su sistema de rondas finales'),'TACTICAL · 7 MIN'),
-  i(c('Inside the new broadcast desk','Dentro il nuovo broadcast desk','Dans le nouveau plateau broadcast','Dentro del nuevo set de emisión'),'VENUE · 5 MIN'),
+  i(c('NOVA changes its late-round system','NOVA cambia il sistema dei round finali','NOVA change son système de fin de manche','NOVA cambia su sistema de rondas finales'),'TACTICAL · 4 MIN'),
+  i(c('Inside the new broadcast desk','Dentro il nuovo broadcast desk','Dans le nouveau plateau broadcast','Dentro del nuevo set de emisión'),'VENUE · 3 MIN'),
   i(c('Community cup registration opens','Apre la Community Cup','Ouverture de la Community Cup','Abre la Community Cup'),'COMMUNITY · 02 SEP')]),
 
  'kinetic-fitness-club/coaches':e('directory',[
@@ -145,9 +145,9 @@ export const showcaseExperiences:Record<string,ShowcaseExperience>={
   i(c('Milano Navigli','Milano Navigli','Milan Navigli','Milán Navigli'),'06—22 · 58% LIVE OCCUPANCY'),
   i(c('Monza Performance Lab','Monza Performance Lab','Monza Performance Lab','Monza Performance Lab'),'07—21 · 31% LIVE OCCUPANCY')]),
  'kinetic-fitness-club/journal':e('editorial',[
-  i(c('Strength volume without guesswork','Volume di forza senza andare a caso','Volume de force sans approximation','Volumen de fuerza sin improvisar'),'COACH NOTE · 8 MIN'),
-  i(c('What readiness actually measures','Cosa misura davvero la readiness','Ce que mesure vraiment la préparation','Qué mide realmente la preparación'),'RESEARCH · 6 MIN'),
-  i(c('A practical sleep protocol','Un protocollo pratico per il sonno','Un protocole de sommeil pratique','Un protocolo de sueño práctico'),'RECOVERY · 5 MIN')]),
+  i(c('Strength volume without guesswork','Volume di forza senza andare a caso','Volume de force sans approximation','Volumen de fuerza sin improvisar'),'COACH NOTE · 4 MIN'),
+  i(c('What readiness actually measures','Cosa misura davvero la readiness','Ce que mesure vraiment la préparation','Qué mide realmente la preparación'),'RESEARCH · 3 MIN'),
+  i(c('A practical sleep protocol','Un protocollo pratico per il sonno','Un protocole de sommeil pratique','Un protocolo de sueño práctico'),'RECOVERY · 3 MIN')]),
 
  'northline-motors/brands':e('catalog',[
   i(c('Apex Motorworks','Apex Motorworks','Apex Motorworks','Apex Motorworks'),'12 VEHICLES · €78K—€146K',c('Track-developed performance cars with road-focused touring specifications.','Auto prestazionali sviluppate in pista con configurazioni touring stradali.','Voitures de performance développées sur piste avec configurations touring.','Coches de altas prestaciones desarrollados en pista para uso touring.'),78000,'performance','/assets/showcases/northline/brand-apex.jpg'),
@@ -162,9 +162,9 @@ export const showcaseExperiences:Record<string,ShowcaseExperience>={
   i(c('Collection','Collection','Collection','Collection'),'€420 / MONTH',undefined,420),
   i(c('Track & transport','Pista e trasporto','Circuit et transport','Circuito y transporte'),'FROM €680 / MONTH',undefined,680)]),
  'northline-motors/journal':e('editorial',[
-  i(c('A grand tourer across the Dolomites','Una gran turismo sulle Dolomiti','Une GT dans les Dolomites','Un gran turismo por los Dolomitas'),'ROAD TEST · 12 MIN'),
-  i(c('Buying carbon-ceramic brakes used','Comprare freni carboceramici usati','Acheter des freins carbone-céramique d’occasion','Comprar frenos carbocerámicos usados'),'GUIDE · 9 MIN'),
-  i(c('Inside an analogue collection','Dentro una collezione analogica','Dans une collection analogique','Dentro de una colección analógica'),'COLLECTION · 7 MIN')]),
+  i(c('A grand tourer across the Dolomites','Una gran turismo sulle Dolomiti','Une GT dans les Dolomites','Un gran turismo por los Dolomitas'),'ROAD TEST · 4 MIN'),
+  i(c('Buying carbon-ceramic brakes used','Comprare freni carboceramici usati','Acheter des freins carbone-céramique d’occasion','Comprar frenos carbocerámicos usados'),'GUIDE · 4 MIN'),
+  i(c('Inside an analogue collection','Dentro una collezione analogica','Dans une collection analogique','Dentro de una colección analógica'),'COLLECTION · 3 MIN')]),
 
  'novacare-clinic/services':e('directory',[
   i(c('Heart & prevention','Cuore e prevenzione','Cœur et prévention','Corazón y prevención'),'CARDIOLOGY · NEXT 16:40'),
@@ -180,12 +180,12 @@ export const showcaseExperiences:Record<string,ShowcaseExperience>={
   i(c('Active life','Vita attiva','Vie active','Vida activa'),'€320 / YEAR',undefined,320),
   i(c('Complete prevention','Prevenzione completa','Prévention complète','Prevención completa'),'€590 / YEAR',undefined,590)]),
  'novacare-clinic/resources':e('editorial',[
-  i(c('Preparing for blood tests','Prepararsi agli esami del sangue','Se préparer aux analyses sanguines','Prepararse para análisis de sangre'),'PATIENT GUIDE · 4 MIN'),
-  i(c('Understanding an MRI referral','Capire una prescrizione RM','Comprendre une prescription IRM','Entender una solicitud de RM'),'DIAGNOSTICS · 6 MIN'),
-  i(c('When to use urgent care','Quando usare l’assistenza urgente','Quand utiliser les soins urgents','Cuándo usar atención urgente'),'SAFETY · 5 MIN')]),
+  i(c('Preparing for blood tests','Prepararsi agli esami del sangue','Se préparer aux analyses sanguines','Prepararse para análisis de sangre'),'PATIENT GUIDE · 2 MIN'),
+  i(c('Understanding an MRI referral','Capire una prescrizione RM','Comprendre une prescription IRM','Entender una solicitud de RM'),'DIAGNOSTICS · 3 MIN'),
+  i(c('When to use urgent care','Quando usare l’assistenza urgente','Quand utiliser les soins urgents','Cuándo usar atención urgente'),'SAFETY · 3 MIN')]),
 
  'atlas-journeys/about':e('editorial',[
-  i(c('Why we travel slowly','Perché viaggiamo lentamente','Pourquoi nous voyageons lentement','Por qué viajamos despacio'),'MANIFESTO · 6 MIN'),
+  i(c('Why we travel slowly','Perché viaggiamo lentamente','Pourquoi nous voyageons lentement','Por qué viajamos despacio'),'MANIFESTO · 3 MIN'),
   i(c('Meet the field designers','I nostri field designer','Nos designers de terrain','Nuestros diseñadores de campo'),'PEOPLE · 08'),
   i(c('Local value, measured','Valore locale, misurato','Valeur locale, mesurée','Valor local, medido'),'IMPACT REPORT')]),
  'atlas-journeys/stays':e('catalog',[

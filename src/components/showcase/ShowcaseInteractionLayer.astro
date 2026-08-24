@@ -62,4 +62,29 @@
     if (lang && lang !== 'en') url.searchParams.set('lang', lang);
     location.assign(`${url.pathname}${url.search}${url.hash}`);
   });
+
+  const motionTargets = document.querySelectorAll<HTMLElement>([
+    '.content-detail>header', '.content-detail>section',
+    '.experience>header', '.experience>section',
+    'main[class]>header', 'main[class]>section',
+    '.xp-catalog__grid>article', '.xp-directory__results>article',
+    '.advanced-grid>article', '.at-editions>article', '.at-journal>section>article',
+    '.nl-stock>article', '.nl-inventory>article', '.nc-directory section>article',
+    '.fg-sprints>article'
+  ].join(','));
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reducedMotion || !('IntersectionObserver' in window)) {
+    motionTargets.forEach((element) => element.classList.add('showcase-motion','is-visible'));
+  } else {
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    }), { threshold: .1, rootMargin: '0px 0px -6% 0px' });
+    motionTargets.forEach((element, index) => {
+      element.classList.add('showcase-motion');
+      element.style.setProperty('--motion-delay', `${(index % 3) * 70}ms`);
+      observer.observe(element);
+    });
+  }
 </script>

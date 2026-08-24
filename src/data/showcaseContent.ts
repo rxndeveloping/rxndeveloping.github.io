@@ -12,8 +12,11 @@ export type ShowcaseContentRecord = {
   meta: ExpansionCopy;
   intro: ExpansionCopy;
   image: string;
+  crop?: number;
   index: number;
 };
+
+export type ShowcaseMediaSource = { image: string; crop?: number };
 
 const c = (en: string, it: string, fr: string, es: string): ExpansionCopy => ({ en, it, fr, es });
 
@@ -29,6 +32,89 @@ export const showcaseItemHref = (concept: string, section: string, title: string
 export const showcaseCardSlug = (title: string, index: number) => `featured-${showcaseSlug(title)}-${index + 1}`;
 export const showcaseCardHref = (concept: string, title: string, index: number) => `/showcase/${concept}/content/${showcaseCardSlug(title, index)}/`;
 export const showcaseExtraHref = (concept: string, slug: string) => `/showcase/${concept}/content/${slug}/`;
+
+const generatedGrids = {
+  lume: '/assets/showcases/generated/lume-content-grid.png',
+  lumeDetail: '/assets/showcases/generated/lume-detail-grid.png',
+  braci: '/assets/showcases/generated/braci-content-grid.png',
+  nox: '/assets/showcases/generated/nox-content-grid.png',
+  marea: '/assets/showcases/generated/marea-content-grid.png',
+  people: '/assets/showcases/generated/people-content-grid.png',
+  world: '/assets/showcases/generated/world-content-grid.png'
+};
+
+const secondaryMediaRanges: Record<string, { image: string; start: number; count?: number }> = {
+  'lume-ristorante/philosophy': { image: generatedGrids.lumeDetail, start: 0, count: 3 },
+  'lume-ristorante/cellar': { image: generatedGrids.lumeDetail, start: 3, count: 8 },
+  'lume-ristorante/private-dining': { image: generatedGrids.lumeDetail, start: 11, count: 1 }
+};
+
+const mediaRanges: Record<string, { image: string; start: number; count?: number }> = {
+  'lume-ristorante/philosophy': { image: generatedGrids.lume, start: 0 },
+  'lume-ristorante/cellar': { image: generatedGrids.lume, start: 3 },
+  'lume-ristorante/private-dining': { image: generatedGrids.lume, start: 9 },
+  'lume-ristorante/journal': { image: generatedGrids.lume, start: 0 },
+  'braci-basilico/story': { image: generatedGrids.braci, start: 0 },
+  'braci-basilico/locations': { image: generatedGrids.braci, start: 3 },
+  'braci-basilico/delivery': { image: generatedGrids.braci, start: 6 },
+  'braci-basilico/community': { image: generatedGrids.braci, start: 9 },
+  'nox-social-club/rooms': { image: generatedGrids.nox, start: 0 },
+  'nox-social-club/artists': { image: generatedGrids.nox, start: 3 },
+  'nox-social-club/membership': { image: generatedGrids.nox, start: 0 },
+  'nox-social-club/private-hire': { image: generatedGrids.nox, start: 0 },
+  'marea-beach-club/beach': { image: generatedGrids.marea, start: 0 },
+  'marea-beach-club/wellness': { image: generatedGrids.marea, start: 3 },
+  'marea-beach-club/events': { image: generatedGrids.marea, start: 6 },
+  'marea-beach-club/private-hire': { image: generatedGrids.marea, start: 9 },
+  'kinetic-fitness-club/coaches': { image: generatedGrids.people, start: 3 },
+  'kinetic-fitness-club/recovery': { image: generatedGrids.people, start: 3 },
+  'kinetic-fitness-club/locations': { image: generatedGrids.people, start: 3 },
+  'kinetic-fitness-club/journal': { image: generatedGrids.people, start: 3 },
+  'novacare-clinic/services': { image: generatedGrids.people, start: 6 },
+  'novacare-clinic/patient-area': { image: generatedGrids.people, start: 6 },
+  'novacare-clinic/prevention': { image: generatedGrids.people, start: 6 },
+  'novacare-clinic/resources': { image: generatedGrids.people, start: 6 },
+  'forge-digital-academy/mentors': { image: generatedGrids.people, start: 9 },
+  'forge-digital-academy/projects': { image: generatedGrids.people, start: 9 },
+  'forge-digital-academy/pricing': { image: generatedGrids.people, start: 9 },
+  'forge-digital-academy/enterprise': { image: generatedGrids.people, start: 9 },
+  'atlas-journeys/about': { image: generatedGrids.world, start: 0 },
+  'atlas-journeys/stays': { image: generatedGrids.world, start: 0 },
+  'atlas-journeys/concierge': { image: generatedGrids.world, start: 0 },
+  'atlas-journeys/partners': { image: generatedGrids.world, start: 0 },
+  'northline-motors/brands': { image: generatedGrids.world, start: 3 },
+  'northline-motors/sell-your-car': { image: generatedGrids.world, start: 3 },
+  'northline-motors/concierge': { image: generatedGrids.world, start: 3 },
+  'northline-motors/journal': { image: generatedGrids.world, start: 3 },
+  'aureon-industries/platform': { image: generatedGrids.world, start: 6, count: 3 },
+  'aureon-industries/industries': { image: generatedGrids.world, start: 6 },
+  'aureon-industries/customers': { image: generatedGrids.world, start: 6 },
+  'aureon-industries/security': { image: generatedGrids.world, start: 6, count: 3 },
+  'vertex-arena/teams': { image: generatedGrids.world, start: 9, count: 3 },
+  'vertex-arena/broadcast': { image: generatedGrids.world, start: 9 },
+  'vertex-arena/hospitality': { image: generatedGrids.world, start: 9 },
+  'vertex-arena/news': { image: generatedGrids.world, start: 9 },
+  'vertex-arena/featured': { image: generatedGrids.world, start: 9 },
+  'kinetic-fitness-club/featured': { image: generatedGrids.people, start: 3 },
+  'northline-motors/featured': { image: generatedGrids.world, start: 3 },
+  'novacare-clinic/featured': { image: generatedGrids.people, start: 6 },
+  'atlas-journeys/featured': { image: generatedGrids.world, start: 0 },
+  'forge-digital-academy/featured': { image: generatedGrids.people, start: 9 }
+};
+
+export const showcaseMediaFor = (concept: string, section: string, index: number, fallback: string): ShowcaseMediaSource => {
+  const range = mediaRanges[`${concept}/${section}`];
+  const crop = range && (range.count === undefined || index < range.count) ? range.start + index : undefined;
+  if (range && typeof crop === 'number' && crop < 12) return { image: range.image, crop };
+  return { image: fallback };
+};
+
+export const showcaseSecondaryMediaFor = (concept: string, section: string, index: number, primary: ShowcaseMediaSource): ShowcaseMediaSource => {
+  const range = secondaryMediaRanges[`${concept}/${section}`];
+  if (range && (range.count === undefined || index < range.count)) return { image: range.image, crop: range.start + index };
+  if (typeof primary.crop === 'number') return { image: primary.image, crop: (primary.crop + 4) % 12 };
+  return primary;
+};
 
 const kindByLayout: Record<ExperienceLayout, ShowcaseContentKind> = {
   editorial: 'article',
@@ -66,6 +152,7 @@ const generatedRecords: ShowcaseContentRecord[] = Object.entries(showcaseExperie
   const site = expansionBySlug(concept);
   return experience.items.map((item, index) => {
     const kind = kindByLayout[experience.layout];
+    const media = showcaseMediaFor(concept, section, index, item.image || site?.image || '');
     return {
       concept,
       section,
@@ -74,7 +161,8 @@ const generatedRecords: ShowcaseContentRecord[] = Object.entries(showcaseExperie
       title: item.title,
       meta: item.meta,
       intro: item.detail || contextualIntro(kind, item.title),
-      image: item.image || site?.image || '',
+      image: media.image,
+      crop: media.crop,
       index
     };
   });
@@ -82,6 +170,7 @@ const generatedRecords: ShowcaseContentRecord[] = Object.entries(showcaseExperie
 
 const advancedRecords: ShowcaseContentRecord[] = advancedShowcases.flatMap((concept) => concept.cards.map((card, index) => {
   const kind: ShowcaseContentKind = concept.tool === 'clinic' ? 'profile' : concept.tool === 'academy' ? 'plan' : concept.tool === 'tickets' ? 'event' : 'detail';
+  const media = showcaseMediaFor(concept.slug, 'featured', index, concept.image);
   return {
     concept: concept.slug,
     section: concept.pages[0]?.slug || '',
@@ -90,7 +179,8 @@ const advancedRecords: ShowcaseContentRecord[] = advancedShowcases.flatMap((conc
     title: card.title,
     meta: c(card.eyebrow, card.eyebrow, card.eyebrow, card.eyebrow),
     intro: card.text,
-    image: concept.image,
+    image: media.image,
+    crop: media.crop,
     index
   };
 }));
@@ -108,7 +198,7 @@ const extraRecords: ShowcaseContentRecord[] = [
   ].map((drink, index): ShowcaseContentRecord => ({
     concept: 'nox-social-club', section: 'cocktails', slug: `cocktail-${showcaseSlug(drink[0])}`, kind: 'detail',
     title: c(drink[0], drink[0], drink[0], drink[0]), meta: c(drink[1], drink[1], drink[1], drink[1]),
-    intro: c(drink[2], drink[3], drink[4], drink[5]), image: '/assets/showcases/nox/neon.jpg', index
+    intro: c(drink[2], drink[3], drink[4], drink[5]), image: generatedGrids.nox, crop: 9 + (index % 3), index
   })),
   ...[
     ['Foundations 45','07:00 · MILA · 45 MIN'],['Engine 30','12:30 · NOAH · 30 MIN'],['Velocity','18:30 · AMIR · 45 MIN'],['Reset Lab','20:00 · ANA · 45 MIN']

@@ -1,0 +1,23 @@
+---
+interface Props {
+  src: string;
+  crop?: number;
+  alt?: string;
+  class?: string;
+  loading?: 'eager' | 'lazy';
+}
+
+const { src, crop, alt = '', class: className = '', loading = 'lazy' } = Astro.props;
+const hasCrop = typeof crop === 'number';
+const column = hasCrop ? crop % 4 : 0;
+const row = hasCrop ? Math.floor(crop / 4) : 0;
+const x = column * (100 / 3);
+const y = row * 50;
+const style = hasCrop
+  ? `--showcase-media:url('${src}');--showcase-media-x:${x}%;--showcase-media-y:${y}%`
+  : undefined;
+---
+{hasCrop
+  ? <span class:list={['showcase-media-crop', className]} style={style} role={alt ? 'img' : undefined} aria-label={alt || undefined}></span>
+  : <img class={className} src={src} alt={alt} loading={loading}/>
+}

@@ -1,9 +1,10 @@
 ---
 import ShowcaseShell from '../../layouts/ShowcaseShell.astro';
 import T from './ShowcaseText.astro';
+import ShowcaseMedia from './ShowcaseMedia.astro';
 import { advancedShowcases } from '../../data/advancedShowcases';
 import { expansionBySlug } from '../../data/showcaseExpansion';
-import { relatedContentFor, type ShowcaseContentRecord } from '../../data/showcaseContent';
+import { relatedContentFor, showcaseSecondaryMediaFor, type ShowcaseContentRecord } from '../../data/showcaseContent';
 
 interface Props { record: ShowcaseContentRecord }
 const { record } = Astro.props;
@@ -22,6 +23,28 @@ const isProfile = ['profile','roster'].includes(record.kind);
 const isCase = record.kind === 'case-study';
 const isTechnical = ['report','control'].includes(record.kind);
 const isArticle = record.kind === 'article';
+const secondaryMedia = showcaseSecondaryMediaFor(record.concept, record.section, record.index, { image: record.image || site.image, crop: record.crop });
+const profileLabels = [
+  { en:'Background',it:'Esperienza',fr:'Parcours',es:'Experiencia' },
+  { en:'Current focus',it:'Focus attuale',fr:'Priorité actuelle',es:'Enfoque actual' },
+  { en:'Selected contribution',it:'Contributo selezionato',fr:'Contribution sélectionnée',es:'Contribución seleccionada' }
+];
+const caseLabels = [
+  { en:'Discovery',it:'Analisi',fr:'Découverte',es:'Descubrimiento' },
+  { en:'System design',it:'Progettazione del sistema',fr:'Conception du système',es:'Diseño del sistema' },
+  { en:'Pilot and measurement',it:'Pilota e misurazione',fr:'Pilote et mesure',es:'Piloto y medición' }
+];
+const controlLabels = [
+  { en:'Architecture',it:'Architettura',fr:'Architecture',es:'Arquitectura' },
+  { en:'Evidence',it:'Evidenze',fr:'Preuves',es:'Evidencias' },
+  { en:'Recovery',it:'Ripristino',fr:'Récupération',es:'Recuperación' }
+];
+const productLabels = [
+  { en:'Character',it:'Carattere',fr:'Caractère',es:'Carácter' },
+  { en:'What is included',it:'Cosa include',fr:'Ce qui est inclus',es:'Qué incluye' },
+  { en:'Practical information',it:'Informazioni pratiche',fr:'Informations pratiques',es:'Información práctica' },
+  { en:'Best suited for',it:'Ideale per',fr:'Idéal pour',es:'Ideal para' }
+];
 ---
 <ShowcaseShell title={`${record.title.en} — ${site.brand}`} description={record.intro.en} brand={site.brand} variant={site.variant as any} home={`/showcase/${record.concept}/`} nav={nav} cta={{href:sourceHref,label:{en:'Back to section',it:'Torna alla sezione',fr:'Retour à la section',es:'Volver a la sección'}}}>
   <article class={`content-detail content-detail--${record.kind}`} data-content-page>
@@ -33,12 +56,11 @@ const isArticle = record.kind === 'article';
 
     <header class="content-detail__hero">
       <div>
-        <span class="content-detail__kind">{record.kind.replaceAll('-',' ')} / {String(record.index + 1).padStart(2,'0')}</span>
         <T as="h1" {...record.title}/>
         <T as="p" {...record.intro}/>
-        <T as="strong" {...record.meta}/>
+        {!isArticle && <T as="strong" {...record.meta}/>}
       </div>
-      <figure><img src={record.image || site.image} alt=""/><figcaption>{site.brand} / {record.section.toUpperCase()}</figcaption></figure>
+      <figure><ShowcaseMedia class="content-detail__media" src={record.image || site.image} crop={record.crop} alt={record.title.en} loading="eager"/><figcaption>{site.brand} / {record.section.toUpperCase()}</figcaption></figure>
     </header>
 
     {isArticle && <>
@@ -47,35 +69,35 @@ const isArticle = record.kind === 'article';
         <div><T as="h2" en="A subject worth looking at closely." it="Un tema che merita uno sguardo più attento." fr="Un sujet qui mérite un regard attentif." es="Un tema que merece una mirada más atenta."/><T as="p" en={`This story begins with ${record.title.en.toLowerCase()}: not as a slogan, but as a practical choice that influences people, materials, timing, and the final experience.`} it={`Questa storia parte da ${record.title.it.toLowerCase()}: non come slogan, ma come scelta concreta che influenza persone, materiali, tempi ed esperienza finale.`} fr={`Cette histoire part de ${record.title.fr.toLowerCase()} : non comme un slogan, mais comme un choix concret qui influence les personnes, les matières, le temps et l’expérience finale.`} es={`Esta historia parte de ${record.title.es.toLowerCase()}: no como eslogan, sino como una elección práctica que influye en las personas, los materiales, los tiempos y la experiencia final.`}/><T as="p" {...record.intro}/></div>
       </section>
       <section class="content-story content-story--feature">
-        <figure><img src={record.image || site.image} alt="" loading="lazy"/></figure>
-        <div><span>02 / FIELD NOTES</span><T as="h2" en="Decisions become a method." it="Le decisioni diventano un metodo." fr="Les décisions deviennent une méthode." es="Las decisiones se convierten en método."/><T as="p" en="The work is documented from the first observation to the final review. Each step is tested against quality, usefulness, and the effect it has on the wider system." it="Il lavoro viene documentato dalla prima osservazione alla revisione finale. Ogni passaggio viene valutato per qualità, utilità ed effetto sul sistema complessivo." fr="Le travail est documenté de la première observation à la révision finale. Chaque étape est évaluée selon sa qualité, son utilité et son effet sur l’ensemble du système." es="El trabajo se documenta desde la primera observación hasta la revisión final. Cada paso se evalúa por su calidad, utilidad y efecto sobre el sistema completo."/></div>
+        <figure><ShowcaseMedia class="content-detail__media" src={secondaryMedia.image} crop={secondaryMedia.crop} alt=""/></figure>
+        <div><span>02</span><T as="h2" en="Decisions become a method." it="Le decisioni diventano un metodo." fr="Les décisions deviennent une méthode." es="Las decisiones se convierten en método."/><T as="p" en="The work is documented from the first observation to the final review. Each step is tested against quality, usefulness, and the effect it has on the wider system." it="Il lavoro viene documentato dalla prima osservazione alla revisione finale. Ogni passaggio viene valutato per qualità, utilità ed effetto sul sistema complessivo." fr="Le travail est documenté de la première observation à la révision finale. Chaque étape est évaluée selon sa qualité, son utilité et son effet sur l’ensemble du système." es="El trabajo se documenta desde la primera observación hasta la revisión final. Cada paso se evalúa por su calidad, utilidad y efecto sobre el sistema completo."/></div>
       </section>
-      <section class="content-quote"><T as="blockquote" en="The most useful stories do more than describe an outcome: they make the choices behind it visible." it="Le storie più utili non descrivono soltanto un risultato: rendono visibili le scelte che lo hanno costruito." fr="Les récits les plus utiles ne décrivent pas seulement un résultat : ils rendent visibles les choix qui l’ont construit." es="Las historias más útiles no solo describen un resultado: hacen visibles las decisiones que lo construyeron."/><span>{record.meta.en}</span></section>
+      <section class="content-quote"><T as="blockquote" en="The most useful stories do more than describe an outcome: they make the choices behind it visible." it="Le storie più utili non descrivono soltanto un risultato: rendono visibili le scelte che lo hanno costruito." fr="Les récits les plus utiles ne décrivent pas seulement un résultat : ils rendent visibles les choix qui l’ont construit." es="Las historias más útiles no solo describen un resultado: hacen visibles las decisiones que lo construyeron."/></section>
     </>}
 
     {isProfile && <>
       <section class="content-profile">
-        <div class="content-profile__identity"><span>PROFILE / VERIFIED</span><T as="h2" {...record.title}/><T as="p" {...record.intro}/><dl><div><dt><T en="Specialism" it="Specialità" fr="Spécialité" es="Especialidad"/></dt><dd><T {...record.meta}/></dd></div><div><dt><T en="Availability" it="Disponibilità" fr="Disponibilité" es="Disponibilidad"/></dt><dd><T en="Open for selected sessions" it="Disponibile per sessioni selezionate" fr="Disponible pour certaines sessions" es="Disponible para sesiones seleccionadas"/></dd></div><div><dt><T en="Languages" it="Lingue" fr="Langues" es="Idiomas"/></dt><dd>IT / EN / FR / ES</dd></div></dl></div>
+        <div class="content-profile__identity"><T as="h2" {...record.title}/><T as="p" {...record.intro}/><dl><div><dt><T en="Specialism" it="Specialità" fr="Spécialité" es="Especialidad"/></dt><dd><T {...record.meta}/></dd></div><div><dt><T en="Availability" it="Disponibilità" fr="Disponibilité" es="Disponibilidad"/></dt><dd><T en="Open for selected sessions" it="Disponibile per sessioni selezionate" fr="Disponible pour certaines sessions" es="Disponible para sesiones seleccionadas"/></dd></div><div><dt><T en="Languages" it="Lingue" fr="Langues" es="Idiomas"/></dt><dd>IT / EN / FR / ES</dd></div></dl></div>
         <aside><span>01</span><T as="h3" en="Working approach" it="Metodo di lavoro" fr="Méthode de travail" es="Método de trabajo"/><T as="p" en="Every engagement starts with context, a clear objective, and a shared definition of progress. The profile is evaluated through practical work rather than generic labels." it="Ogni collaborazione parte dal contesto, da un obiettivo chiaro e da una definizione condivisa del progresso. Il profilo viene raccontato attraverso il lavoro concreto, non tramite etichette generiche." fr="Chaque collaboration commence par le contexte, un objectif clair et une définition commune du progrès. Le profil est présenté par le travail concret, non par des étiquettes génériques." es="Cada colaboración parte del contexto, un objetivo claro y una definición compartida del progreso. El perfil se explica mediante trabajo real, no etiquetas genéricas."/></aside>
       </section>
-      <section class="content-profile__grid">{['01','02','03'].map((number,index)=><article><span>{number}</span><T as="h3" en={['Background','Current focus','Selected contribution'][index]} it={['Esperienza','Focus attuale','Contributo selezionato'][index]} fr={['Parcours','Priorité actuelle','Contribution sélectionnée'][index]} es={['Experiencia','Enfoque actual','Contribución seleccionada'][index]}/><T as="p" en="A structured overview with concrete responsibilities, current priorities, and the standards used to evaluate the work." it="Una panoramica strutturata con responsabilità concrete, priorità attuali e criteri usati per valutare il lavoro." fr="Une vue structurée des responsabilités, priorités actuelles et critères d’évaluation du travail." es="Una visión estructurada con responsabilidades, prioridades actuales y criterios para evaluar el trabajo."/></article>)}</section>
+      <section class="content-profile__grid">{profileLabels.map((label,index)=><article><span>0{index+1}</span><T as="h3" {...label}/><T as="p" en="A structured overview with concrete responsibilities, current priorities, and the standards used to evaluate the work." it="Una panoramica strutturata con responsabilità concrete, priorità attuali e criteri usati per valutare il lavoro." fr="Une vue structurée des responsabilités, priorités actuelles et critères d’évaluation du travail." es="Una visión estructurada con responsabilidades, prioridades actuales y criterios para evaluar el trabajo."/></article>)}</section>
     </>}
 
     {isCase && <>
       <section class="content-case__summary"><div><span>01 / CONTEXT</span><T as="h2" en="The challenge" it="La sfida" fr="Le défi" es="El reto"/><T as="p" en={`The ${record.title.en} programme started with fragmented information, manual coordination, and no reliable view of the complete process.`} it={`Il progetto ${record.title.it} partiva da informazioni frammentate, coordinamento manuale e nessuna vista affidabile del processo completo.`} fr={`Le projet ${record.title.fr} partait d’informations fragmentées, d’une coordination manuelle et d’aucune vue fiable du processus complet.`} es={`El proyecto ${record.title.es} partía de información fragmentada, coordinación manual y ninguna visión fiable del proceso completo.`}/></div><dl><div><dt><T en="Scope" it="Ambito" fr="Périmètre" es="Alcance"/></dt><dd>12 <T en="weeks" it="settimane" fr="semaines" es="semanas"/></dd></div><div><dt><T en="Workstreams" it="Aree di lavoro" fr="Chantiers" es="Áreas de trabajo"/></dt><dd>04</dd></div><div><dt><T en="Outcome" it="Risultato" fr="Résultat" es="Resultado"/></dt><dd><T {...record.meta}/></dd></div></dl></section>
-      <section class="content-case__timeline">{['Discovery','System design','Pilot and measurement'].map((label,index)=><article><span>0{index+1}</span><h3>{label}</h3><T as="p" en="Interviews, current-state mapping, rapid prototypes, documented decisions, and measurable acceptance criteria shaped this phase." it="Interviste, mappatura dello stato attuale, prototipi rapidi, decisioni documentate e criteri misurabili hanno guidato questa fase." fr="Entretiens, cartographie, prototypes rapides, décisions documentées et critères mesurables ont guidé cette phase." es="Entrevistas, mapeo, prototipos rápidos, decisiones documentadas y criterios medibles guiaron esta fase."/></article>)}</section>
+      <section class="content-case__timeline">{caseLabels.map((label,index)=><article><span>0{index+1}</span><T as="h3" {...label}/><T as="p" en="Interviews, current-state mapping, rapid prototypes, documented decisions, and measurable acceptance criteria shaped this phase." it="Interviste, mappatura dello stato attuale, prototipi rapidi, decisioni documentate e criteri misurabili hanno guidato questa fase." fr="Entretiens, cartographie, prototypes rapides, décisions documentées et critères mesurables ont guidé cette phase." es="Entrevistas, mapeo, prototipos rápidos, decisiones documentadas y criterios medibles guiaron esta fase."/></article>)}</section>
       <section class="content-case__result"><span>RESULT / 01</span><T as="h2" en="A system the team can understand and operate." it="Un sistema che il team può comprendere e gestire." fr="Un système que l’équipe peut comprendre et exploiter." es="Un sistema que el equipo puede entender y operar."/><div><strong>−38%</strong><T en="manual coordination" it="coordinamento manuale" fr="coordination manuelle" es="coordinación manual"/><strong>+24%</strong><T en="process visibility" it="visibilità del processo" fr="visibilité du processus" es="visibilidad del proceso"/><strong>3×</strong><T en="faster reporting" it="report più rapido" fr="reporting plus rapide" es="informes más rápidos"/></div></section>
     </>}
 
     {isTechnical && <>
       <section class="content-control__status"><div><i></i><T as="strong" en="Verified in the demonstration environment" it="Verificato nell’ambiente dimostrativo" fr="Vérifié dans l’environnement de démonstration" es="Verificado en el entorno de demostración"/></div><time>LAST REVIEW / 24 AUG 2026</time></section>
-      <section class="content-control__grid">{['Architecture','Evidence','Recovery'].map((label,index)=><article><span>0{index+1}</span><h2>{label}</h2><T as="p" en="The control has a named owner, explicit boundaries, observable signals, and a repeatable verification procedure." it="Il controllo ha un responsabile, confini espliciti, segnali osservabili e una procedura di verifica ripetibile." fr="Le contrôle possède un responsable, des limites explicites, des signaux observables et une procédure de vérification répétable." es="El control tiene responsable, límites explícitos, señales observables y un procedimiento de verificación repetible."/><dl><div><dt>STATUS</dt><dd>PASS</dd></div><div><dt>EVIDENCE</dt><dd>12 ITEMS</dd></div></dl></article>)}</section>
+      <section class="content-control__grid">{controlLabels.map((label,index)=><article><span>0{index+1}</span><T as="h2" {...label}/><T as="p" en="The control has a named owner, explicit boundaries, observable signals, and a repeatable verification procedure." it="Il controllo ha un responsabile, confini espliciti, segnali osservabili e una procedura di verifica ripetibile." fr="Le contrôle possède un responsable, des limites explicites, des signaux observables et une procédure de vérification répétable." es="El control tiene responsable, límites explícitos, señales observables y un procedimiento de verificación repetible."/><dl><div><dt><T en="Status" it="Stato" fr="Statut" es="Estado"/></dt><dd>PASS</dd></div><div><dt><T en="Evidence" it="Evidenze" fr="Preuves" es="Evidencias"/></dt><dd>12</dd></div></dl></article>)}</section>
       <section class="content-control__log"><header><T en="Verification log" it="Registro verifiche" fr="Journal de vérification" es="Registro de verificación"/><span>LIVE / DEMO</span></header>{['Boundary check completed','Access policy reviewed','Recovery test recorded','Evidence package signed'].map((entry,index)=><div><time>09:{12+index*7}</time><span>{entry}</span><b>✓ PASS</b></div>)}</section>
     </>}
 
     {!isArticle && !isProfile && !isCase && !isTechnical && !operational && <>
-      <section class="content-product__overview"><div><span>01 / OVERVIEW</span><T as="h2" en="The complete view, not just a card." it="La visione completa, non soltanto una scheda." fr="La vue complète, pas seulement une carte." es="La visión completa, no solo una tarjeta."/><T as="p" {...record.intro}/></div><figure><img src={record.image || site.image} alt="" loading="lazy"/></figure></section>
-      <section class="content-product__specs">{['Character','What is included','Practical information','Best suited for'].map((label,index)=><article><span>0{index+1}</span><h3>{label}</h3><T as="p" en="Detailed, transparent information designed to help a visitor understand the option before making a decision." it="Informazioni dettagliate e trasparenti per aiutare il visitatore a comprendere l’opzione prima di scegliere." fr="Des informations détaillées et transparentes pour comprendre l’option avant de décider." es="Información detallada y transparente para comprender la opción antes de decidir."/></article>)}</section>
+      <section class="content-product__overview"><div><span>01</span><T as="h2" en="The complete view, not just a card." it="La visione completa, non soltanto una scheda." fr="La vue complète, pas seulement une carte." es="La visión completa, no solo una tarjeta."/><T as="p" {...record.intro}/></div><figure><ShowcaseMedia class="content-detail__media" src={secondaryMedia.image} crop={secondaryMedia.crop} alt=""/></figure></section>
+      <section class="content-product__specs">{productLabels.map((label,index)=><article><span>0{index+1}</span><T as="h3" {...label}/><T as="p" en="Detailed, transparent information designed to help a visitor understand the option before making a decision." it="Informazioni dettagliate e trasparenti per aiutare il visitatore a comprendere l’opzione prima di scegliere." fr="Des informations détaillées et transparentes pour comprendre l’option avant de décider." es="Información detallada y transparente para comprender la opción antes de decidir."/></article>)}</section>
     </>}
 
     {operational && <section class="content-booking" data-content-booking>
@@ -92,7 +114,7 @@ const isArticle = record.kind === 'article';
 
     <section class="content-related">
       <header><span>03 / <T en="Continue exploring" it="Continua a esplorare" fr="Continuer à explorer" es="Seguir explorando"/></span><T as="h2" en="More from this concept." it="Altro da questo concept." fr="Plus de ce concept." es="Más de este concepto."/></header>
-      <div>{related.map((item) => <a href={`/showcase/${item.concept}/content/${item.slug}/`}><small>{item.kind.replaceAll('-',' ')}</small><T as="h3" {...item.title}/><T {...item.meta}/><b>↗</b></a>)}</div>
+      <div>{related.map((item) => <a href={`/showcase/${item.concept}/content/${item.slug}/`}><T as="h3" {...item.title}/><b>↗</b></a>)}</div>
     </section>
   </article>
 </ShowcaseShell>
