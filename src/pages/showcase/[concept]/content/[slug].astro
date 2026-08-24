@@ -1,0 +1,16 @@
+---
+import ShowcaseContentPage from '../../../../components/showcase/ShowcaseContentPage.astro';
+import { showcaseContentRecords, type ShowcaseContentRecord } from '../../../../data/showcaseContent';
+
+export function getStaticPaths() {
+  return showcaseContentRecords.map((record) => ({
+    params: { concept: record.concept, slug: record.slug },
+    props: { record }
+  }));
+}
+
+interface Props { record: ShowcaseContentRecord }
+const { record } = Astro.props;
+---
+<ShowcaseContentPage record={record}/>
+
