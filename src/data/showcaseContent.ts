@@ -38,7 +38,6 @@ const generatedGrids = {
   lumeDetail: '/assets/showcases/generated/lume-detail-grid.png',
   braci: '/assets/showcases/generated/braci-content-grid.png',
   nox: '/assets/showcases/generated/nox-content-grid.png',
-  marea: '/assets/showcases/generated/marea-content-grid.png',
   people: '/assets/showcases/generated/people-content-grid.png',
   world: '/assets/showcases/generated/world-content-grid.png'
 };
@@ -51,21 +50,15 @@ const secondaryMediaRanges: Record<string, { image: string; start: number; count
 
 const mediaRanges: Record<string, { image: string; start: number; count?: number }> = {
   'lume-ristorante/philosophy': { image: generatedGrids.lume, start: 0 },
-  'lume-ristorante/cellar': { image: generatedGrids.lume, start: 3 },
   'lume-ristorante/private-dining': { image: generatedGrids.lume, start: 9 },
   'lume-ristorante/journal': { image: generatedGrids.lume, start: 0 },
   'braci-basilico/story': { image: generatedGrids.braci, start: 0 },
   'braci-basilico/locations': { image: generatedGrids.braci, start: 3 },
   'braci-basilico/delivery': { image: generatedGrids.braci, start: 6 },
   'braci-basilico/community': { image: generatedGrids.braci, start: 9 },
-  'nox-social-club/rooms': { image: generatedGrids.nox, start: 0 },
   'nox-social-club/artists': { image: generatedGrids.nox, start: 3 },
   'nox-social-club/membership': { image: generatedGrids.nox, start: 0 },
   'nox-social-club/private-hire': { image: generatedGrids.nox, start: 0 },
-  'marea-beach-club/beach': { image: generatedGrids.marea, start: 0 },
-  'marea-beach-club/wellness': { image: generatedGrids.marea, start: 3 },
-  'marea-beach-club/events': { image: generatedGrids.marea, start: 6 },
-  'marea-beach-club/private-hire': { image: generatedGrids.marea, start: 9 },
   'kinetic-fitness-club/coaches': { image: generatedGrids.people, start: 3 },
   'kinetic-fitness-club/recovery': { image: generatedGrids.people, start: 3 },
   'kinetic-fitness-club/locations': { image: generatedGrids.people, start: 3 },
@@ -82,7 +75,6 @@ const mediaRanges: Record<string, { image: string; start: number; count?: number
   'atlas-journeys/stays': { image: generatedGrids.world, start: 0 },
   'atlas-journeys/concierge': { image: generatedGrids.world, start: 0 },
   'atlas-journeys/partners': { image: generatedGrids.world, start: 0 },
-  'northline-motors/brands': { image: generatedGrids.world, start: 3 },
   'northline-motors/sell-your-car': { image: generatedGrids.world, start: 3 },
   'northline-motors/concierge': { image: generatedGrids.world, start: 3 },
   'northline-motors/journal': { image: generatedGrids.world, start: 3 },
@@ -96,7 +88,6 @@ const mediaRanges: Record<string, { image: string; start: number; count?: number
   'vertex-arena/news': { image: generatedGrids.world, start: 9 },
   'vertex-arena/featured': { image: generatedGrids.world, start: 9 },
   'kinetic-fitness-club/featured': { image: generatedGrids.people, start: 3 },
-  'northline-motors/featured': { image: generatedGrids.world, start: 3 },
   'novacare-clinic/featured': { image: generatedGrids.people, start: 6 },
   'atlas-journeys/featured': { image: generatedGrids.world, start: 0 },
   'forge-digital-academy/featured': { image: generatedGrids.people, start: 9 }
