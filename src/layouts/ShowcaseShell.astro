@@ -99,6 +99,15 @@ const isShowcaseHome = Astro.url.pathname.split('/').filter(Boolean).length === 
         });
       }
     </script>
+
+    <!-- Cloudflare Web Analytics -->
+    <script
+      is:inline
+      type="module"
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "f5d8879873364072b68a4b6803d619d7"}'
+    ></script>
+    <!-- End Cloudflare Web Analytics -->
   </body>
 </html>
 
