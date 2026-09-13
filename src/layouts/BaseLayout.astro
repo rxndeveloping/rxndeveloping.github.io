@@ -75,5 +75,14 @@ const socialImage = new URL(assetPath(image), Astro.site);
       </main>
       <Footer />
     </div>
+
+    <!-- Cloudflare Web Analytics -->
+    <script
+      is:inline
+      type="module"
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "f5d8879873364072b68a4b6803d619d7"}'
+    ></script>
+    <!-- End Cloudflare Web Analytics -->
   </body>
 </html>
